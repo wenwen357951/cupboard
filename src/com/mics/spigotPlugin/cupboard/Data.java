@@ -33,21 +33,17 @@ public class Data {
     	Location l = b.getLocation();
     	String loc_str = Util.LocToString(l);
     	for(int x = -ZONE_SIZE; x <= ZONE_SIZE; x++)
-    		for(int y = -BUTTON_SIZE; y <= ZONE_SIZE; y++)
-    			for(int z = -ZONE_SIZE; z <= ZONE_SIZE; z++){
-    				String nloc_str = Util.LocToString(l.clone().add(x,y,z));
-    				//p.sendMessage(limitblocks.getString(nloc_str).isEmpty());
-    				if(limitblocks.getString(nloc_str) != null)return false;
-    			}
-
-    	for(int x = -ZONE_SIZE; x <= ZONE_SIZE; x++)
     		for(int y = -BUTTON_SIZE; y <= TOP_SIZE; y++)
     			for(int z = -ZONE_SIZE; z <= ZONE_SIZE; z++){
     				String nloc_str = Util.LocToString(l.clone().add(x,y,z));
-    				limitblocks.set(nloc_str, loc_str);
+    				
+    				@SuppressWarnings("unchecked")
+					List<String> nloc_list = (List<String>)limitblocks.getList(nloc_str);
+    				if(nloc_list==null)nloc_list = new ArrayList<String>();
+    				
+    				nloc_list.add(loc_str);
+    				limitblocks.set(nloc_str, nloc_list);
     			}
-    	
-
     	List<String> uuid_list = new ArrayList<String>();
     	cupboards.set(loc_str, uuid_list);
     	this.save();
@@ -57,10 +53,20 @@ public class Data {
     	Location l = b.getLocation();
     	String loc_str = Util.LocToString(l);
     	for(int x = -ZONE_SIZE; x <= ZONE_SIZE; x++)
-    		for(int y = -BUTTON_SIZE; y <= ZONE_SIZE; y++)
+    		for(int y = -BUTTON_SIZE; y <= TOP_SIZE; y++)
     			for(int z = -ZONE_SIZE; z <= ZONE_SIZE; z++){
-    				String nloc_str = Util.LocToString(l.clone().add(x,y,z));
-    				limitblocks.set(nloc_str, null);
+					String nloc_str = Util.LocToString(l.clone().add(x,y,z));
+    				
+    				@SuppressWarnings("unchecked")
+					List<String> nloc_list = (List<String>)limitblocks.getList(nloc_str);
+    				if(nloc_list==null)nloc_list = new ArrayList<String>();
+    				
+    				nloc_list.remove(loc_str);
+    				if(nloc_list.isEmpty()){
+    					limitblocks.set(nloc_str, null);
+    					continue;
+    				}
+    				limitblocks.set(nloc_str, nloc_list);
     			}
     	cupboards.set(loc_str, null);
     	this.save();

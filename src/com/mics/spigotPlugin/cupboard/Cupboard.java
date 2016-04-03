@@ -56,22 +56,18 @@ public class Cupboard extends JavaPlugin implements Listener {
 
     
     //授權/取消授權
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onRightClick(PlayerInteractEvent event){
-    	if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
+    	if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 	    	if(event.getClickedBlock().getType() == Material.GOLD_BLOCK){
-	    		
 	    		Player p = event.getPlayer();
-	    		if(p.getInventory().getItemInMainHand().getType() == Material.AIR){
-	    			String str;
-	    			if(data.toggleBoardAccess(p, event.getClickedBlock())){
-	    				str="已授權";
-	    			} else {
-	    				str="已取消授權";
-	    			}
-		    		Util.msgToPlayer(p, str);
-		    		event.setCancelled(true);
-	    		}
+    			String str;
+    			if(data.toggleBoardAccess(p, event.getClickedBlock())){
+    				str="已授權";
+    			} else {
+    				str="已取消授權";
+    			}
+	    		Util.msgToPlayer(p, str);
 	    	}
     	}
     }
