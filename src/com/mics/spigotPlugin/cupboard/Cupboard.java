@@ -34,9 +34,9 @@ public class Cupboard extends JavaPlugin implements Listener {
     @EventHandler
     public void onGoldBlockBreak(BlockBreakEvent event){
     	if(event.getBlock().getType() == Material.GOLD_BLOCK){
-    		Player p = event.getPlayer();
+    		//Player p = event.getPlayer();
     		data.removeCupboard(event.getBlock());
-    		Util.msgToPlayer(p, "已移除工具櫃");
+    		//Util.msgToPlayer(p, "已移除工具櫃");
     	}
     }
     
@@ -46,11 +46,11 @@ public class Cupboard extends JavaPlugin implements Listener {
     	if(event.getBlockPlaced().getType() == Material.GOLD_BLOCK){
     		Player p = event.getPlayer();
     		if(!data.putCupboard(event.getBlockPlaced(), p)){
-    			Util.msgToPlayer(p, "工具櫃放置失敗");
+    			//Util.msgToPlayer(p, "工具櫃放置失敗");
     			event.setCancelled(true);
     			return;
     		}
-    		Util.msgToPlayer(p, "已放置工具櫃");
+    		//Util.msgToPlayer(p, "已放置工具櫃");
     	}
     }
 
@@ -58,7 +58,7 @@ public class Cupboard extends JavaPlugin implements Listener {
     //授權/取消授權
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onRightClick(PlayerInteractEvent event){
-    	if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+    	if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
 	    	if(event.getClickedBlock().getType() == Material.GOLD_BLOCK){
 	    		Player p = event.getPlayer();
     			String str;
