@@ -1,120 +1,156 @@
 package com.mics.spigotPlugin.cupboard;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import com.google.gson.Gson;
+
 public class Data {
-	private YamlConfiguration cupboards;
+	private HashMap<String, List<String>> cupboards;
 	private File cupboardsFile;
-	private YamlConfiguration limitblocks;
-	private File limitblocksFile;
-	static private int ZONE_SIZE = 7;
-	static private int BUTTON_SIZE = 2;
-	static private int TOP_SIZE = 12;
+	static private int CUPBOARD_DIST = 10;
 
-    Data(File dataFolder){
-
-        cupboardsFile = new File(dataFolder, "cupboards.yml");
-        this.cupboards = YamlConfiguration.loadConfiguration(cupboardsFile);
-        
-        limitblocksFile = new File(dataFolder, "limitblocks.yml");
-        this.limitblocks = YamlConfiguration.loadConfiguration(limitblocksFile);
+	Data(File dataFolder){
+        cupboardsFile = new File(dataFolder, "cupboards.json");
+        this.loadCuppboards();
     }
     
-    public boolean putCupboard(Block b, Player p){
+    @SuppressWarnings("unchecked")
+	private void loadCuppboards() {
+    	cupboards = new HashMap<String, List<String>>();
+    	Gson gson = new Gson();
+    	try {
+			FileReader file = new FileReader(cupboardsFile);
+			cupboards = gson.fromJson(file, HashMap.class);
+		} catch (FileNotFoundException e) {
+			//e.printStackTrace(); //if not exist
+			cupboards = new HashMap<String, List<String>>();
+		}  
+	}
 
-    	Location l = b.getLocation();
-    	String loc_str = Util.LocToString(l);
-    	if(limitblocks.getString(loc_str) != null)return false;
-    	for(int x = -ZONE_SIZE; x <= ZONE_SIZE; x++)
-    		for(int y = -BUTTON_SIZE; y <= TOP_SIZE; y++)
-    			for(int z = -ZONE_SIZE; z <= ZONE_SIZE; z++){
-    				String nloc_str = Util.LocToString(l.clone().add(x,y,z));
-    				
-    				@SuppressWarnings("unchecked")
-					List<String> nloc_list = (List<String>)limitblocks.getList(nloc_str);
-    				if(nloc_list==null)nloc_list = new ArrayList<String>();
-    				
-    				nloc_list.add(loc_str);
-    				limitblocks.set(nloc_str, nloc_list);
-    			}
-    	List<String> uuid_list = new ArrayList<String>();
-    	cupboards.set(loc_str, uuid_list);
+	public boolean putCupboard(Block b, Player p){
+    	Location pubBlockLocation = b.getLocation();
+    	String pubBlockLocation_str = Util.LocToString(pubBlockLocation);
+    	if(this.checkIsLimit(b))return false;
+    	List<String> AccessAbleUserUUIDList = new ArrayList<String>();
+    	AccessAbleUserUUIDList.add(p.getUniqueId().toString());
+    	cupboards.put(pubBlockLocation_str, AccessAbleUserUUIDList);
     	this.save();
     	return true;
     }
     public void removeCupboard(Block b){
-    	Location l = b.getLocation();
-    	String loc_str = Util.LocToString(l);
-    	for(int x = -ZONE_SIZE; x <= ZONE_SIZE; x++)
-    		for(int y = -BUTTON_SIZE; y <= TOP_SIZE; y++)
-    			for(int z = -ZONE_SIZE; z <= ZONE_SIZE; z++){
-					String nloc_str = Util.LocToString(l.clone().add(x,y,z));
-    				
-    				@SuppressWarnings("unchecked")
-					List<String> nloc_list = (List<String>)limitblocks.getList(nloc_str);
-    				if(nloc_list==null)nloc_list = new ArrayList<String>();
-    				
-    				nloc_list.remove(loc_str);
-    				if(nloc_list.isEmpty()){
-    					limitblocks.set(nloc_str, null);
-    					continue;
-    				}
-    				limitblocks.set(nloc_str, nloc_list);
-    			}
-    	cupboards.set(loc_str, null);
+    	Location pubBlockLocation = b.getLocation();
+    	String pubBlockLocation_str = Util.LocToString(pubBlockLocation);
+    	cupboards.remove(pubBlockLocation_str);
     	this.save();
     }
     
-    @SuppressWarnings("unchecked")
+    public boolean checkCupboardExist(Block b){
+    	if(cupboards.get(Util.LocToString(b.getLocation())) == null)return false;
+		return true;
+    }
 	public boolean toggleBoardAccess(Player p, Block b){
-    	String loc_str = Util.LocToString(b.getLocation());
-    	String uuid_str = p.getUniqueId().toString();
-    	List<String> uuid_list;
+    	String pubBlockLocation_str = Util.LocToString(b.getLocation());
+    	String toogleUserUUID = p.getUniqueId().toString();
+    	List<String> AccessAbleUserUUIDList;
     	boolean rtn;
-    	uuid_list = (List<String>) cupboards.getList(loc_str);
-    	if(uuid_list == null)uuid_list = new ArrayList<String>();
+    	AccessAbleUserUUIDList = (List<String>) cupboards.get(pubBlockLocation_str);
+    	if(AccessAbleUserUUIDList == null)AccessAbleUserUUIDList = new ArrayList<String>();
     	
-    	if(uuid_list.contains(uuid_str)){
-    		uuid_list.remove(uuid_str);
+    	if(AccessAbleUserUUIDList.contains(toogleUserUUID)){
+    		AccessAbleUserUUIDList.remove(toogleUserUUID);
     		rtn = false;
     	} else {
-    		uuid_list.add(uuid_str);
+    		AccessAbleUserUUIDList.add(toogleUserUUID);
     		rtn = true;
     	}
-    	cupboards.set(loc_str, uuid_list);
+    	cupboards.put(pubBlockLocation_str, AccessAbleUserUUIDList);
     	this.save();
     	return rtn;
 	}
     
     private void save(){
+    	Gson objGson= new Gson();
+    	String strObject = objGson.toJson(cupboards);
     	try {
-			cupboards.save(cupboardsFile);
-			limitblocks.save(limitblocksFile);
+			FileWriter file = new FileWriter(cupboardsFile);
+			file.write(strObject);
+			file.close();
 		} catch (IOException e) {
-			//should not happen
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
-
-	public boolean checkIsLimit(Block b) {
-		String cupboard_str = limitblocks.getString(Util.LocToString(b.getLocation()));
-		if(cupboard_str != null)return true;
+	private List<Block> findActiveCupboards(Location l){
+		Set<String> cups = cupboards.keySet();
+		List<Block> activeCups = new ArrayList<Block>();
+		for( String cup_str : cups){
+			StringTokenizer st = new StringTokenizer(cup_str, ",");
+			World world = Bukkit.getWorld((st.nextToken()));
+			double x = Double.parseDouble(st.nextToken());
+			double y = Double.parseDouble(st.nextToken());
+			double z = Double.parseDouble(st.nextToken());
+			Location cup_loc = new Location(world,x,y,z);
+			if(!cup_loc.getChunk().isLoaded())continue; //如果未載入則略過 (較快
+			double dist = cup_loc.distance(l);
+			if(dist < Data.CUPBOARD_DIST){
+				activeCups.add(cup_loc.getBlock());
+			}
+		}
+		return activeCups;
+	}
+	
+	public boolean checkIsLimit(Block b){
+		List<Block> cups = this.findActiveCupboards(b.getLocation());
+		for( Block cup : cups ){
+			if(cup.getType() != Material.GOLD_BLOCK){
+				cupboards.put(Util.LocToString(cup.getLocation()), null);
+				continue; //此方塊不是黃金磚則刪除後換下一個
+			}
+			return true;
+		}
 		return false;
 	}
+	
+	public boolean checkIsLimit(Block b, Player p){
+		boolean flagIsLimit = false;
+		
+		List<Block> cups = this.findActiveCupboards(b.getLocation());
+		for( Block cup : cups ){
+			if(cup.getType() != Material.GOLD_BLOCK){
+				cupboards.put(Util.LocToString(cup.getLocation()), null);
+				continue;
+				//此方塊不是黃金磚則刪除後換下一個
+			}
+			
+			List<String> AccessAbleUserUUIDList = (List<String>) cupboards.get(Util.LocToString(cup.getLocation()));
+			
+			if(!AccessAbleUserUUIDList.contains(p.getUniqueId().toString())) {
+				flagIsLimit = true;
+				break; //假如有找不到的 直接中斷跳出
+			}
+		}
+		return flagIsLimit;
+	}
 
+	/*
 	@SuppressWarnings("unchecked")
-	public boolean checkIsLimit(Block b, Player p) {
+	public boolean checkIsLimitOld(Block b, Player p) {
 		boolean flag = false;
 		
 		List<String> cups_str = (List<String>)limitblocks.getList(Util.LocToString(b.getLocation()));
@@ -128,6 +164,10 @@ public class Data {
 			double y = Double.parseDouble(st.nextToken());
 			double z = Double.parseDouble(st.nextToken());
 			Location cup_l = new Location(world,x,y,z);
+			if(cup_l.getBlock().getType() != Material.GOLD_BLOCK){
+				cupboards.set(str, null);
+				break;
+			}
 			List<String> accessAbleUsers = (List<String>) cupboards.getList(Util.LocToString(cup_l));
 			
 			if(!accessAbleUsers.contains(p.getUniqueId().toString())) {
@@ -135,6 +175,8 @@ public class Data {
 				break; //假如有找不到的 直接中斷跳出
 			}
 		}
+		
 		return flag;
 	}
+	*/
 }

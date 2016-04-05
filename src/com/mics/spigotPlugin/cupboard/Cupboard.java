@@ -10,8 +10,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -62,8 +66,10 @@ public class Cupboard extends JavaPlugin implements Listener {
 	    	if(event.getClickedBlock().getType() == Material.GOLD_BLOCK){
 	    		Player p = event.getPlayer();
     			String str;
-    			if(data.toggleBoardAccess(p, event.getClickedBlock())){
-    				str="已授權";
+    			if(!data.checkCupboardExist(event.getClickedBlock())){
+    				str="此方塊並非由玩家放置或資料遺失，請拆除後重新放置";
+    			}else if(data.toggleBoardAccess(p, event.getClickedBlock())){
+    				str="工具櫃已授權";
     			} else {
     				str="已取消授權";
     			}
@@ -76,15 +82,55 @@ public class Cupboard extends JavaPlugin implements Listener {
     
     //防止其他玩家破壞方塊
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onBlockBreak(BlockBreakEvent event){
-    	if(data.checkIsLimit(event.getBlock(), event.getPlayer()))
-    		event.setCancelled(true);
+    public void onBlockBreak(BlockBreakEvent e){
+    	Player p = e.getPlayer();
+    	Block b = e.getBlock();
+        if( p != null){
+        	if(data.checkIsLimit(b, p))
+        		e.setCancelled(true);
+        } else {
+        	if(data.checkIsLimit(b))
+        		e.setCancelled(true);
+        }
     }
     //防止其他玩家放置方塊
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onBlockPlace(BlockPlaceEvent event){
-    	if(data.checkIsLimit(event.getBlock(), event.getPlayer()))
-    		event.setCancelled(true);
+    public void onBlockPlace(BlockPlaceEvent e){
+    	Player p = e.getPlayer();
+    	Block b = e.getBlock();
+        if( p != null){
+        	if(data.checkIsLimit(b, p))
+        		e.setCancelled(true);
+        } else {
+        	if(data.checkIsLimit(b))
+        		e.setCancelled(true);
+        }
+    }
+    
+    //防止玩家使用水桶
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBucketEmpty(PlayerBucketEmptyEvent e){
+    	Player p = e.getPlayer();
+    	Block b = e.getBlockClicked().getLocation()
+    			.add(e.getBlockFace().getModX(),e.getBlockFace().getModY(),e.getBlockFace().getModZ())
+    			.getBlock();
+        if( p != null){
+        	if(data.checkIsLimit(b, p)){
+        		e.setCancelled(true);
+        		p.updateInventory();
+        	}
+        }
+    }
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBucketFill(PlayerBucketFillEvent e){
+    	Player p = e.getPlayer();
+    	Block b = e.getBlockClicked();
+        if( p != null){
+        	if(data.checkIsLimit(b, p)){
+        		e.setCancelled(true);
+        		p.updateInventory();
+        	}
+        }
     }
     
     //TNT or Creeper爆炸
@@ -96,4 +142,30 @@ public class Cupboard extends JavaPlugin implements Listener {
     		}
     	}
     }
+
+    //防止火焰燃燒
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    void onBlockIgnite(BlockIgniteEvent e)
+    {
+    	Player p = e.getPlayer();
+    	Block b = e.getBlock();
+        if( p != null){
+        	if(data.checkIsLimit(b, p))
+        		e.setCancelled(true);
+        } else {
+        	if(data.checkIsLimit(b))
+        		e.setCancelled(true);
+        }
+    }
+    
+    //防止方塊被燒壞
+    // TODO 火焰不會消失
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    void onBlockBurnDamage(BlockBurnEvent e){
+    	Block b = e.getBlock();
+    	if(data.checkIsLimit(b))
+    		e.setCancelled(true);
+    }
+    
+    
 }
