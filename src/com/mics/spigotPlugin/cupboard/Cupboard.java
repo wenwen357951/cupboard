@@ -114,23 +114,20 @@ public class Cupboard extends JavaPlugin implements Listener {
     	
     }
     
-  //禁止使用冒險者模式玩家使用石製開關
+  //禁止使用石製開關 以及 石製踏板
     @EventHandler
     public void onRightClickDoor(PlayerInteractEvent event){
-    	if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return; 						// 非右鍵方塊則無視
-        if (event.getHand() == EquipmentSlot.OFF_HAND) return;                    		// off hand packet, ignore.
-        if (event.getPlayer().getGameMode() != GameMode.ADVENTURE) return;				// 非冒險者模式滾蛋
     	Block b = event.getClickedBlock();
-    	if (b.getType() == Material.STONE_BUTTON) event.setCancelled(true);
-    }
-    
-  //禁止使用冒險者模式玩家使用石製踏板
-    @EventHandler
-    public void onTriggerPlate(PlayerInteractEvent event){
-    	if (!event.getAction().equals(Action.PHYSICAL)) return;							// 非踩踏板無視
-        if (event.getPlayer().getGameMode() != GameMode.ADVENTURE) return;				// 非冒險者模式滾蛋
-    	Block b = event.getClickedBlock();
-    	if (b.getType() == Material.STONE_PLATE) event.setCancelled(true);
+    	Player p = event.getPlayer();
+    	if ((
+    			event.getAction() == Action.RIGHT_CLICK_BLOCK && 
+				b.getType() == Material.STONE_BUTTON
+			) || (
+    			event.getAction() == Action.PHYSICAL &&
+    			b.getType() == Material.STONE_PLATE
+			))
+    			if(data.checkIsLimit(b, p)) event.setCancelled(true);
+    	
     }
     //防止其他玩家破壞方塊
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
