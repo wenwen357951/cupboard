@@ -23,7 +23,8 @@ import com.google.gson.Gson;
 public class Data {
 	private HashMap<String, List<String>> cupboards;
 	private File cupboardsFile;
-	static private int CUPBOARD_DIST = 10;
+	static private int PROTECT_DIST = 10;
+	static private int CUPBOARD_DIST = 18;
 
 	Data(File dataFolder){
         cupboardsFile = new File(dataFolder, "cupboards.json");
@@ -46,7 +47,7 @@ public class Data {
 	public boolean putCupboard(Block b, Player p){
     	Location pubBlockLocation = b.getLocation();
     	String pubBlockLocation_str = Util.LocToString(pubBlockLocation);
-    	if(this.checkIsLimit(b))return false;
+    	if(this.checkCupboardLimit(b))return false;
     	List<String> AccessAbleUserUUIDList = new ArrayList<String>();
     	AccessAbleUserUUIDList.add(p.getUniqueId().toString());
     	cupboards.put(pubBlockLocation_str, AccessAbleUserUUIDList);
@@ -96,7 +97,7 @@ public class Data {
 			e.printStackTrace();
 		}
     }
-	private List<Block> findActiveCupboards(Location l){
+	private List<Block> findActiveCupboards(Location l,int dist){
 		Set<String> cups = cupboards.keySet();
 		List<Block> activeCups = new ArrayList<Block>();
 		for( String cup_str : cups){
@@ -107,16 +108,21 @@ public class Data {
 			double z = Double.parseDouble(st.nextToken());
 			Location cup_loc = new Location(world,x,y,z);
 			if(!cup_loc.getChunk().isLoaded())continue; //如果未載入則略過 (較快
-			double dist = cup_loc.distance(l);
-			if(dist < Data.CUPBOARD_DIST){
+			double diffx = Math.abs(l.getBlockX() - cup_loc.getBlockX());
+			double diffy = Math.abs(l.getBlockY() - cup_loc.getBlockY());
+			double diffz = Math.abs(l.getBlockZ() - cup_loc.getBlockZ());
+			if(
+					diffx < dist &&
+					diffy < dist &&
+					diffz < dist
+			){
 				activeCups.add(cup_loc.getBlock());
 			}
 		}
 		return activeCups;
 	}
-	
-	public boolean checkIsLimit(Block b){
-		List<Block> cups = this.findActiveCupboards(b.getLocation());
+	public boolean checkCupboardLimit(Block b){
+		List<Block> cups = this.findActiveCupboards(b.getLocation(), CUPBOARD_DIST);
 		for( Block cup : cups ){
 			if(cup.getType() != Material.GOLD_BLOCK){
 				cupboards.put(Util.LocToString(cup.getLocation()), null);
@@ -127,10 +133,22 @@ public class Data {
 		return false;
 	}
 	
+	public boolean checkIsLimit(Block b){
+		List<Block> cups = this.findActiveCupboards(b.getLocation(), PROTECT_DIST);
+		for( Block cup : cups ){
+			if(cup.getType() != Material.GOLD_BLOCK){
+				cupboards.put(Util.LocToString(cup.getLocation()), null);
+				continue; //此方塊不是黃金磚則刪除後換下一個
+			}
+			return true;
+		}
+		return false;
+	}
+
 	public boolean checkIsLimit(Block b, Player p){
 		boolean flagIsLimit = false;
 		
-		List<Block> cups = this.findActiveCupboards(b.getLocation());
+		List<Block> cups = this.findActiveCupboards(b.getLocation(), PROTECT_DIST);
 		for( Block cup : cups ){
 			if(cup.getType() != Material.GOLD_BLOCK){
 				cupboards.put(Util.LocToString(cup.getLocation()), null);
@@ -147,36 +165,25 @@ public class Data {
 		}
 		return flagIsLimit;
 	}
-
-	/*
-	@SuppressWarnings("unchecked")
-	public boolean checkIsLimitOld(Block b, Player p) {
-		boolean flag = false;
+	
+	public boolean checkIsLimit(Location l, Player p){
+		boolean flagIsLimit = false;
 		
-		List<String> cups_str = (List<String>)limitblocks.getList(Util.LocToString(b.getLocation()));
-		if(cups_str == null) return false;
-		if(cups_str.isEmpty()) return false;
-		
-		for( String str : cups_str ){
-			StringTokenizer st = new StringTokenizer(str,",");
-			World world = Bukkit.getWorld((st.nextToken()));
-			double x = Double.parseDouble(st.nextToken());
-			double y = Double.parseDouble(st.nextToken());
-			double z = Double.parseDouble(st.nextToken());
-			Location cup_l = new Location(world,x,y,z);
-			if(cup_l.getBlock().getType() != Material.GOLD_BLOCK){
-				cupboards.set(str, null);
-				break;
+		List<Block> cups = this.findActiveCupboards(l, PROTECT_DIST);
+		for( Block cup : cups ){
+			if(cup.getType() != Material.GOLD_BLOCK){
+				cupboards.put(Util.LocToString(cup.getLocation()), null);
+				continue;
+				//此方塊不是黃金磚則刪除後換下一個
 			}
-			List<String> accessAbleUsers = (List<String>) cupboards.getList(Util.LocToString(cup_l));
 			
-			if(!accessAbleUsers.contains(p.getUniqueId().toString())) {
-				flag = true;
+			List<String> AccessAbleUserUUIDList = (List<String>) cupboards.get(Util.LocToString(cup.getLocation()));
+			
+			if(!AccessAbleUserUUIDList.contains(p.getUniqueId().toString())) {
+				flagIsLimit = true;
 				break; //假如有找不到的 直接中斷跳出
 			}
 		}
-		
-		return flag;
+		return flagIsLimit;
 	}
-	*/
 }

@@ -2,6 +2,7 @@ package com.mics.spigotPlugin.cupboard;
 
 import java.util.ArrayList;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -11,12 +12,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Cupboard extends JavaPlugin implements Listener {
@@ -50,11 +52,11 @@ public class Cupboard extends JavaPlugin implements Listener {
     	if(event.getBlockPlaced().getType() == Material.GOLD_BLOCK){
     		Player p = event.getPlayer();
     		if(!data.putCupboard(event.getBlockPlaced(), p)){
-    			//Util.msgToPlayer(p, "工具櫃放置失敗");
+    			Util.msgToPlayer(p, "距離其他工具櫃太近。");
     			event.setCancelled(true);
     			return;
     		}
-    		//Util.msgToPlayer(p, "已放置工具櫃");
+    		Util.msgToPlayer(p, "工具櫃已經放置並取得授權。");
     	}
     }
 
@@ -62,24 +64,74 @@ public class Cupboard extends JavaPlugin implements Listener {
     //授權/取消授權
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onRightClick(PlayerInteractEvent event){
-    	if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
-	    	if(event.getClickedBlock().getType() == Material.GOLD_BLOCK){
-	    		Player p = event.getPlayer();
-    			String str;
-    			if(!data.checkCupboardExist(event.getClickedBlock())){
-    				str="此方塊並非由玩家放置或資料遺失，請拆除後重新放置";
-    			}else if(data.toggleBoardAccess(p, event.getClickedBlock())){
-    				str="工具櫃已授權";
-    			} else {
-    				str="已取消授權";
-    			}
-	    		Util.msgToPlayer(p, str);
-	    	}
+        if (event.getHand() == EquipmentSlot.OFF_HAND) return;                    		// off hand packet, ignore.
+    	if (event.getClickedBlock().getType() != Material.GOLD_BLOCK) return;       	// 非黃金磚則無視
+    	if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return; 						// 非右鍵方塊則無視
+        if (event.getItem() != null && event.getItem().getType().isBlock()) return;   	// 非空手則無視
+    	
+		Player p = event.getPlayer();
+		String str;
+		if(!data.checkCupboardExist(event.getClickedBlock())){
+			str="此方塊並非由玩家放置或資料遺失，請拆除後重新放置";
+		}else if(data.toggleBoardAccess(p, event.getClickedBlock())){
+			str="工具櫃已授權";
+		} else {
+			str="工具櫃已取消授權";
+		}
+		
+    	GameMode p_gamemode = p.getGameMode();
+		boolean limit = data.checkIsLimit(p.getLocation(), p);
+    	
+    	if(p_gamemode == GameMode.SURVIVAL && limit){
+    		p.setGameMode(GameMode.ADVENTURE);
     	}
+
+    	if(p_gamemode == GameMode.ADVENTURE && !limit){
+    		p.setGameMode(GameMode.SURVIVAL);
+    	}
+		Util.msgToPlayer(p, str);
     }
     
     //==========以下為保護措施=========
     
+    //進入範圍內之玩家會設定為冒險模式
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerMove(PlayerMoveEvent e){
+    	for(int i=0; i<2000; i++){
+    		//TODO maybe need improve speed
+	    	Player p = e.getPlayer();
+	    	GameMode p_gamemode = p.getGameMode();
+	    	boolean limit = data.checkIsLimit(p.getLocation(), p);
+	    	
+	    	if(p_gamemode == GameMode.SURVIVAL && limit){
+	    		p.setGameMode(GameMode.ADVENTURE);
+	    	}
+	
+	    	if(p_gamemode == GameMode.ADVENTURE && !limit){
+	    		p.setGameMode(GameMode.SURVIVAL);
+	    	}
+    	}
+    	
+    }
+    
+  //禁止使用冒險者模式玩家使用石製開關
+    @EventHandler
+    public void onRightClickDoor(PlayerInteractEvent event){
+    	if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return; 						// 非右鍵方塊則無視
+        if (event.getHand() == EquipmentSlot.OFF_HAND) return;                    		// off hand packet, ignore.
+        if (event.getPlayer().getGameMode() != GameMode.ADVENTURE) return;				// 非冒險者模式滾蛋
+    	Block b = event.getClickedBlock();
+    	if (b.getType() == Material.STONE_BUTTON) event.setCancelled(true);
+    }
+    
+  //禁止使用冒險者模式玩家使用石製踏板
+    @EventHandler
+    public void onTriggerPlate(PlayerInteractEvent event){
+    	if (!event.getAction().equals(Action.PHYSICAL)) return;							// 非踩踏板無視
+        if (event.getPlayer().getGameMode() != GameMode.ADVENTURE) return;				// 非冒險者模式滾蛋
+    	Block b = event.getClickedBlock();
+    	if (b.getType() == Material.STONE_PLATE) event.setCancelled(true);
+    }
     //防止其他玩家破壞方塊
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e){
@@ -141,21 +193,6 @@ public class Cupboard extends JavaPlugin implements Listener {
     			event.blockList().remove(block);
     		}
     	}
-    }
-
-    //防止火焰燃燒
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    void onBlockIgnite(BlockIgniteEvent e)
-    {
-    	Player p = e.getPlayer();
-    	Block b = e.getBlock();
-        if( p != null){
-        	if(data.checkIsLimit(b, p))
-        		e.setCancelled(true);
-        } else {
-        	if(data.checkIsLimit(b))
-        		e.setCancelled(true);
-        }
     }
     
     //防止方塊被燒壞
