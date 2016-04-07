@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -199,6 +200,15 @@ public class Cupboard extends JavaPlugin implements Listener {
     	Block b = e.getBlock();
     	if(data.checkIsLimit(b))
     		e.setCancelled(true);
+    }
+    
+    @EventHandler(priority = EventPriority.HIGH)
+    void onCupboardPiston(BlockPistonExtendEvent e){
+    	for(Block block : e.getBlocks()){
+    		if(block.getType().equals(Material.GOLD_BLOCK)){
+    			e.setCancelled(true);
+    		}
+    	}
     }
     
     

@@ -158,7 +158,7 @@ public class Data {
 			
 			List<String> AccessAbleUserUUIDList = (List<String>) cupboards.get(Util.LocToString(cup.getLocation()));
 			
-			if(!AccessAbleUserUUIDList.contains(p.getUniqueId().toString())) {
+			if(AccessAbleUserUUIDList!= null && !AccessAbleUserUUIDList.contains(p.getUniqueId().toString())) {
 				flagIsLimit = true;
 				break; //假如有找不到的 直接中斷跳出
 			}
