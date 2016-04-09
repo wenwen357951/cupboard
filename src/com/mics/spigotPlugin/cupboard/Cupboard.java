@@ -2,7 +2,6 @@ package com.mics.spigotPlugin.cupboard;
 
 import java.util.ArrayList;
 
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -18,7 +17,6 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -79,41 +77,10 @@ public class Cupboard extends JavaPlugin implements Listener {
 		} else {
 			str="工具櫃已取消授權";
 		}
-		
-    	GameMode p_gamemode = p.getGameMode();
-		boolean limit = data.checkIsLimit(p.getLocation(), p);
-    	
-    	if(p_gamemode == GameMode.SURVIVAL && limit){
-    		p.setGameMode(GameMode.ADVENTURE);
-    	}
-
-    	if(p_gamemode == GameMode.ADVENTURE && !limit){
-    		p.setGameMode(GameMode.SURVIVAL);
-    	}
 		Util.msgToPlayer(p, str);
     }
     
     //==========以下為保護措施=========
-    
-    //進入範圍內之玩家會設定為冒險模式
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onPlayerMove(PlayerMoveEvent e){
-    	for(int i=0; i<2000; i++){
-    		//TODO maybe need improve speed
-	    	Player p = e.getPlayer();
-	    	GameMode p_gamemode = p.getGameMode();
-	    	boolean limit = data.checkIsLimit(p.getLocation(), p);
-	    	
-	    	if(p_gamemode == GameMode.SURVIVAL && limit){
-	    		p.setGameMode(GameMode.ADVENTURE);
-	    	}
-	
-	    	if(p_gamemode == GameMode.ADVENTURE && !limit){
-	    		p.setGameMode(GameMode.SURVIVAL);
-	    	}
-    	}
-    	
-    }
     
   //禁止使用石製開關 以及 石製踏板
     @EventHandler
@@ -131,7 +98,7 @@ public class Cupboard extends JavaPlugin implements Listener {
     	
     }
     //防止其他玩家破壞方塊
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onBlockBreak(BlockBreakEvent e){
     	Player p = e.getPlayer();
     	Block b = e.getBlock();
@@ -144,7 +111,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         }
     }
     //防止其他玩家放置方塊
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onBlockPlace(BlockPlaceEvent e){
     	Player p = e.getPlayer();
     	Block b = e.getBlock();
