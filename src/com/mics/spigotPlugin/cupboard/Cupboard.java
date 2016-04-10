@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -165,8 +166,18 @@ public class Cupboard extends JavaPlugin implements Listener {
     }
     
     //TNT or Creeper√z¨µ
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onExplode(EntityExplodeEvent event){
+    	for (Block block : new ArrayList<Block>(event.blockList())){
+    		if(data.checkIsLimit(block)){
+				event.blockList().remove(block);
+    		}
+    	}
+    }
+    
+    //º“≤’√z¨µ
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onExplode(BlockExplodeEvent event){
     	for (Block block : new ArrayList<Block>(event.blockList())){
     		if(data.checkIsLimit(block)){
     			event.blockList().remove(block);
