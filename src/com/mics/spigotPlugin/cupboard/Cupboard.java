@@ -75,11 +75,11 @@ public class Cupboard extends JavaPlugin implements Listener {
 			p.sendMessage("§a保護區只防止下列事項: ");
 			p.sendMessage("§71. 未授權者無法放置/移除方塊。");
 			p.sendMessage("§72. 未授權者無法使用石製壓力版/石製按鈕。");
-			p.sendMessage("§73. 防止Creeper/TNT炸掉保護區。");
+			p.sendMessage("§73. 防止任何種類爆炸炸掉保護區。");
 			p.sendMessage("§73. 防止黃金磚被活塞推動。");
 			p.sendMessage("§c特別警告以下為可執行事件: ");
 			p.sendMessage("§71. 怪物仍可觸發石製壓力版");
-			p.sendMessage("§72. 使用木製門/木製按鈕/木製踏板/控制桿/活塞");
+			p.sendMessage("§72. 使用木製門/按鈕/踏板/箱子/控制桿/活塞");
 			p.sendMessage("§73. 打掉下面方塊使會掉落之方塊掉落");
 			return;
 		}
