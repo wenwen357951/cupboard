@@ -2,6 +2,7 @@ package com.mics.spigotPlugin.cupboard;
 
 import java.util.ArrayList;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -29,6 +30,9 @@ public class Cupboard extends JavaPlugin implements Listener {
         
         //處理資料庫
         data = new Data(getDataFolder());
+        
+        //設定允許觸發授權的阻擋方塊
+        setUpAllowFaceBlock();
     }
 	
     @Override
@@ -59,6 +63,19 @@ public class Cupboard extends JavaPlugin implements Listener {
     		Util.msgToPlayer(p, "金磚已放置並取得授權。(蹲下右鍵取得說明)");
     	}
     }
+    ArrayList<Material> allow_face_block;
+    private void setUpAllowFaceBlock(){
+    	allow_face_block = new ArrayList<Material>();
+    	allow_face_block.add(Material.AIR);
+    	allow_face_block.add(Material.TORCH);
+    	allow_face_block.add(Material.REDSTONE_TORCH_OFF);
+    	allow_face_block.add(Material.REDSTONE_TORCH_ON);
+    	allow_face_block.add(Material.LONG_GRASS);
+    	allow_face_block.add(Material.LEVER);
+    	allow_face_block.add(Material.STONE_BUTTON);
+    	allow_face_block.add(Material.WOOD_BUTTON);
+    	allow_face_block.add(Material.REDSTONE_WIRE);
+    }
 
     
     //授權/取消授權
@@ -68,7 +85,35 @@ public class Cupboard extends JavaPlugin implements Listener {
     	if (event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.GOLD_BLOCK) return;       	// 非黃金磚則無視
     	if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return; 						// 非右鍵方塊則無視
         //if (event.getItem() != null && event.getItem().getType().isBlock()) return;   	// 非空手則無視
+    	Location front_block_loc = event.getClickedBlock().getLocation().clone();
 		Player p = event.getPlayer();
+    	switch(event.getBlockFace()){
+    	case EAST:
+    		front_block_loc.add(1,0,0);
+    		break;
+    	case WEST:
+    		front_block_loc.add(-1,0,0);
+    		break;
+    	case SOUTH:
+    		front_block_loc.add(0,0,1);
+    		break;
+    	case NORTH:
+    		front_block_loc.add(0,0,-1);
+    		break;
+    	case UP:
+    		front_block_loc.add(0,1,0);
+    		break;
+    	case DOWN:
+    		front_block_loc.add(0,-1,0);
+    		break;
+		default:
+			break;
+    	}
+    	if(!allow_face_block.contains(front_block_loc.getBlock().getType())){
+    		p.sendMessage("被擋住了，無法授權/取消授權。");
+    		return;
+    	}
+    	
 		if (p.isSneaking()){
 			//說明
 			p.sendMessage("§a金磚放置後產生19x19x19的方形保護區，金磚在正中央。");
@@ -86,7 +131,7 @@ public class Cupboard extends JavaPlugin implements Listener {
 		String str;
 		if(!data.checkCupboardExist(event.getClickedBlock())){
 			str="此金磚非由玩家放置或資料遺失，請拆除後重新放置";
-		}else if(data.toggleBoardAccess(p, event.getClickedBlock())){
+		} else if(data.toggleBoardAccess(p, event.getClickedBlock())){
 			str="已授權";
 		} else {
 			str="已取消授權";
