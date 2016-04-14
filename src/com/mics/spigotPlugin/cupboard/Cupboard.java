@@ -22,8 +22,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.mics.spigotPlugin.cupboard.command.EscCommand;
+
+
 public class Cupboard extends JavaPlugin implements Listener {
-	Data data;
+	public Data data;
 	@Override
 	public void onEnable() {
         getServer().getPluginManager().registerEvents(this, this);
@@ -33,6 +36,9 @@ public class Cupboard extends JavaPlugin implements Listener {
         
         //設定允許觸發授權的阻擋方塊
         setUpAllowFaceBlock();
+        
+        //register command
+        this.getCommand("esc").setExecutor(new EscCommand(this));
     }
 	
     @Override
@@ -163,11 +169,14 @@ public class Cupboard extends JavaPlugin implements Listener {
     	Player p = e.getPlayer();
     	Block b = e.getBlock();
         if( p != null){
-        	if(data.checkIsLimit(b, p))
+        	if(data.checkIsLimit(b, p)){
         		e.setCancelled(true);
+    			p.sendMessage("§4沒有權限 §7(被關住了? 試試 /esc)");
+        	}
         } else {
-        	if(data.checkIsLimit(b))
+        	if(data.checkIsLimit(b)){
         		e.setCancelled(true);
+        	}
         }
     }
     //防止其他玩家放置方塊
@@ -176,8 +185,10 @@ public class Cupboard extends JavaPlugin implements Listener {
     	Player p = e.getPlayer();
     	Block b = e.getBlock();
         if( p != null){
-        	if(data.checkIsLimit(b, p))
+        	if(data.checkIsLimit(b, p)){
         		e.setCancelled(true);
+    			p.sendMessage("§4沒有權限 §7(被關住了? 試試 /esc)");
+        	}
         } else {
         	if(data.checkIsLimit(b))
         		e.setCancelled(true);
