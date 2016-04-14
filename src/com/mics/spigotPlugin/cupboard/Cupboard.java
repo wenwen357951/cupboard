@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,6 +17,7 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -126,12 +128,12 @@ public class Cupboard extends JavaPlugin implements Listener {
 			p.sendMessage("§a保護區只防止下列事項: ");
 			p.sendMessage("§71. 未授權者無法放置/移除方塊。");
 			p.sendMessage("§72. 未授權者無法使用石製壓力版/石製按鈕。");
+			p.sendMessage("§71. 怪物/動物無法觸發石製壓力版");
 			p.sendMessage("§73. 防止任何種類爆炸炸掉保護區。");
 			p.sendMessage("§73. 防止黃金磚被活塞推動。");
 			p.sendMessage("§c特別警告以下為可執行事件: ");
-			p.sendMessage("§71. 怪物仍可觸發石製壓力版");
-			p.sendMessage("§72. 使用木製門/按鈕/踏板/箱子/控制桿/活塞");
-			p.sendMessage("§73. 打掉下面方塊使會掉落之方塊掉落");
+			p.sendMessage("§72. 使用木製門/按鈕/壓力版/箱子/控制桿/活塞/柵欄門");
+			p.sendMessage("§73. 打掉方塊使上方會掉落之方塊掉落");
 			return;
 		}
 		String str;
@@ -162,6 +164,21 @@ public class Cupboard extends JavaPlugin implements Listener {
 			))
     			if(data.checkIsLimit(b, p)) event.setCancelled(true);
     	
+    }
+
+    //禁止動物/怪物使用石製踏板
+    @EventHandler
+    public void onEntryOnStonePlate(EntityInteractEvent event){
+    	Block b = event.getBlock();
+    	if( b.getType() == Material.STONE_PLATE){
+        	Entity e = event.getEntity();
+        	if (e.getPassenger() instanceof Player){
+        		Player p = (Player) e.getPassenger();
+        		if(data.checkIsLimit(b, p)) event.setCancelled(true);
+        	} else {
+        		if(data.checkIsLimit(b)) event.setCancelled(true);
+        	}
+    	}
     }
     //防止其他玩家破壞方塊
     @EventHandler(priority = EventPriority.HIGH)
