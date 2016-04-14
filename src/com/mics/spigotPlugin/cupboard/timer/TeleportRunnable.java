@@ -22,7 +22,10 @@ public class TeleportRunnable implements Runnable  {
 
     public void run() {
     	if(this.org.equals(this.player.getLocation())){
-        	if(count < 30){
+        	if(count < 10){
+        		if(count >= 7){
+        			this.player.sendMessage(String.valueOf(10 - count));
+        		}
         		count++;
         		return;
         	}

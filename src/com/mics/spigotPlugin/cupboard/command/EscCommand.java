@@ -68,7 +68,7 @@ public class EscCommand implements CommandExecutor{
 		TeleportRunnable teleport = new  TeleportRunnable(new_location, p.getLocation().clone(), p);
 		teleport.setTaskId(this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, teleport, 20, 20));
 		
-		p.sendMessage("30秒後傳送，請勿移動");
+		p.sendMessage("10秒後傳送，請勿移動");
 		//p.teleport(new_location);
 		return true;
 	}
