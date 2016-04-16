@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,53 +38,87 @@ public class EscCommand implements CommandExecutor{
 			p.sendMessage("你不在未授權的範圍內");
 			return true;
 		}
-		int count = 1;
-		Location new_location;
-		while(true){
-			new_location = oringal_location.add(count , 0 , 0);
-				if(this.sendToGround(new_location))
-					if(!plugin.data.checkIsLimit(new_location, p))
-						break;
-			new_location = oringal_location.add(-count , 0 , 0);
-				if(this.sendToGround(new_location))
-					if(!plugin.data.checkIsLimit(new_location, p))
-						break;
-			new_location = oringal_location.add(0 , 0 , count);
-				if(this.sendToGround(new_location))
-					if(!plugin.data.checkIsLimit(new_location, p))
-						break;
-			new_location = oringal_location.add(0 , 0 , -count);
-				if(this.sendToGround(new_location))
-					if(!plugin.data.checkIsLimit(new_location, p))
-						break;
-			if(count > 100){
-				p.sendMessage("找不到適合的傳送點，請盡可能的靠近非保護區再試一次");
-				break;
-			}
-			count++;
+		
+		Location new_location = null;
+		for(int count = 1; count < 30; count++){
+			new_location = this.aroundSafeLocationFind(p, oringal_location, count);
+			if(new_location != null) break;
+		}
+		if(new_location == null){
+			p.sendMessage("找不到適合的傳送點，請盡可能的靠近非保護區再試一次");
+			return true;
 		}
 		new_location.setX(new_location.getBlockX()+0.5);
 		new_location.setZ(new_location.getBlockZ()+0.5);
-		//new java.util.Timer().schedule( new TeleportTimerTask(new_location, p.getLocation().clone(), p), 10000);
+		
 		TeleportRunnable teleport = new  TeleportRunnable(new_location, p.getLocation().clone(), p);
 		teleport.setTaskId(this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, teleport, 20, 20));
+		//p.teleport(new_location);
 		
 		p.sendMessage("10秒後傳送，請勿移動");
-		//p.teleport(new_location);
 		return true;
 	}
 	
+	private Location aroundSafeLocationFind(Player p, Location org_location, int count) {
+		Location location = org_location.clone();
+		location.add(count,0,0);
+		Location location_sendtoGround = location.clone();
+		if(sendToGround(location_sendtoGround) && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+			return location_sendtoGround;
+		for(int i=0; i < count; i++){
+			location.add(0,0,1);
+			location_sendtoGround = location.clone();
+			if(sendToGround(location_sendtoGround) && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+				return location_sendtoGround;
+		}
+		for(int i= -count ; i < count; i++){
+			location.add(-1,0,0);
+			location_sendtoGround = location.clone();
+			if(sendToGround(location_sendtoGround) && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+				return location_sendtoGround;
+		}
+		for(int i= -count; i < count; i++){
+			location.add(0,0,-1);
+			location_sendtoGround = location.clone();
+			if(sendToGround(location_sendtoGround) && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+				return location_sendtoGround;
+		}
+		for(int i= -count ; i < count; i++){
+			location.add(1,0,0);
+			location_sendtoGround = location.clone();
+			if(sendToGround(location_sendtoGround) && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+				return location_sendtoGround;
+		}
+		return null;
+	}
+
+	private boolean isStable(Location l) {
+		Location location = l.clone();
+		if(
+				(location.getBlock().getLightLevel() > 7 || location.getBlock().getLightFromSky() != 0 ) &&
+				location.add(0,1,0).getBlock().getType().equals(Material.AIR) &&
+				location.add(0,1,0).getBlock().getType().equals(Material.AIR)
+			)return true;
+		return false;
+	}
+
 	public boolean sendToGround(Location location) {
-		//l.add(-0.5,-1,-0.5);
-		location.setY(255);
-		for(double y = location.getY(); y > 60; y-=1){
+		int y = location.getBlockY() + 10;
+		if(location.getWorld().getEnvironment() == World.Environment.NETHER){
+			if (y > 125)
+				y = 125; //防止生到地獄樓上Orz
+		}
+		int y_min = y - 20; 
+		for(; y > y_min; y--){
 			location.setY(y);
 			if(location.getBlock().getType() == Material.AIR) continue;
 			if(blockBlockList.contains(location.getBlock().getType())){
-				return false;
+				continue;
 			}
-			location.add(0,1,0);
-			return true;
+			if(this.isStable(location)){
+				location.add(0,1,0);
+				return true;
+			}
 		}
 		return false;
 	}

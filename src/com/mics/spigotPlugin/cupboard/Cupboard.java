@@ -2,6 +2,7 @@ package com.mics.spigotPlugin.cupboard;
 
 import java.util.ArrayList;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -49,8 +50,9 @@ public class Cupboard extends JavaPlugin implements Listener {
     }
 
     //移除金磚
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onGoldBlockBreak(BlockBreakEvent event){
+    	if(event.isCancelled())return;
     	if(event.getBlock().getType() == Material.GOLD_BLOCK){
     		Player p = event.getPlayer();
     		data.removeCupboard(event.getBlock());
@@ -59,8 +61,9 @@ public class Cupboard extends JavaPlugin implements Listener {
     }
     
     //放置金磚
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onGoldBlockPlace(BlockPlaceEvent event){
+    	if(event.isCancelled())return;
     	if(event.getBlockPlaced().getType() == Material.GOLD_BLOCK){
     		Player p = event.getPlayer();
     		if(!data.putCupboard(event.getBlockPlaced(), p)){
@@ -187,6 +190,10 @@ public class Cupboard extends JavaPlugin implements Listener {
     	Block b = e.getBlock();
         if( p != null){
         	if(data.checkIsLimit(b, p)){
+            	if(p.isOp() && p.getGameMode() == GameMode.CREATIVE){
+            		p.sendMessage("§c警告: 管理員權限已忽視保護區");
+            		return;
+            	}
         		e.setCancelled(true);
     			p.sendMessage("§4沒有權限 §7(被關住了? 試試 /esc)");
         	}
@@ -203,6 +210,10 @@ public class Cupboard extends JavaPlugin implements Listener {
     	Block b = e.getBlock();
         if( p != null){
         	if(data.checkIsLimit(b, p)){
+            	if(p.isOp() && p.getGameMode() == GameMode.CREATIVE){
+            		p.sendMessage("§c警告: 管理員權限已忽視保護區");
+            		return;
+            	}
         		e.setCancelled(true);
     			p.sendMessage("§4沒有權限 §7(被關住了? 試試 /esc)");
         	}
@@ -210,6 +221,26 @@ public class Cupboard extends JavaPlugin implements Listener {
         	if(data.checkIsLimit(b))
         		e.setCancelled(true);
         }
+    }
+    
+    //防止玩家擋住地獄門
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBlockNetherDoor(BlockPlaceEvent e){
+    	if(e.isCancelled())return;
+    	Player p = e.getPlayer();
+    	Block b = e.getBlock();
+    	if(
+    			b.getLocation().add(1,0,0).getBlock().getType() == Material.PORTAL ||
+    			b.getLocation().add(-1,0,0).getBlock().getType() == Material.PORTAL ||
+    			b.getLocation().add(0,0,1).getBlock().getType() == Material.PORTAL ||
+    			b.getLocation().add(0,0,-1).getBlock().getType() == Material.PORTAL
+    			){
+	        if( p != null){
+        		p.sendMessage("§7請勿將地獄門堵死");
+        		e.setCancelled(true);
+	    	}
+    	}
+        
     }
     
     //防止玩家使用水桶
