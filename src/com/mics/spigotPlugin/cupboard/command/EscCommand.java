@@ -62,31 +62,31 @@ public class EscCommand implements CommandExecutor{
 	private Location aroundSafeLocationFind(Player p, Location org_location, int count) {
 		Location location = org_location.clone();
 		location.add(count,0,0);
-		Location location_sendtoGround = location.clone();
-		if(sendToGround(location_sendtoGround) && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+		Location location_sendtoGround = sendToGround(location);
+		if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
 			return location_sendtoGround;
 		for(int i=0; i < count; i++){
 			location.add(0,0,1);
-			location_sendtoGround = location.clone();
-			if(sendToGround(location_sendtoGround) && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+			location_sendtoGround = sendToGround(location);
+			if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
 				return location_sendtoGround;
 		}
 		for(int i= -count ; i < count; i++){
 			location.add(-1,0,0);
-			location_sendtoGround = location.clone();
-			if(sendToGround(location_sendtoGround) && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+			location_sendtoGround = sendToGround(location);
+			if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
 				return location_sendtoGround;
 		}
 		for(int i= -count; i < count; i++){
 			location.add(0,0,-1);
-			location_sendtoGround = location.clone();
-			if(sendToGround(location_sendtoGround) && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+			location_sendtoGround = sendToGround(location);
+			if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
 				return location_sendtoGround;
 		}
 		for(int i= -count ; i < count; i++){
 			location.add(1,0,0);
-			location_sendtoGround = location.clone();
-			if(sendToGround(location_sendtoGround) && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+			location_sendtoGround = sendToGround(location);
+			if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
 				return location_sendtoGround;
 		}
 		return null;
@@ -95,14 +95,19 @@ public class EscCommand implements CommandExecutor{
 	private boolean isStable(Location l) {
 		Location location = l.clone();
 		if(
-				(location.getBlock().getLightLevel() > 7 || location.getBlock().getLightFromSky() != 0 ) &&
+				(
+						location.getBlock().getLightLevel() > 7 || 
+						location.getBlock().getLightFromSky() != 0 ||
+						location.getWorld().getEnvironment() == World.Environment.NETHER
+				) &&
 				location.add(0,1,0).getBlock().getType().equals(Material.AIR) &&
 				location.add(0,1,0).getBlock().getType().equals(Material.AIR)
 			)return true;
 		return false;
 	}
 
-	public boolean sendToGround(Location location) {
+	public Location sendToGround(Location org_location) {
+		Location location = org_location.clone();
 		int y = location.getBlockY() + 10;
 		if(location.getWorld().getEnvironment() == World.Environment.NETHER){
 			if (y > 125)
@@ -111,15 +116,17 @@ public class EscCommand implements CommandExecutor{
 		int y_min = y - 20; 
 		for(; y > y_min; y--){
 			location.setY(y);
-			if(location.getBlock().getType() == Material.AIR) continue;
+			if(location.getBlock().getType() == Material.AIR){
+				continue;
+			}
 			if(blockBlockList.contains(location.getBlock().getType())){
 				continue;
 			}
 			if(this.isStable(location)){
 				location.add(0,1,0);
-				return true;
+				return location;
 			}
 		}
-		return false;
+		return null;
 	}
 }

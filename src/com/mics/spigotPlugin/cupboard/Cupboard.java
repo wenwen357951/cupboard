@@ -224,9 +224,8 @@ public class Cupboard extends JavaPlugin implements Listener {
     }
     
     //防止玩家擋住地獄門
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onBlockNetherDoor(BlockPlaceEvent e){
-    	if(e.isCancelled())return;
     	Player p = e.getPlayer();
     	Block b = e.getBlock();
     	if(
