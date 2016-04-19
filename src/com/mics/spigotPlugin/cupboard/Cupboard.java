@@ -22,10 +22,8 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.Vector;
 
 import com.mics.spigotPlugin.cupboard.command.EscCommand;
 
@@ -164,7 +162,10 @@ public class Cupboard extends JavaPlugin implements Listener {
       			event.getAction() == Action.RIGHT_CLICK_BLOCK && 
   				b.getType() == Material.STONE_BUTTON
 		) 
-      		if(data.checkIsLimit(b, p)) event.setCancelled(true);
+      		if(data.checkIsLimit(b, p)){
+    			if(this.isOP(p)) return;
+      			event.setCancelled(true);
+      		}
       	
       }
       
@@ -177,7 +178,10 @@ public class Cupboard extends JavaPlugin implements Listener {
         			event.getAction() == Action.PHYSICAL &&
         			b.getType() == Material.STONE_PLATE
 			){
-        		if(data.checkIsLimit(b, p)) event.setCancelled(true);
+        		if(data.checkIsLimit(b, p)){
+        			if(this.isOP(p)) return;
+        			event.setCancelled(true);
+        		}
         	}
         }
 
@@ -202,10 +206,7 @@ public class Cupboard extends JavaPlugin implements Listener {
     	Block b = e.getBlock();
         if( p != null){
         	if(data.checkIsLimit(b, p)){
-            	if(p.isOp() && p.getGameMode() == GameMode.CREATIVE){
-            		p.sendMessage("§c警告: 管理員權限已忽視保護區");
-            		return;
-            	}
+        		if(this.isOP(p))return;
         		e.setCancelled(true);
     			p.sendMessage("§4沒有權限 §7(被關住了? 試試 /esc)");
         	}
@@ -222,10 +223,7 @@ public class Cupboard extends JavaPlugin implements Listener {
     	Block b = e.getBlock();
         if( p != null){
         	if(data.checkIsLimit(b, p)){
-            	if(p.isOp() && p.getGameMode() == GameMode.CREATIVE){
-            		p.sendMessage("§c警告: 管理員權限已忽視保護區");
-            		return;
-            	}
+            	if(this.isOP(p))return;
         		e.setCancelled(true);
     			p.sendMessage("§4沒有權限 §7(被關住了? 試試 /esc)");
         	}
@@ -247,6 +245,10 @@ public class Cupboard extends JavaPlugin implements Listener {
     			b.getLocation().add(0,0,-1).getBlock().getType() == Material.PORTAL
     			){
 	        if( p != null && b.getType().isSolid()){
+	        	if(b.getType() == Material.WOOD_PLATE) return;
+	        	if(b.getType() == Material.STONE_PLATE) return;
+	        	if(b.getType() == Material.IRON_PLATE) return;
+	        	if(b.getType() == Material.GOLD_PLATE) return;
         		p.sendMessage("§7請勿將地獄門堵死");
         		e.setCancelled(true);
 	    	}
@@ -316,6 +318,14 @@ public class Cupboard extends JavaPlugin implements Listener {
     			e.setCancelled(true);
     		}
     	}
+    }
+    
+    boolean isOP(Player p){
+    	if(p.isOp() && p.getGameMode() == GameMode.CREATIVE){
+    		p.sendMessage("§c警告: 管理員權限已忽視保護區");
+    		return true;
+    	}
+		return false;
     }
     
     
