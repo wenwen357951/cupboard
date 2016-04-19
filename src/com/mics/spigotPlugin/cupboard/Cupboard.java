@@ -22,8 +22,10 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 import com.mics.spigotPlugin.cupboard.command.EscCommand;
 
@@ -153,27 +155,37 @@ public class Cupboard extends JavaPlugin implements Listener {
     
     //==========以下為保護措施=========
     
-  //禁止使用石製開關 以及 石製踏板
-    @EventHandler
-    public void onRightClickDoor(PlayerInteractEvent event){
-    	Block b = event.getClickedBlock();
-    	Player p = event.getPlayer();
-    	if ((
-    			event.getAction() == Action.RIGHT_CLICK_BLOCK && 
-				b.getType() == Material.STONE_BUTTON
-			) || (
-    			event.getAction() == Action.PHYSICAL &&
-    			b.getType() == Material.STONE_PLATE
-			))
-    			if(data.checkIsLimit(b, p)) event.setCancelled(true);
-    	
-    }
+    //禁止使用石製開關 以及 石製踏板
+      @EventHandler
+      public void onUseStoneButton(PlayerInteractEvent event){
+      	Block b = event.getClickedBlock();
+      	Player p = event.getPlayer();
+      	if (
+      			event.getAction() == Action.RIGHT_CLICK_BLOCK && 
+  				b.getType() == Material.STONE_BUTTON
+		) 
+      		if(data.checkIsLimit(b, p)) event.setCancelled(true);
+      	
+      }
+      
+      //禁止玩家使用石製踏板
+        @EventHandler
+        public void onUseStonePlate(PlayerInteractEvent event){
+        	Block b = event.getClickedBlock();
+        	Player p = event.getPlayer();
+        	if (
+        			event.getAction() == Action.PHYSICAL &&
+        			b.getType() == Material.STONE_PLATE
+			){
+        		if(data.checkIsLimit(b, p)) event.setCancelled(true);
+        	}
+        }
 
     //禁止動物/怪物使用石製踏板
     @EventHandler
-    public void onEntryOnStonePlate(EntityInteractEvent event){
+    public void onEntryUseStonePlate(EntityInteractEvent event){
     	Block b = event.getBlock();
-    	if( b.getType() == Material.STONE_PLATE){
+    	if( b.getType() == Material.STONE_PLATE ){
         	Entity e = event.getEntity();
         	if (e.getPassenger() instanceof Player){
         		Player p = (Player) e.getPassenger();
@@ -234,7 +246,7 @@ public class Cupboard extends JavaPlugin implements Listener {
     			b.getLocation().add(0,0,1).getBlock().getType() == Material.PORTAL ||
     			b.getLocation().add(0,0,-1).getBlock().getType() == Material.PORTAL
     			){
-	        if( p != null){
+	        if( p != null && b.getType().isSolid()){
         		p.sendMessage("§7請勿將地獄門堵死");
         		e.setCancelled(true);
 	    	}
