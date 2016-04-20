@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -238,7 +239,7 @@ public class Cupboard extends JavaPlugin implements Listener {
     //防止除玩家之外之物件透過地獄門傳送
     @EventHandler
     public void onEntityPortal(EntityPortalEvent e){
-    	e.setCancelled(true);
+		e.setCancelled(true);
     }
     
     
@@ -338,6 +339,7 @@ public class Cupboard extends JavaPlugin implements Listener {
 
     @EventHandler
     void onFireSpread(BlockSpreadEvent e){
+    	if(e.getSource().getType() != Material.FIRE) return;
     	if(data.checkIsLimit(e.getBlock())){
     		e.getSource().setType(Material.AIR);
     	}
