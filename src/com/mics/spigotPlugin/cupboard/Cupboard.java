@@ -17,8 +17,10 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -233,6 +235,13 @@ public class Cupboard extends JavaPlugin implements Listener {
         }
     }
     
+    //防止除玩家之外之物件透過地獄門傳送
+    @EventHandler
+    public void onEntityPortal(EntityPortalEvent e){
+    	e.setCancelled(true);
+    }
+    
+    
     //防止玩家擋住地獄門
     @EventHandler(priority = EventPriority.HIGH)
     public void onBlockNetherDoor(BlockPlaceEvent e){
@@ -304,11 +313,34 @@ public class Cupboard extends JavaPlugin implements Listener {
     
     //防止方塊被燒壞
     // TODO 火焰不會消失
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     void onBlockBurnDamage(BlockBurnEvent e){
     	Block b = e.getBlock();
-    	if(data.checkIsLimit(b))
+    	if(data.checkIsLimit(b)){
     		e.setCancelled(true);
+    		Location l = e.getBlock().getLocation();
+    		if(Math.random() < 0.1){ //當物品要損壞時10%機率火焰消失
+    			if(l.add(1,0,0).getBlock().getType().equals(Material.FIRE))
+    				l.getBlock().setType(Material.AIR);
+    			if(l.add(-2,0,0).getBlock().getType().equals(Material.FIRE))
+    				l.getBlock().setType(Material.AIR);
+    			if(l.add(1,1,0).getBlock().getType().equals(Material.FIRE))
+    				l.getBlock().setType(Material.AIR);
+    			if(l.add(0,-2,0).getBlock().getType().equals(Material.FIRE))
+    				l.getBlock().setType(Material.AIR);
+    			if(l.add(0,1,1).getBlock().getType().equals(Material.FIRE))
+    				l.getBlock().setType(Material.AIR);
+    			if(l.add(0,0,-2).getBlock().getType().equals(Material.FIRE))
+    				l.getBlock().setType(Material.AIR);
+    		}
+    	}
+    }
+
+    @EventHandler
+    void onFireSpread(BlockSpreadEvent e){
+    	if(data.checkIsLimit(e.getBlock())){
+    		e.getSource().setType(Material.AIR);
+    	}
     }
     
     @EventHandler(priority = EventPriority.HIGH)
