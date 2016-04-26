@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -312,7 +311,7 @@ public class Cupboard extends JavaPlugin implements Listener {
     	}
     }
     
-    //防止方塊被燒壞
+    // 防止方塊被燒壞
     // TODO 火焰不會消失
     @EventHandler
     void onBlockBurnDamage(BlockBurnEvent e){

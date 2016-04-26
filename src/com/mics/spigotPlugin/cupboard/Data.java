@@ -7,7 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -22,6 +25,9 @@ import com.google.gson.Gson;
 
 public class Data {
 	private HashMap<String, List<String>> cupboards;
+	
+	private Map<String, HashSet<String>> location_limit_check_temp;
+	
 	private File cupboardsFile;
 	static private int PROTECT_DIST = 10;
 	static private int CUPBOARD_DIST = 18;
@@ -42,6 +48,15 @@ public class Data {
 			//e.printStackTrace(); //if not exist
 			cupboards = new HashMap<String, List<String>>();
 		}  
+    	int maxEntries = 1000;
+    	location_limit_check_temp = new LinkedHashMap<String, HashSet<String>>(maxEntries*10/7, 0.7f, true) {
+			private static final long serialVersionUID = 1L;
+			@Override
+	        protected boolean removeEldestEntry(Map.Entry<String, HashSet<String>> eldest) {
+	            return size() > maxEntries;
+	        }
+	    };
+    	
 	}
 
 	public boolean putCupboard(Block b, Player p){
@@ -51,6 +66,7 @@ public class Data {
     	List<String> AccessAbleUserUUIDList = new ArrayList<String>();
     	AccessAbleUserUUIDList.add(p.getUniqueId().toString());
     	cupboards.put(pubBlockLocation_str, AccessAbleUserUUIDList);
+    	this.cleanTempCheck();
     	this.save();
     	return true;
     }
@@ -58,6 +74,7 @@ public class Data {
     	Location pubBlockLocation = b.getLocation();
     	String pubBlockLocation_str = Util.LocToString(pubBlockLocation);
     	cupboards.remove(pubBlockLocation_str);
+    	this.cleanTempCheck();
     	this.save();
     }
     
@@ -81,6 +98,7 @@ public class Data {
     		rtn = true;
     	}
     	cupboards.put(pubBlockLocation_str, AccessAbleUserUUIDList);
+    	this.cleanTempCheck();
     	this.save();
     	return rtn;
 	}
@@ -132,8 +150,43 @@ public class Data {
 		}
 		return false;
 	}
-	
 	public boolean checkIsLimit(Block b){
+		return checkIsLimit(b.getLocation(), null);
+	}
+	public boolean checkIsLimit(Block b, Player p){
+		return checkIsLimit(b.getLocation(), p);
+		
+	}
+	public boolean checkIsLimit(Location l, Player p){
+		String str_l = Util.LocToString(l);
+		if(!location_limit_check_temp.containsKey(str_l)){
+			List<Block> cups = this.findActiveCupboards(l, PROTECT_DIST);
+			HashSet <String> accessAbleUserUUIDList = new HashSet<String>();
+			if(cups.isEmpty()){
+				location_limit_check_temp.put(str_l, null);
+			} else {
+				for( Block cup : cups ){
+					if(cup.getType() != Material.GOLD_BLOCK){
+						cupboards.remove(Util.LocToString(cup.getLocation())); //此方塊不是黃金磚則刪除後換下一個
+						continue;
+					}
+					accessAbleUserUUIDList.addAll(cupboards.get(Util.LocToString(cup.getLocation())));
+				}
+				location_limit_check_temp.put(str_l, accessAbleUserUUIDList);
+			}
+		}
+		if(location_limit_check_temp.get(str_l) == null) return false;
+		if(p == null) return true;
+		//p.sendMessage("Size: " + location_limit_check_temp.size());
+		if(location_limit_check_temp.get(str_l).contains(p.getUniqueId().toString())) return false;
+		return true;
+	}
+	
+	public void cleanTempCheck(){
+		this.location_limit_check_temp.clear();
+	}
+
+	public boolean checkIsLimit_old(Block b){
 		List<Block> cups = this.findActiveCupboards(b.getLocation(), PROTECT_DIST);
 		for( Block cup : cups ){
 			if(cup.getType() != Material.GOLD_BLOCK){
@@ -145,28 +198,11 @@ public class Data {
 		return false;
 	}
 
-	public boolean checkIsLimit(Block b, Player p){
-		boolean flagIsLimit = false;
-		
-		List<Block> cups = this.findActiveCupboards(b.getLocation(), PROTECT_DIST);
-		for( Block cup : cups ){
-			if(cup.getType() != Material.GOLD_BLOCK){
-				cupboards.put(Util.LocToString(cup.getLocation()), null);
-				continue;
-				//此方塊不是黃金磚則刪除後換下一個
-			}
-			
-			List<String> AccessAbleUserUUIDList = (List<String>) cupboards.get(Util.LocToString(cup.getLocation()));
-			
-			if(AccessAbleUserUUIDList!= null && !AccessAbleUserUUIDList.contains(p.getUniqueId().toString())) {
-				flagIsLimit = true;
-				break; //假如有找不到的 直接中斷跳出
-			}
-		}
-		return flagIsLimit;
+	public boolean checkIsLimit_old(Block b, Player p){
+		return checkIsLimit_old(b.getLocation(),p);
 	}
 	
-	public boolean checkIsLimit(Location l, Player p){
+	public boolean checkIsLimit_old(Location l, Player p){
 		boolean flagIsLimit = false;
 		
 		List<Block> cups = this.findActiveCupboards(l, PROTECT_DIST);
