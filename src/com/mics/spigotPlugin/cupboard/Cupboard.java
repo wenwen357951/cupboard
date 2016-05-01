@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,9 +19,16 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
+import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -38,9 +46,11 @@ public class Cupboard extends JavaPlugin implements Listener {
         
         //處理資料庫
         data = new Data(getDataFolder());
-        
+
         //設定允許觸發授權的阻擋方塊
         setUpAllowFaceBlock();
+        //設定保護的entity
+        setUpProtectEntity();
         
         //register command
         this.getCommand("esc").setExecutor(new EscCommand(this));
@@ -88,6 +98,19 @@ public class Cupboard extends JavaPlugin implements Listener {
     	allow_face_block.add(Material.STONE_BUTTON);
     	allow_face_block.add(Material.WOOD_BUTTON);
     	allow_face_block.add(Material.REDSTONE_WIRE);
+    }
+    
+    ArrayList<Material> protect_vehicle;
+    private void setUpProtectEntity(){
+    	protect_vehicle = new ArrayList<Material>();
+    	protect_vehicle.add(Material.ARMOR_STAND);
+    	protect_vehicle.add(Material.BOAT);
+    	protect_vehicle.add(Material.MINECART );
+    	protect_vehicle.add(Material.COMMAND_MINECART );
+    	protect_vehicle.add(Material.EXPLOSIVE_MINECART );
+    	protect_vehicle.add(Material.HOPPER_MINECART );
+    	protect_vehicle.add(Material.POWERED_MINECART );
+    	protect_vehicle.add(Material.STORAGE_MINECART );
     }
 
     
@@ -150,10 +173,100 @@ public class Cupboard extends JavaPlugin implements Listener {
 			str="已取消授權";
 		}
 		event.setCancelled(true);
+		p.updateInventory();
 		Util.msgToPlayer(p, str);
     }
     
     //==========以下為保護措施=========
+    
+    //防止船隻/礦車/盔甲架被放置
+    @EventHandler
+    public void onBoatPlace(PlayerInteractEvent e){
+    	if (
+			e.getAction() == Action.RIGHT_CLICK_BLOCK &&
+			e.getItem() != null &&
+			protect_vehicle.contains(e.getItem().getType())
+		){
+    	Player p = e.getPlayer();
+	    	if (data.checkIsLimit(e.getClickedBlock(), p)){
+	    		if(this.isOP(p))return;
+	    		e.setCancelled(true);
+	    		e.getPlayer().updateInventory();
+	    	}
+    	}
+    }
+    
+    //防止盔甲架被移除
+    @EventHandler
+    public void onArmorStandDamage(EntityDamageByEntityEvent e){
+    	if (e.getEntity().getType() != EntityType.ARMOR_STAND) return;
+    	if (e.getDamager() instanceof Player){
+    		Player p = (Player) e.getDamager();
+        	if (data.checkIsLimit(e.getEntity().getLocation().getBlock(), p)){
+        		if(this.isOP(p))return;
+        		e.setCancelled(true);
+        	}
+    	}
+    }
+    
+    //防止VIP 箱子/熔爐/漏斗/製藥水裝置被開啟
+    //TODO
+    
+    //防止VIP 物品框/裝備架被使用
+    //TODO
+    
+    //防止Armor stand被炸毀
+    @EventHandler
+    public void onArmorStandExplosion(EntityDamageEvent e){
+    	if(
+    		e.getEntity().getType() == EntityType.ARMOR_STAND &&
+    		( 
+				e.getCause() == DamageCause.BLOCK_EXPLOSION ||
+				e.getCause() == DamageCause.ENTITY_EXPLOSION
+    		) &&
+    		data.checkIsLimit(e.getEntity().getLocation().getBlock())
+		){
+    		e.setCancelled(true);
+    	}
+    }
+    
+    //防止Hanging類物品被未授權玩家移除 / 被Creeper炸掉 / 被TNT炸掉
+    @EventHandler
+    public void onHangingBreak(HangingBreakByEntityEvent e) {
+    	//NEEDFIX -- TNT LIGHT BY ALLOW USER WILL DESTORY HANGING ITEM
+		Location bl = e.getEntity().getLocation().getBlock().getLocation();
+    	if (e.getRemover() instanceof Player){
+    		Player p = (Player) e.getRemover();
+    		if(data.checkIsLimit(bl, p)){
+    			if(this.isOP(p)) return;
+    			e.setCancelled(true);
+    		}
+    	} else {
+    		if(e.getCause() == RemoveCause.ENTITY){ //by creeper
+    			if(data.checkIsLimit(bl)) e.setCancelled(true);
+    		}
+    	}
+	}
+    
+    @EventHandler
+    public void onHangingBreak(HangingBreakEvent e) {
+    	Location bl = e.getEntity().getLocation().getBlock().getLocation();
+		if(e.getCause() == RemoveCause.EXPLOSION){ //by TNT
+			if(data.checkIsLimit(bl)) e.setCancelled(true);
+		}
+    }
+    
+
+    //防止Hanging類物品被未授權玩家放置
+    @EventHandler
+    public void onHangingPlace(HangingPlaceEvent e) {
+		Location bl = e.getEntity().getLocation().getBlock().getLocation();
+		Player p = e.getPlayer();
+		if(data.checkIsLimit(bl, p)){
+			if(this.isOP(p)) return;
+			e.setCancelled(true);
+		}
+	}
     
     //禁止使用石製開關 以及 石製踏板
       @EventHandler
@@ -187,7 +300,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         	}
         }
 
-    //禁止動物/怪物使用石製踏板
+    //禁止動物/怪物使用石製踏板 (玩家騎在動物上則增加玩家權限判斷
     @EventHandler
     public void onEntryUseStonePlate(EntityInteractEvent event){
     	Block b = event.getBlock();
@@ -195,7 +308,10 @@ public class Cupboard extends JavaPlugin implements Listener {
         	Entity e = event.getEntity();
         	if (e.getPassenger() instanceof Player){
         		Player p = (Player) e.getPassenger();
-        		if(data.checkIsLimit(b, p)) event.setCancelled(true);
+        		if(data.checkIsLimit(b, p)){
+        			if(this.isOP(p)) return;
+        			event.setCancelled(true);
+        		}
         	} else {
         		if(data.checkIsLimit(b)) event.setCancelled(true);
         	}

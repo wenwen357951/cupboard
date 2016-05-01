@@ -48,7 +48,7 @@ public class Data {
 			//e.printStackTrace(); //if not exist
 			cupboards = new HashMap<String, List<String>>();
 		}  
-    	int maxEntries = 1000;
+    	int maxEntries = 10000;
     	location_limit_check_temp = new LinkedHashMap<String, HashSet<String>>(maxEntries*10/7, 0.7f, true) {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -152,6 +152,9 @@ public class Data {
 	}
 	public boolean checkIsLimit(Block b){
 		return checkIsLimit(b.getLocation(), null);
+	}
+	public boolean checkIsLimit(Location l){
+		return checkIsLimit(l, null);
 	}
 	public boolean checkIsLimit(Block b, Player p){
 		return checkIsLimit(b.getLocation(), p);
