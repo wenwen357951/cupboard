@@ -13,10 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -31,8 +33,9 @@ public class Data {
 	private File cupboardsFile;
 	static private int PROTECT_DIST = 10;
 	static private int CUPBOARD_DIST = 18;
-
-	Data(File dataFolder){
+	private Cupboard plugin;
+	Data(File dataFolder, Cupboard p){
+		this.plugin = p;
         cupboardsFile = new File(dataFolder, "cupboards.json");
         this.loadCuppboards();
     }
@@ -161,28 +164,53 @@ public class Data {
 		
 	}
 	public boolean checkIsLimit(Location l, Player p){
-		String str_l = Util.LocToString(l);
-		if(!location_limit_check_temp.containsKey(str_l)){
-			List<Block> cups = this.findActiveCupboards(l, PROTECT_DIST);
-			HashSet <String> accessAbleUserUUIDList = new HashSet<String>();
-			if(cups.isEmpty()){
-				location_limit_check_temp.put(str_l, null);
-			} else {
-				for( Block cup : cups ){
-					if(cup.getType() != Material.GOLD_BLOCK){
-						cupboards.remove(Util.LocToString(cup.getLocation())); //此方塊不是黃金磚則刪除後換下一個
-						continue;
-					}
-					accessAbleUserUUIDList.addAll(cupboards.get(Util.LocToString(cup.getLocation())));
-				}
-				location_limit_check_temp.put(str_l, accessAbleUserUUIDList);
-			}
+		if(!location_limit_check_temp.containsKey(l)){
+			this.calcLocationLimit(l);
 		}
+		String str_l = Util.LocToString(l);
 		if(location_limit_check_temp.get(str_l) == null) return false;
 		if(p == null) return true;
 		//p.sendMessage("Size: " + location_limit_check_temp.size());
 		if(location_limit_check_temp.get(str_l).contains(p.getUniqueId().toString())) return false;
 		return true;
+	}
+	public boolean checkIsLimitOffline(Block b, Player p){
+		Location l = b.getLocation();
+		boolean perm_flag = false;			//anyone has perm?
+		boolean online_flag = false;		//anyone online?
+		if(!location_limit_check_temp.containsKey(l)){
+			this.calcLocationLimit(l);
+		}
+		String str_l = Util.LocToString(l);
+		if(location_limit_check_temp.get(str_l) == null) return false; //沒限制幹嘛查
+		if(p != null && location_limit_check_temp.get(str_l).contains(p.getUniqueId().toString())) return false; //看看是不是有權限的玩家開啟的
+		for(String auth_player_uuid_str: location_limit_check_temp.get(str_l)){
+			OfflinePlayer auth_player = this.plugin.getServer().getOfflinePlayer(UUID.fromString(auth_player_uuid_str));
+			if(auth_player.isOnline())online_flag = true;
+			if(this.plugin.perms.playerHas(null, auth_player, "cupboard.vip"))perm_flag = true;
+		}
+		if(online_flag) return false;
+		if(perm_flag) return true;
+		return false;
+	}
+	
+	//算出這格有誰保護~~~
+	private void calcLocationLimit(Location l){
+		String str_l = Util.LocToString(l);
+		List<Block> cups = this.findActiveCupboards(l, PROTECT_DIST);
+		HashSet <String> accessAbleUserUUIDList = new HashSet<String>();
+		if(cups.isEmpty()){
+			location_limit_check_temp.put(str_l, null);
+		} else {
+			for( Block cup : cups ){
+				if(cup.getType() != Material.GOLD_BLOCK){
+					cupboards.remove(Util.LocToString(cup.getLocation())); //此方塊不是黃金磚則刪除後換下一個
+					continue;
+				}
+				accessAbleUserUUIDList.addAll(cupboards.get(Util.LocToString(cup.getLocation())));
+			}
+			location_limit_check_temp.put(str_l, accessAbleUserUUIDList);
+		}
 	}
 	
 	public void cleanTempCheck(){

@@ -31,11 +31,16 @@ import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.mics.spigotPlugin.cupboard.command.EscCommand;
+
+import net.milkbowl.vault.permission.Permission;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
@@ -45,12 +50,16 @@ public class Cupboard extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         
         //處理資料庫
-        data = new Data(getDataFolder());
+        data = new Data(getDataFolder(),this);
 
         //設定允許觸發授權的阻擋方塊
         setUpAllowFaceBlock();
         //設定保護的entity
         setUpProtectEntity();
+        
+        setUpVipProtect();
+        
+        setupPermissions();
         
         //register command
         this.getCommand("esc").setExecutor(new EscCommand(this));
@@ -99,7 +108,7 @@ public class Cupboard extends JavaPlugin implements Listener {
     	allow_face_block.add(Material.WOOD_BUTTON);
     	allow_face_block.add(Material.REDSTONE_WIRE);
     }
-    
+
     ArrayList<Material> protect_vehicle;
     private void setUpProtectEntity(){
     	protect_vehicle = new ArrayList<Material>();
@@ -111,6 +120,28 @@ public class Cupboard extends JavaPlugin implements Listener {
     	protect_vehicle.add(Material.HOPPER_MINECART );
     	protect_vehicle.add(Material.POWERED_MINECART );
     	protect_vehicle.add(Material.STORAGE_MINECART );
+    }
+    
+    ArrayList<Material> vip_protect_block;
+    private void setUpVipProtect(){
+    	vip_protect_block = new ArrayList<Material>();
+    	vip_protect_block.add(Material.CHEST);
+    	vip_protect_block.add(Material.TRAPPED_CHEST);
+    	vip_protect_block.add(Material.FURNACE);
+    	vip_protect_block.add(Material.BURNING_FURNACE);
+    	vip_protect_block.add(Material.JUKEBOX);
+    	vip_protect_block.add(Material.BREWING_STAND);
+    	vip_protect_block.add(Material.ANVIL);
+    	vip_protect_block.add(Material.DROPPER);
+    	vip_protect_block.add(Material.DISPENSER);
+    	vip_protect_block.add(Material.HOPPER);
+    }
+
+    public Permission perms;
+    private boolean setupPermissions() {
+        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        perms = rsp.getProvider();
+        return perms != null;
     }
 
     
@@ -179,6 +210,66 @@ public class Cupboard extends JavaPlugin implements Listener {
     
     //==========以下為保護措施=========
     
+    
+    //防止 VIP 箱子/熔爐/漏斗/製藥水裝置被開啟
+    @EventHandler
+    public void onVipBlockUsed(PlayerInteractEvent e){
+    	if(
+			e.getAction() == Action.RIGHT_CLICK_BLOCK &&
+			vip_protect_block.contains(e.getClickedBlock().getType())
+		){
+        	if (data.checkIsLimitOffline(e.getClickedBlock(), e.getPlayer())){
+        		if(this.isOP(e.getPlayer()))return;
+        		e.getPlayer().sendMessage("§4沒有權限 §7(VIP離線保護)");
+        		e.setCancelled(true);
+        	}
+    	}
+    }
+    
+    //防止 VIP 裝備架被使用
+    @EventHandler
+    public void onVipArmorStandUsed(PlayerInteractAtEntityEvent e){
+    	if(
+			e.getRightClicked().getType() == EntityType.ARMOR_STAND
+		){
+        	if (data.checkIsLimitOffline(e.getRightClicked().getLocation().getBlock(), e.getPlayer())){
+        		if(this.isOP(e.getPlayer()))return;
+        		e.getPlayer().sendMessage("§4沒有權限 §7(VIP離線保護)");
+        		e.setCancelled(true);
+        	}
+    	}
+    }
+    
+    //防止 VIP 物品展示框被放置物品
+    @EventHandler
+    public void onVipFrameUsed(PlayerInteractEntityEvent e){
+    	if(
+    			e.getRightClicked().getType() == EntityType.ITEM_FRAME
+		){
+        	if (data.checkIsLimitOffline(e.getRightClicked().getLocation().getBlock(), e.getPlayer())){
+        		if(this.isOP(e.getPlayer()))return;
+        		e.getPlayer().sendMessage("§4沒有權限 §7(VIP離線保護)");
+        		e.setCancelled(true);
+        	}
+    	}
+    }
+    
+    //防止 VIP 物品展示框被移除物品
+    @EventHandler
+    public void onVipFrameRemove(EntityDamageByEntityEvent e){
+    	if(
+			e.getEntity().getType() == EntityType.ITEM_FRAME &&
+			e.getDamager() instanceof Player
+		){
+    		Player p = (Player) e.getDamager();
+        	if (data.checkIsLimitOffline(e.getEntity().getLocation().getBlock(), p)){
+        		if(this.isOP(p))return;
+        		p.sendMessage("§4沒有權限 §7(VIP離線保護)");
+        		e.setCancelled(true);
+        	}
+    	}
+    }
+
     //防止船隻/礦車/盔甲架被放置
     @EventHandler
     public void onBoatPlace(PlayerInteractEvent e){
@@ -208,12 +299,6 @@ public class Cupboard extends JavaPlugin implements Listener {
         	}
     	}
     }
-    
-    //防止VIP 箱子/熔爐/漏斗/製藥水裝置被開啟
-    //TODO
-    
-    //防止VIP 物品框/裝備架被使用
-    //TODO
     
     //防止Armor stand被炸毀
     @EventHandler
@@ -265,6 +350,7 @@ public class Cupboard extends JavaPlugin implements Listener {
 		if(data.checkIsLimit(bl, p)){
 			if(this.isOP(p)) return;
 			e.setCancelled(true);
+			e.getPlayer().updateInventory();
 		}
 	}
     
