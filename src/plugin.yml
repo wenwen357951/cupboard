@@ -1,6 +1,6 @@
 name: CupBoard
 main: com.mics.spigotPlugin.cupboard.Cupboard
-version: 0.4.2
+version: 0.4.3
 commands:
   esc:
     description: teleport out to non-protect zone

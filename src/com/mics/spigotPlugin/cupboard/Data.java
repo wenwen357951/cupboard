@@ -124,14 +124,15 @@ public class Data {
 		for( String cup_str : cups){
 			StringTokenizer st = new StringTokenizer(cup_str, ",");
 			World world = Bukkit.getWorld((st.nextToken()));
-			double x = Double.parseDouble(st.nextToken());
-			double y = Double.parseDouble(st.nextToken());
-			double z = Double.parseDouble(st.nextToken());
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+			int z = Integer.parseInt(st.nextToken());
 			Location cup_loc = new Location(world,x,y,z);
-			if(!cup_loc.getChunk().isLoaded())continue; //如果未載入則略過 (較快
-			double diffx = Math.abs(l.getBlockX() - cup_loc.getBlockX());
-			double diffy = Math.abs(l.getBlockY() - cup_loc.getBlockY());
-			double diffz = Math.abs(l.getBlockZ() - cup_loc.getBlockZ());
+			if(!cup_loc.getWorld().equals(l.getWorld())) continue; //如果是在地獄的 略過
+			if(cup_loc.distance(l) > dist * 1.5) continue; //如果距離超過dist的1.5倍 略過
+			int diffx = Math.abs(l.getBlockX() - cup_loc.getBlockX());
+			int diffy = Math.abs(l.getBlockY() - cup_loc.getBlockY());
+			int diffz = Math.abs(l.getBlockZ() - cup_loc.getBlockZ());
 			if(
 					diffx < dist &&
 					diffy < dist &&
