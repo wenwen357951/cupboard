@@ -129,7 +129,7 @@ public class Data {
 			int z = Integer.parseInt(st.nextToken());
 			Location cup_loc = new Location(world,x,y,z);
 			if(!cup_loc.getWorld().equals(l.getWorld())) continue; //如果是在地獄的 略過
-			if(cup_loc.distance(l) > dist * 1.5) continue; //如果距離超過dist的1.5倍 略過
+			if(cup_loc.distance(l) > dist * 1.6) continue; //如果距離超過dist的1.6 倍 略過 (根號 1.414+1 = 1.554)
 			int diffx = Math.abs(l.getBlockX() - cup_loc.getBlockX());
 			int diffy = Math.abs(l.getBlockY() - cup_loc.getBlockY());
 			int diffz = Math.abs(l.getBlockZ() - cup_loc.getBlockZ());
