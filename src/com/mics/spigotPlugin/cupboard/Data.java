@@ -110,6 +110,7 @@ public class Data {
     	Gson objGson= new Gson();
     	String strObject = objGson.toJson(cupboards);
     	try {
+    		cupboardsFile.getParentFile().mkdirs();
 			FileWriter file = new FileWriter(cupboardsFile);
 			file.write(strObject);
 			file.close();

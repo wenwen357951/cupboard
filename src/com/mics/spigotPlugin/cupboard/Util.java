@@ -1,5 +1,6 @@
 package com.mics.spigotPlugin.cupboard;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
