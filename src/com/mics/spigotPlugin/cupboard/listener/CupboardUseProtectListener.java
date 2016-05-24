@@ -1,19 +1,13 @@
 package com.mics.spigotPlugin.cupboard.listener;
 
-import java.util.ArrayList;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
@@ -21,7 +15,6 @@ import com.mics.spigotPlugin.cupboard.Data;
 
 public class CupboardUseProtectListener implements Listener {
 	private Cupboard plugin;
-	ArrayList<Material> vip_protect_block;
 	public Data data;
 
 	public CupboardUseProtectListener(Cupboard instance)
@@ -29,7 +22,6 @@ public class CupboardUseProtectListener implements Listener {
 	    this.plugin = instance;
 	    this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
 	    this.plugin.logDebug("CupboardUseProtectListener Registed.");
-	    this.vip_protect_block = this.plugin.vip_protect_block;
 	    this.data = this.plugin.data;
 	}
 	
@@ -84,68 +76,4 @@ public class CupboardUseProtectListener implements Listener {
         	}
     	}
     }
-    
-	//防止 VIP 箱子/熔爐/漏斗/製藥水裝置被開啟
-    @EventHandler
-    public void onVipBlockUsed(PlayerInteractEvent e){
-    	if(!this.plugin.CFG_PROTECT_EVERYTHING_WEHN_OFFLINE) return;
-    	if(
-			e.getAction() == Action.RIGHT_CLICK_BLOCK &&
-			vip_protect_block.contains(e.getClickedBlock().getType())
-		){
-        	if (this.plugin.data.checkIsLimitOffline(e.getClickedBlock(), e.getPlayer())){
-        		if(this.plugin.isOP(e.getPlayer()))return;
-        		e.getPlayer().sendMessage("§4沒有權限 §7(離線保護)");
-        		e.setCancelled(true);
-        	}
-    	}
-    }
-    
-    //防止 VIP 裝備架被使用
-    @EventHandler
-    public void onVipArmorStandUsed(PlayerInteractAtEntityEvent e){
-    	if(!this.plugin.CFG_PROTECT_EVERYTHING_WEHN_OFFLINE) return;
-    	if(
-			e.getRightClicked().getType() == EntityType.ARMOR_STAND
-		){
-        	if (this.plugin.data.checkIsLimitOffline(e.getRightClicked().getLocation().getBlock(), e.getPlayer())){
-        		if(this.plugin.isOP(e.getPlayer()))return;
-        		e.getPlayer().sendMessage("§4沒有權限 §7(離線保護)");
-        		e.setCancelled(true);
-        	}
-    	}
-    }
-    
-    //防止 VIP 物品展示框被放置物品
-    @EventHandler
-    public void onVipFrameUsed(PlayerInteractEntityEvent e){
-    	if(!this.plugin.CFG_PROTECT_EVERYTHING_WEHN_OFFLINE) return;
-    	if(
-    			e.getRightClicked().getType() == EntityType.ITEM_FRAME
-		){
-        	if(this.plugin.data.checkIsLimitOffline(e.getRightClicked().getLocation().getBlock(), e.getPlayer())){
-        		if(this.plugin.isOP(e.getPlayer()))return;
-        		e.getPlayer().sendMessage("§4沒有權限 §7(離線保護)");
-        		e.setCancelled(true);
-        	}
-    	}
-    }
-    
-    //防止 VIP 物品展示框被移除物品
-    @EventHandler
-    public void onVipFrameRemove(EntityDamageByEntityEvent e){
-    	if(!this.plugin.CFG_PROTECT_EVERYTHING_WEHN_OFFLINE) return;
-    	if(
-			e.getEntity().getType() == EntityType.ITEM_FRAME &&
-			e.getDamager() instanceof Player
-		){
-    		Player p = (Player) e.getDamager();
-        	if(this.plugin.data.checkIsLimitOffline(e.getEntity().getLocation().getBlock(), p)){
-        		if(this.plugin.isOP(p))return;
-        		p.sendMessage("§4沒有權限 §7(VIP離線保護)");
-        		e.setCancelled(true);
-        	}
-    	}
-    }
-
 }

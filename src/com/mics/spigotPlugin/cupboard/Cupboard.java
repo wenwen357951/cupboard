@@ -25,9 +25,8 @@ public class Cupboard extends JavaPlugin implements Listener {
 	public boolean CFG_DEBUG = true;
 	public boolean CFG_ANTI_NETHER_DOOR_BLOCK = true;
 	public boolean CFG_ANTI_NETHER_DOOR_ENTITY_TELEPORT = true;
-	public boolean CFG_PROTECT_EVERYTHING_WEHN_OFFLINE = true; //NOT FINISH
 	public boolean CFG_OP_BYPASS = true;
-	public boolean CFG_ANTI_TNT_EXPLOSION = true;
+	public boolean CFG_ANTI_TNT_EXPLOSION = false;
 	public boolean CFG_ANTI_CREEPER_EXPLOSION = true;
 	// END OF CONFIG
 	
@@ -42,7 +41,6 @@ public class Cupboard extends JavaPlugin implements Listener {
         
 
 	    setUpProtectEntity();
-	    setUpVipProtect();
         
         setupPermissions();
         
@@ -69,21 +67,6 @@ public class Cupboard extends JavaPlugin implements Listener {
 	    	protect_vehicle.add(Material.HOPPER_MINECART );
 	    	protect_vehicle.add(Material.POWERED_MINECART );
 	    	protect_vehicle.add(Material.STORAGE_MINECART );
-	    }
-	    
-	    public ArrayList<Material> vip_protect_block;
-	    private void setUpVipProtect(){
-	    	vip_protect_block = new ArrayList<Material>();
-	    	vip_protect_block.add(Material.CHEST);
-	    	vip_protect_block.add(Material.TRAPPED_CHEST);
-	    	vip_protect_block.add(Material.FURNACE);
-	    	vip_protect_block.add(Material.BURNING_FURNACE);
-	    	vip_protect_block.add(Material.JUKEBOX);
-	    	vip_protect_block.add(Material.BREWING_STAND);
-	    	vip_protect_block.add(Material.ANVIL);
-	    	vip_protect_block.add(Material.DROPPER);
-	    	vip_protect_block.add(Material.DISPENSER);
-	    	vip_protect_block.add(Material.HOPPER);
 	    }
 	
     @Override
