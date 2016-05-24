@@ -27,19 +27,19 @@ public class CupboardUseProtectListener implements Listener {
 	
 	
 
-    //禁止使用石製開關 以及 石製踏板
-      @EventHandler
-      public void onUseStoneButton(PlayerInteractEvent event){
-      	Block b = event.getClickedBlock();
-      	Player p = event.getPlayer();
-      	if (
-      			event.getAction() == Action.RIGHT_CLICK_BLOCK && 
-  				b.getType() == Material.STONE_BUTTON
+	//禁止使用石製開關 以及 石製踏板
+	@EventHandler
+	public void onUseStoneButton(PlayerInteractEvent event){
+		Block b = event.getClickedBlock();
+		Player p = event.getPlayer();
+		if (
+			event.getAction() == Action.RIGHT_CLICK_BLOCK && 
+			b.getType() == Material.STONE_BUTTON
 		) 
-      		if(data.checkIsLimit(b, p)){
-    			if(this.plugin.isOP(p)) return;
-      			event.setCancelled(true);
-      		}
+			if(data.checkIsLimit(b, p)){
+				if(this.plugin.isOP(p)) return;
+				event.setCancelled(true);
+			}
       	
       }
       
