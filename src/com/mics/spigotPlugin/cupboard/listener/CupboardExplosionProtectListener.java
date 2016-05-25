@@ -41,8 +41,8 @@ public class CupboardExplosionProtectListener implements Listener {
 				Config.ANTI_TNT_EXPLOSION.getBoolean() &&
 				event.getEntity().getType().equals(EntityType.PRIMED_TNT)
 			) || (
-				Config.ANTI_CREEPER_EXPLOSION.getBoolean() &&
-				event.getEntity().getType().equals(EntityType.CREEPER)
+				Config.ANTI_OTHERS_EXPLOSION.getBoolean() &&
+				!event.getEntity().getType().equals(EntityType.PRIMED_TNT)
 			)
 		){
 	    	for (Block block : new ArrayList<Block>(event.blockList())){
@@ -56,7 +56,7 @@ public class CupboardExplosionProtectListener implements Listener {
     //插件爆炸
     @EventHandler(priority = EventPriority.LOWEST)
     public void onExplode(BlockExplodeEvent event){
-    	for (Block block : new ArrayList<Block>(event.blockList())){
+    	for(Block block : new ArrayList<Block>(event.blockList())){
     		if(data.checkIsLimit(block)){
     			event.blockList().remove(block);
     		}
@@ -79,24 +79,33 @@ public class CupboardExplosionProtectListener implements Listener {
     	}
     }
     
-  //防止Hanging類物品 被Creeper炸掉 / 被TNT炸掉
+    //防止Hanging類物品 被Creeper炸掉 / 被TNT炸掉
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent e) {
     	//NEEDFIX -- TNT LIGHT BY ALLOW USER WILL DESTORY HANGING ITEM
-    	if(!Config.ANTI_TNT_EXPLOSION.getBoolean())return;
 		Location bl = e.getEntity().getLocation().getBlock().getLocation();
-    	if (!(e.getRemover() instanceof Player)) {
-    		if(e.getCause() == RemoveCause.ENTITY){ //by creeper
+    	if ((e.getRemover() instanceof Player)) {
+    		//TNT Light By USER
+    		if(Config.ANTI_TNT_EXPLOSION.getBoolean()){
+    			e.setCancelled(true);
+    		}
+    	} else {
+    		if(e.getCause() == RemoveCause.ENTITY){ //by Entity
+    			if(
+    					(Config.ANTI_TNT_EXPLOSION.getBoolean() && e.getRemover().getType() == EntityType.PRIMED_TNT) ||
+    					(Config.ANTI_OTHERS_EXPLOSION.getBoolean() && e.getRemover().getType() != EntityType.PRIMED_TNT)
+				)
     			if(this.plugin.data.checkIsLimit(bl)) e.setCancelled(true);
     		}
     	}
 	}
     
+    //模組爆炸?
     @EventHandler
     public void onHangingBreak(HangingBreakEvent e) {
-    	if(!Config.ANTI_CREEPER_EXPLOSION.getBoolean())return;
+    	if(!Config.ANTI_OTHERS_EXPLOSION.getBoolean())return;
     	Location bl = e.getEntity().getLocation().getBlock().getLocation();
-		if(e.getCause() == RemoveCause.EXPLOSION){ //by TNT
+		if(e.getCause() == RemoveCause.EXPLOSION){
 			if(this.plugin.data.checkIsLimit(bl)) e.setCancelled(true);
 		}
     }
