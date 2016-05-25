@@ -27,7 +27,7 @@ public class CupboardUseProtectListener implements Listener {
 	
 	
 
-	//¸T¤î¨Ï¥Î¥Û»s¶}Ãö ¥H¤Î ¥Û»s½ñªO
+	//ç¦æ­¢ä½¿ç”¨çŸ³è£½é–‹é—œ ä»¥åŠ çŸ³è£½è¸æ¿
 	@EventHandler
 	public void onUseStoneButton(PlayerInteractEvent event){
 		Block b = event.getClickedBlock();
@@ -43,7 +43,7 @@ public class CupboardUseProtectListener implements Listener {
       	
       }
       
-      //¸T¤îª±®a¨Ï¥Î¥Û»s½ñªO
+      //ç¦æ­¢ç©å®¶ä½¿ç”¨çŸ³è£½è¸æ¿
         @EventHandler
         public void onUseStonePlate(PlayerInteractEvent event){
         	Block b = event.getClickedBlock();
@@ -59,7 +59,7 @@ public class CupboardUseProtectListener implements Listener {
         	}
         }
 
-    //¸T¤î°Êª«/©Çª«¨Ï¥Î¥Û»s½ñªO (ª±®aÃM¦b°Êª«¤W«h¼W¥[ª±®aÅv­­§PÂ_
+    //ç¦æ­¢å‹•ç‰©/æ€ªç‰©ä½¿ç”¨çŸ³è£½è¸æ¿ (ç©å®¶é¨åœ¨å‹•ç‰©ä¸Šå‰‡å¢åŠ ç©å®¶æ¬Šé™åˆ¤æ–·
     @EventHandler
     public void onEntryUseStonePlate(EntityInteractEvent event){
     	Block b = event.getBlock();

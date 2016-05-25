@@ -26,7 +26,7 @@ public class GoldBlockListener implements Listener {
 	    this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
 	    this.plugin.logDebug("GoldBlockListener Registed.");
 	}
-	//²¾°£ª÷¿j
+	//ç§»é™¤é‡‘ç£š
     @EventHandler(priority = EventPriority.MONITOR)
     public void onGoldBlockBreak(BlockBreakEvent event){
     	if(event.isCancelled())return;
@@ -37,7 +37,7 @@ public class GoldBlockListener implements Listener {
     	}
     }
     
-    //©ñ¸mª÷¿j
+    //æ”¾ç½®é‡‘ç£š
     @EventHandler(priority = EventPriority.MONITOR)
     public void onGoldBlockPlace(BlockPlaceEvent event){
     	if(event.isCancelled())return;
@@ -52,13 +52,13 @@ public class GoldBlockListener implements Listener {
     	}
     }
     
-  //¥kÁäª÷¿j ±ÂÅv/¨ú®ø±ÂÅv
+  //å³éµé‡‘ç£š æˆæ¬Š/å–æ¶ˆæˆæ¬Š
     @EventHandler(priority = EventPriority.HIGH)
     public void onRightClick(PlayerInteractEvent event){
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;                    		// off hand packet, ignore.
-    	if (event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.GOLD_BLOCK) return;       	// «D¶Àª÷¿j«hµLµø
-    	if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return; 						// «D¥kÁä¤è¶ô«hµLµø
-        //if (event.getItem() != null && event.getItem().getType().isBlock()) return;   	// «DªÅ¤â«hµLµø
+    	if (event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.GOLD_BLOCK) return;       	// éé»ƒé‡‘ç£šå‰‡ç„¡è¦–
+    	if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return; 						// éå³éµæ–¹å¡Šå‰‡ç„¡è¦–
+        //if (event.getItem() != null && event.getItem().getType().isBlock()) return;   	// éç©ºæ‰‹å‰‡ç„¡è¦–
     	Location front_block_loc = event.getClickedBlock().getLocation().clone();
 		Player p = event.getPlayer();
     	switch(event.getBlockFace()){

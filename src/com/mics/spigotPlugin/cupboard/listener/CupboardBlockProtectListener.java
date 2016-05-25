@@ -32,7 +32,7 @@ public class CupboardBlockProtectListener implements Listener {
 	}
     
     
-	//¨¾¤î¨ä¥Lª±®a¯}Ãa¤è¶ô
+	//é˜²æ­¢å…¶ä»–çŽ©å®¶ç ´å£žæ–¹å¡Š
     @EventHandler(priority = EventPriority.HIGH)
     public void onBlockBreak(BlockBreakEvent e){
     	Player p = e.getPlayer();
@@ -49,7 +49,7 @@ public class CupboardBlockProtectListener implements Listener {
         	}
         }
     }
-    //¨¾¤î¨ä¥Lª±®a©ñ¸m¤è¶ô
+    //é˜²æ­¢å…¶ä»–çŽ©å®¶æ”¾ç½®æ–¹å¡Š
     @EventHandler(priority = EventPriority.HIGH)
     public void onBlockPlace(BlockPlaceEvent e){
     	Player p = e.getPlayer();
@@ -65,7 +65,7 @@ public class CupboardBlockProtectListener implements Listener {
         		e.setCancelled(true);
         }
     }
-    //¨¾¤îª±®a¨Ï¥Î¤ô±í
+    //é˜²æ­¢çŽ©å®¶ä½¿ç”¨æ°´æ¡¶
     @EventHandler(priority = EventPriority.HIGH)
     public void onBucketEmpty(PlayerBucketEmptyEvent e){
     	Player p = e.getPlayer();
@@ -91,14 +91,14 @@ public class CupboardBlockProtectListener implements Listener {
         }
     }
     
- // ¨¾¤î¤è¶ô³Q¿NÃa
+ // é˜²æ­¢æ–¹å¡Šè¢«ç‡’å£ž
     @EventHandler
     void onBlockBurnDamage(BlockBurnEvent e){
     	Block b = e.getBlock();
     	if(data.checkIsLimit(b)){
     		e.setCancelled(true);
     		Location l = e.getBlock().getLocation();
-    		if(Math.random() < 0.1){ //·íª««~­n·lÃa®É10%¾÷²v¤õµK®ø¥¢
+    		if(Math.random() < 0.1){ //ç•¶ç‰©å“è¦æå£žæ™‚10%æ©ŸçŽ‡ç«ç„°æ¶ˆå¤±
     			if(l.add(1,0,0).getBlock().getType().equals(Material.FIRE))
     				l.getBlock().setType(Material.AIR);
     			if(l.add(-2,0,0).getBlock().getType().equals(Material.FIRE))

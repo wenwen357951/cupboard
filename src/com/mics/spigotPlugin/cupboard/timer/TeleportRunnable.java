@@ -6,9 +6,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.mics.spigotPlugin.cupboard.utils.Locales;
+
 public class TeleportRunnable implements Runnable  {
 	Location dest;
-	Location org; //≠Ï©l®œ•Œ™Ã¶Ï∏m
+	Location org; //ÂéüÂßã‰ΩøÁî®ËÄÖ‰ΩçÁΩÆ
 	Player player;
 	int count;
 	int taskId;
@@ -21,7 +23,11 @@ public class TeleportRunnable implements Runnable  {
     }
 
     public void run() {
-    	if(this.org.equals(this.player.getLocation())){
+    	if(
+    			this.org.getX() == this.player.getLocation().getX() &&
+				this.org.getY() == this.player.getLocation().getY() &&
+				this.org.getZ() == this.player.getLocation().getZ()
+		){
         	if(count < 10){
         		if(count >= 7){
         			this.player.sendMessage(String.valueOf(10 - count));
@@ -32,7 +38,7 @@ public class TeleportRunnable implements Runnable  {
     		this.player.teleport(this.dest);
     		Bukkit.getServer().getScheduler().cancelTask(taskId);
     	} else {
-    		this.player.sendMessage("°±4∂«∞e•¢±—");
+    		this.player.sendMessage(Locales.TELEPORT_FAIL.getString());
     		Bukkit.getServer().getScheduler().cancelTask(taskId);
     	}
     }

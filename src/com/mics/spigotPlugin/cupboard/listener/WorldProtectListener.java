@@ -22,13 +22,13 @@ public class WorldProtectListener implements Listener {
 	    this.plugin.logDebug("WorldProtectListener Registed.");
 	}
 	
-	//¨¾¤î°£ª±®a¤§¥~¤§ª«¥ó³z¹L¦aº»ªù¶Ç°e
+	//é˜²æ­¢é™¤ç©å®¶ä¹‹å¤–ä¹‹ç‰©ä»¶é€éåœ°ç„é–€å‚³é€
     @EventHandler
     public void onEntityPortal(EntityPortalEvent e){
 		e.setCancelled(true);
     }
     
-    //¨¾¤îª±®a¾×¦í¦aº»ªù
+    //é˜²æ­¢ç©å®¶æ“‹ä½åœ°ç„é–€
     @EventHandler(priority = EventPriority.HIGH)
     public void onBlockNetherDoor(BlockPlaceEvent e){
     	Player p = e.getPlayer();

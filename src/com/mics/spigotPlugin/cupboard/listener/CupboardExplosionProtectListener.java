@@ -1,4 +1,4 @@
-package com.mics.spigotPlugin.cupboard.listener;
+ï»¿package com.mics.spigotPlugin.cupboard.listener;
 
 import java.util.ArrayList;
 
@@ -33,7 +33,7 @@ public class CupboardExplosionProtectListener implements Listener {
 	    this.data = this.plugin.data;
 	}
 	
-    //TNT or CreeperÃz¬µ
+    //TNT or Creeperçˆ†ç‚¸
     @EventHandler(priority = EventPriority.LOWEST)
     public void onExplode(EntityExplodeEvent event){
     	if(
@@ -53,7 +53,7 @@ public class CupboardExplosionProtectListener implements Listener {
     	}
     }
     
-    //´¡¥óÃz¬µ
+    //æ’ä»¶çˆ†ç‚¸
     @EventHandler(priority = EventPriority.LOWEST)
     public void onExplode(BlockExplodeEvent event){
     	for (Block block : new ArrayList<Block>(event.blockList())){
@@ -63,10 +63,10 @@ public class CupboardExplosionProtectListener implements Listener {
     	}
     }
 
-    //¨¾¤îArmor stand³Q¬µ·´
+  //é˜²æ­¢Armor standè¢«ç‚¸æ¯€
     @EventHandler
     public void onArmorStandExplosion(EntityDamageEvent e){
-    	//TODO ¥ş³¡Ãz¬µ§K¬Ì ­n§ï¬°¥i¥Ñ°Ñ¼Æ±±¨î
+    	//TODO ç›®å‰æ˜¯å…¨éƒ¨é˜²æ­¢ éœ€è¦ä¿®æ­£
     	if(
     		e.getEntity().getType() == EntityType.ARMOR_STAND &&
     		( 
@@ -79,7 +79,7 @@ public class CupboardExplosionProtectListener implements Listener {
     	}
     }
     
-    //¨¾¤îHangingÃşª««~³Q³QCreeper¬µ±¼ / ³QTNT¬µ±¼
+  //é˜²æ­¢Hangingé¡ç‰©å“ è¢«Creeperç‚¸æ‰ / è¢«TNTç‚¸æ‰
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent e) {
     	//NEEDFIX -- TNT LIGHT BY ALLOW USER WILL DESTORY HANGING ITEM

@@ -12,25 +12,33 @@ import com.mics.spigotPlugin.cupboard.Cupboard;
 
 public enum Locales {
 
-	OP_BYPASS("Message.op-bypass", "&cWARNING: YOU ARE BYPASS PROTECT AREA."),
-	GOLD_PLACE("Message.place-gold-block", "Block of Gold is placed and got access. (Shift + Right Click can get help)"),
-	GOLD_REMOVE("Message.remove-gold-block", "Block of Gold is removed."),
-	GOLD_TOO_CLOSE("Message.gold-block-too-close-to-place", "Block of Gold is too close to place."),
-	GOLD_ACCESS_BLOCKED("Message.access-blocked-gold-block", "It is blocked, can't access it."),
-	GOLD_DATA_NOT_FOUND("Message.gold-data-not-found", "This Block of Gold is not place by player or data missing."),
-	GOLD_GRANT_ACCESS("Message.grant-access", "Grant access."),
-	GOLD_REVOKE_ACCESS("Message.revoke-access", "Revoke access."),
-	NO_ACCESS("Message.no-access", "&4No access &7(blocked? ,try /esc to escape)."),
-	DO_NOT_BLOCK_NETHER_DOOR("Message.do-not-block-nether-door", "&7Please do not block nether door."),
+	OP_BYPASS("gold-block.op-bypass", "&cWARNING: YOU ARE BYPASS PROTECT AREA."),
+	GOLD_PLACE("gold-block.place-gold-block", "Block of Gold is placed and got access. (Shift + Right Click can get help)"),
+	GOLD_REMOVE("gold-block.remove-gold-block", "Block of Gold is removed."),
+	GOLD_TOO_CLOSE("gold-block.gold-block-too-close-to-place", "Block of Gold is too close to place."),
+	GOLD_ACCESS_BLOCKED("gold-block.access-blocked-gold-block", "It is blocked, can't access it."),
+	GOLD_DATA_NOT_FOUND("gold-block.gold-data-not-found", "This Block of Gold is not place by player or data missing."),
+	GOLD_GRANT_ACCESS("gold-block.grant-access", "Grant access."),
+	GOLD_REVOKE_ACCESS("gold-block.revoke-access", "Revoke access."),
+	NO_ACCESS("gold-block.no-access", "&4No access &7(blocked? ,try /esc to escape)."),
+	
+	//WORLD PROTECT
+	DO_NOT_BLOCK_NETHER_DOOR("world-protect.do-not-block-nether-door", "&7Please do not block nether door."),
+	
+	//TELEPORT
+	TELEPORT_FAIL("teleport.teleport-fail", "&4Teleport fail."),
+	TELEPORT_NOW("teleport.teleport-now", "Will teleport after 10 sec, please do not move."),
+	TELEPORT_NOT_FOUND("teleport.teleport-not-found", "Can't find good place to teleport, please try to close non-protect area."),
+	NOT_IN_NO_ACCESS_AREA("teleport.not-in-no-access-area", "You are not in no access area."),
+	
+	//HELP
 	HELP("Help", new String[] {
-		"&aBlock of Gold can protect 19x19x19 area, Block of Gold is at center¡C",
+		"&aBlock of Gold can protect 19x19x19 area, Block of Gold is at centerã€‚",
 		"&aIt Protect Following: ",
 		"&71. No access player can't place/remove block",
 		"&72. No access player can't use stone plate/button",
 		"&73. Mobs can't trigger stone plate.",
-		"&74. Creeper can't destory block in protect area.",
-		"&cWARNING: Following CAN be do by any Player:",
-		"&71. Using wooden door/button/plate, chest, lever, piston, Fences door"
+		"&74. Creeper can't destory block in protect area."
 	});
 	
 	private final Object value;

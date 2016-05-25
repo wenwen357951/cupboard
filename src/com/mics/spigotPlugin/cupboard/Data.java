@@ -133,8 +133,8 @@ public class Data {
 			int y = Integer.parseInt(st.nextToken());
 			int z = Integer.parseInt(st.nextToken());
 			Location cup_loc = new Location(world,x,y,z);
-			if(!cup_loc.getWorld().equals(l.getWorld())) continue; //¦pªG¬O¦b¦aº»ªº ²¤¹L
-			if(cup_loc.distance(l) > dist * 1.6) continue; //¦pªG¶ZÂ÷¶W¹Ldistªº1.6 ­¿ ²¤¹L (®Ú¸¹ 1.414+1 = 1.554)
+			if(!cup_loc.getWorld().equals(l.getWorld())) continue; //å¦‚æœæ˜¯åœ¨åœ°ç„çš„ ç•¥é
+			if(cup_loc.distance(l) > dist * 1.6) continue; //å¦‚æœè·é›¢è¶…édistçš„1.6 å€ ç•¥é (æ ¹è™Ÿ 1.414+1 = 1.554)
 			int diffx = Math.abs(l.getBlockX() - cup_loc.getBlockX());
 			int diffy = Math.abs(l.getBlockY() - cup_loc.getBlockY());
 			int diffz = Math.abs(l.getBlockZ() - cup_loc.getBlockZ());
@@ -153,7 +153,7 @@ public class Data {
 		for( Block cup : cups ){
 			if(cup.getType() != Material.GOLD_BLOCK){
 				cupboards.put(Util.LocToString(cup.getLocation()), null);
-				continue; //¦¹¤è¶ô¤£¬O¶Àª÷¿j«h§R°£«á´«¤U¤@­Ó
+				continue; //æ­¤æ–¹å¡Šä¸æ˜¯é»ƒé‡‘ç£šå‰‡åˆªé™¤å¾Œæ›ä¸‹ä¸€å€‹
 			}
 			return true;
 		}
@@ -188,8 +188,8 @@ public class Data {
 			this.calcLocationLimit(l);
 		}
 		String str_l = Util.LocToString(l);
-		if(location_limit_check_temp.get(str_l) == null) return false; //¨S­­¨î·F¹À¬d
-		if(p != null && location_limit_check_temp.get(str_l).contains(p.getUniqueId().toString())) return false; //¬İ¬İ¬O¤£¬O¦³Åv­­ªºª±®a¶}±Òªº
+		if(location_limit_check_temp.get(str_l) == null) return false; //æ²’é™åˆ¶å¹¹å˜›æŸ¥
+		if(p != null && location_limit_check_temp.get(str_l).contains(p.getUniqueId().toString())) return false; //çœ‹çœ‹æ˜¯ä¸æ˜¯æœ‰æ¬Šé™çš„ç©å®¶é–‹å•Ÿçš„
 		for(String auth_player_uuid_str: location_limit_check_temp.get(str_l)){
 			OfflinePlayer auth_player = this.plugin.getServer().getOfflinePlayer(UUID.fromString(auth_player_uuid_str));
 			if(auth_player.isOnline())online_flag = true;
@@ -200,7 +200,7 @@ public class Data {
 		return false;
 	}
 	
-	//ºâ¥X³o®æ¦³½Ö«OÅ@~~~
+	//ç®—å‡ºé€™æ ¼æœ‰èª°ä¿è­·~~~
 	private void calcLocationLimit(Location l){
 		String str_l = Util.LocToString(l);
 		List<Block> cups = this.findActiveCupboards(l, PROTECT_DIST);
@@ -210,7 +210,7 @@ public class Data {
 		} else {
 			for( Block cup : cups ){
 				if(cup.getType() != Material.GOLD_BLOCK){
-					cupboards.remove(Util.LocToString(cup.getLocation())); //¦¹¤è¶ô¤£¬O¶Àª÷¿j«h§R°£«á´«¤U¤@­Ó
+					cupboards.remove(Util.LocToString(cup.getLocation())); //æ­¤æ–¹å¡Šä¸æ˜¯é»ƒé‡‘ç£šå‰‡åˆªé™¤å¾Œæ›ä¸‹ä¸€å€‹
 					continue;
 				}
 				accessAbleUserUUIDList.addAll(cupboards.get(Util.LocToString(cup.getLocation())));
@@ -228,7 +228,7 @@ public class Data {
 		for( Block cup : cups ){
 			if(cup.getType() != Material.GOLD_BLOCK){
 				cupboards.put(Util.LocToString(cup.getLocation()), null);
-				continue; //¦¹¤è¶ô¤£¬O¶Àª÷¿j«h§R°£«á´«¤U¤@­Ó
+				continue; //æ­¤æ–¹å¡Šä¸æ˜¯é»ƒé‡‘ç£šå‰‡åˆªé™¤å¾Œæ›ä¸‹ä¸€å€‹
 			}
 			return true;
 		}
@@ -247,14 +247,14 @@ public class Data {
 			if(cup.getType() != Material.GOLD_BLOCK){
 				cupboards.put(Util.LocToString(cup.getLocation()), null);
 				continue;
-				//¦¹¤è¶ô¤£¬O¶Àª÷¿j«h§R°£«á´«¤U¤@­Ó
+				//æ­¤æ–¹å¡Šä¸æ˜¯é»ƒé‡‘ç£šå‰‡åˆªé™¤å¾Œæ›ä¸‹ä¸€å€‹
 			}
 			
 			List<String> AccessAbleUserUUIDList = (List<String>) cupboards.get(Util.LocToString(cup.getLocation()));
 			
 			if(!AccessAbleUserUUIDList.contains(p.getUniqueId().toString())) {
 				flagIsLimit = true;
-				break; //°²¦p¦³§ä¤£¨ìªº ª½±µ¤¤Â_¸õ¥X
+				break; //å‡å¦‚æœ‰æ‰¾ä¸åˆ°çš„ ç›´æ¥ä¸­æ–·è·³å‡º
 			}
 		}
 		return flagIsLimit;

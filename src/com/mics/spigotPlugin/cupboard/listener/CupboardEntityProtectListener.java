@@ -32,7 +32,7 @@ public class CupboardEntityProtectListener implements Listener {
 	}
 
 
-    //¨¾¤îHangingÃşª««~³Q¥¼±ÂÅvª±®a©ñ¸m
+    //é˜²æ­¢Hangingé¡ç‰©å“è¢«æœªæˆæ¬Šç©å®¶æ”¾ç½®
     @EventHandler
     public void onHangingPlace(HangingPlaceEvent e) {
 		Location bl = e.getEntity().getLocation().getBlock().getLocation();
@@ -44,7 +44,7 @@ public class CupboardEntityProtectListener implements Listener {
 		}
 	}
     
-    //¨¾¤îHangingÃşª««~³Q¥¼±ÂÅvª±®a²¾°£
+    //é˜²æ­¢Hangingé¡ç‰©å“è¢«æœªæˆæ¬Šç©å®¶ç§»é™¤
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent e) {
     	//NEEDFIX -- TNT LIGHT BY ALLOW USER WILL DESTORY HANGING ITEM
@@ -59,7 +59,7 @@ public class CupboardEntityProtectListener implements Listener {
 	}
     
 
-    //¨¾¤î²î°¦/Äq¨®/²¯¥Ò¬[³Q©ñ¸m
+    //é˜²æ­¢èˆ¹éš»/ç¤¦è»Š/ç›”ç”²æ¶è¢«æ”¾ç½®
     @EventHandler
     public void onBoatPlace(PlayerInteractEvent e){
     	if (
@@ -76,7 +76,7 @@ public class CupboardEntityProtectListener implements Listener {
     	}
     }
     
-    //¨¾¤î²¯¥Ò¬[³Q²¾°£
+    //é˜²æ­¢ç›”ç”²æ¶è¢«ç§»é™¤
     @EventHandler
     public void onArmorStandDamage(EntityDamageByEntityEvent e){
     	if (e.getEntity().getType() != EntityType.ARMOR_STAND) return;

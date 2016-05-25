@@ -9,10 +9,10 @@ import com.mics.spigotPlugin.cupboard.Cupboard;
 public enum Config {
 
 	DEBUG("debug", false, "is plugin show debug message?"),
-	ANTI_NETHER_DOOR_BLOCK("anty-nether-door-block", true, "let nether door can't block"),
-	ANTI_NETHER_DOOR_ENTITY_TELEPORT("anty-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),
+	ANTI_NETHER_DOOR_BLOCK("anti-nether-door-block", true, "let nether door can't block"),
+	ANTI_NETHER_DOOR_ENTITY_TELEPORT("anti-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),
 	OP_BYPASS("is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),
-	ANTI_TNT_EXPLOSION("anti-tnt-explosion", true, "is cupboard protect explosion from TNT?"),
+	ANTI_TNT_EXPLOSION("anti-tnt-explosion", false, "is cupboard protect explosion from TNT?"),
 	ANTI_CREEPER_EXPLOSION("anti-creeper-explosion", true, "is cupboard protect explosion from CREEPER?"),
 	CUPBOARD_PROTECT_DIST("cupboard_protect_dist", 9, "this is cupboard protect area size (ex 9 is 9+9+1 -> 19*19*19)"),
 	CUPBOARD_BETWEEN_DIST("cupboard_between_dist", 18, "this is how many block between cupboard can put another cupboard"),

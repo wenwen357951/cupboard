@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.timer.TeleportRunnable;
+import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 
 public class EscCommand implements CommandExecutor{
@@ -29,13 +30,13 @@ public class EscCommand implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("¡±4this command must run on player");
+			sender.sendMessage("Â§4this command must run on player");
 			return true;
 		}
 		Player p = (Player) sender;
 		Location oringal_location = p.getLocation();
 		if(!plugin.data.checkIsLimit(oringal_location, p)){
-			p.sendMessage("§A¤£¦b¥¼±ÂÅvªº½d³ò¤º");
+			p.sendMessage(Locales.NOT_IN_NO_ACCESS_AREA.getString());
 			return true;
 		}
 		
@@ -45,7 +46,7 @@ public class EscCommand implements CommandExecutor{
 			if(new_location != null) break;
 		}
 		if(new_location == null){
-			p.sendMessage("§ä¤£¨ì¾A¦Xªº¶Ç°eÂI¡A½ĞºÉ¥i¯àªº¾aªñ«D«OÅ@°Ï¦A¸Õ¤@¦¸");
+			p.sendMessage(Locales.TELEPORT_NOT_FOUND.getString());
 			return true;
 		}
 		new_location.setX(new_location.getBlockX()+0.5);
@@ -55,7 +56,7 @@ public class EscCommand implements CommandExecutor{
 		teleport.setTaskId(this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, teleport, 20, 20));
 		//p.teleport(new_location);
 		
-		p.sendMessage("10¬í«á¶Ç°e¡A½Ğ¤Å²¾°Ê");
+		p.sendMessage(Locales.TELEPORT_NOW.getString());
 		return true;
 	}
 	
@@ -111,7 +112,7 @@ public class EscCommand implements CommandExecutor{
 		int y = location.getBlockY() + 10;
 		if(location.getWorld().getEnvironment() == World.Environment.NETHER){
 			if (y > 125)
-				y = 125; //¨¾¤î¥Í¨ì¦aº»¼Ó¤WOrz
+				y = 125; //é˜²æ­¢ç”Ÿåˆ°åœ°ç„æ¨“ä¸ŠOrz
 		}
 		int y_min = y - 20; 
 		for(; y > y_min; y--){
