@@ -1,4 +1,4 @@
-﻿gold-block:
+gold-block:
   op-bypass: '&c警告: 管理員權限已忽視保護區'
   place-gold-block: 金磚已放置並取得授權。(潛行右鍵取得說明)
   remove-gold-block: 金磚已拆除
@@ -13,8 +13,8 @@ world-protect:
 teleport:
   teleport-fail: '&4傳送失敗.'
   teleport-now: 十秒後傳送, 請勿移動
-  teleport-not-found: '找不到適合的傳送點，請盡可能的靠近非保護區再試一次'
-  not-in-no-access-area: '你不在未授權區域'
+  teleport-not-found: 找不到適合的傳送點，請盡可能的靠近非保護區再試一次
+  not-in-no-access-area: 你不在未授權區域
 Help:
 - '&a金磚放置後產生19x19x19的方形保護區，金磚在正中央。'
 - '&a保護區防止下列事項發生: '
@@ -22,3 +22,10 @@ Help:
 - '&72. 未授權者無法使用石製壓力版/石製按鈕'
 - '&73. 怪物/動物無法觸發石製壓力版'
 - '&74. 防止苦力怕炸掉保護區'
+tnt:
+  explotion-name: '&4炸藥'
+  explotion-lore:
+  - '&r&a請參考以下合成表來合成TNT'
+  - '&r&6E E E   &bE 代表&4炸藥'
+  - '&r&6E G E   &bG 代表金磚'
+  - '&r&6E E E'

@@ -31,6 +31,15 @@ public enum Locales {
 	TELEPORT_NOT_FOUND("teleport.teleport-not-found", "Can't find good place to teleport, please try to close non-protect area."),
 	NOT_IN_NO_ACCESS_AREA("teleport.not-in-no-access-area", "You are not in no access area."),
 	
+	//TNT
+	TNT_EXPLOTION_NAME("tnt.explotion-name", "&4Explosion"),
+	TNT_EXPLOTION_LORE("tnt.explotion-lore", new String[] {
+			"&r&aPlease follow this to craft TNT",
+	    	"&r&6E E E   &bE is &4Explosion",
+	    	"&r&6E G E   &bG is Block of Gold",
+	    	"&r&6E E E"
+	}),
+	
 	//HELP
 	HELP("Help", new String[] {
 		"&aBlock of Gold can protect 19x19x19 area, Block of Gold is at center。",

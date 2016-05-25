@@ -1,7 +1,6 @@
 package com.mics.spigotPlugin.cupboard;
 
 import java.util.ArrayList;
-
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,6 +14,7 @@ import com.mics.spigotPlugin.cupboard.listener.CupboardExplosionProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardBlockProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardUseProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.GoldBlockListener;
+import com.mics.spigotPlugin.cupboard.listener.TNTCraftListener;
 import com.mics.spigotPlugin.cupboard.listener.TNTExplosionListener;
 import com.mics.spigotPlugin.cupboard.listener.WorldProtectListener;
 import com.mics.spigotPlugin.cupboard.utils.Config;
@@ -55,6 +55,11 @@ public class Cupboard extends JavaPlugin implements Listener {
         new GoldBlockListener(this);
         new TNTExplosionListener(this);
         new WorldProtectListener(this);
+        
+        //rewrite TNT Receipts Listener
+        if(Config.TNT_SP_ENABLE.getBoolean()){
+            new TNTCraftListener(this);
+        }
     }
 	
 		public ArrayList<Material> protect_vehicle;
