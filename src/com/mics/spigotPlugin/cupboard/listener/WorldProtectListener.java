@@ -10,6 +10,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
+import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 public class WorldProtectListener implements Listener {
@@ -25,12 +26,13 @@ public class WorldProtectListener implements Listener {
 	//防止除玩家之外之物件透過地獄門傳送
     @EventHandler
     public void onEntityPortal(EntityPortalEvent e){
-		e.setCancelled(true);
+		if(Config.ANTI_NETHER_DOOR_ENTITY_TELEPORT.getBoolean())e.setCancelled(true);
     }
     
     //防止玩家擋住地獄門
     @EventHandler(priority = EventPriority.HIGH)
     public void onBlockNetherDoor(BlockPlaceEvent e){
+    	if(!Config.ANTI_NETHER_DOOR_BLOCK.getBoolean())return;
     	Player p = e.getPlayer();
     	Block b = e.getBlock();
     	if(
