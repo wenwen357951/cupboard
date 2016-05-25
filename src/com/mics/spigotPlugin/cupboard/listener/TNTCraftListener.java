@@ -46,6 +46,16 @@ public class TNTCraftListener implements Listener  {
 				))
 			inv.setResult(null);
 		}
+		if(inv.getResult().getType() == Material.SULPHUR){
+			if((
+					inv.getItem(1).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE) ||
+					inv.getItem(3).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE) ||
+					inv.getItem(5).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE) ||
+					inv.getItem(7).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE) ||
+					inv.getItem(9).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)
+				))
+			inv.setResult(null);
+		}
 	}
     
 
