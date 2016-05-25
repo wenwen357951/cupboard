@@ -3,6 +3,7 @@
 import java.util.ArrayList;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -10,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -36,6 +38,7 @@ public class CupboardExplosionProtectListener implements Listener {
     //TNT or Creeper爆炸
     @EventHandler(priority = EventPriority.LOWEST)
     public void onExplode(EntityExplodeEvent event){
+    	boolean remove_flag = false;
     	if(
 			(
 				Config.ANTI_TNT_EXPLOSION.getBoolean() &&
@@ -44,35 +47,53 @@ public class CupboardExplosionProtectListener implements Listener {
 				Config.ANTI_OTHERS_EXPLOSION.getBoolean() &&
 				!event.getEntity().getType().equals(EntityType.PRIMED_TNT)
 			)
-		){
-	    	for (Block block : new ArrayList<Block>(event.blockList())){
-	    		if(data.checkIsLimit(block)){
-					event.blockList().remove(block);
-	    		}
-	    	}
+		) remove_flag = true;
+    	
+    	for (Block block : new ArrayList<Block>(event.blockList())){
+    		if(remove_flag && data.checkIsLimit(block)){
+				event.blockList().remove(block);
+    		} else if(block.getType() == Material.GOLD_BLOCK){ //金磚不會被炸壞
+    			event.blockList().remove(block);
+    		}
     	}
     }
     
     //插件爆炸
     @EventHandler(priority = EventPriority.LOWEST)
     public void onExplode(BlockExplodeEvent event){
-    	for(Block block : new ArrayList<Block>(event.blockList())){
-    		if(data.checkIsLimit(block)){
-    			event.blockList().remove(block);
-    		}
+    	if(Config.ANTI_OTHERS_EXPLOSION.getBoolean()){
+	    	for(Block block : new ArrayList<Block>(event.blockList())){
+	    		if(data.checkIsLimit(block)){
+	    			event.blockList().remove(block);
+	    		} else if(block.getType() == Material.GOLD_BLOCK){ //金磚不會被炸壞
+	    			event.blockList().remove(block);
+	    		}
+	    	}
     	}
     }
 
-  //防止Armor stand被炸毀
+    //防止Armor stand被炸毀
     @EventHandler
-    public void onArmorStandExplosion(EntityDamageEvent e){
-    	//TODO 目前是全部防止 需要修正
+    public void onArmorStandExplosion(EntityDamageByEntityEvent e){
     	if(
     		e.getEntity().getType() == EntityType.ARMOR_STAND &&
-    		( 
-				e.getCause() == DamageCause.BLOCK_EXPLOSION ||
-				e.getCause() == DamageCause.ENTITY_EXPLOSION
-    		) &&
+    		e.getCause() == DamageCause.ENTITY_EXPLOSION
+		){
+    		if(
+				(Config.ANTI_TNT_EXPLOSION.getBoolean() && e.getDamager().getType() == EntityType.PRIMED_TNT) ||
+				(Config.ANTI_OTHERS_EXPLOSION.getBoolean() && e.getDamager().getType() != EntityType.PRIMED_TNT)
+			)
+    			if(this.plugin.data.checkIsLimit(e.getEntity().getLocation().getBlock()))
+    				e.setCancelled(true);
+    	}
+    }
+    
+    //插件爆炸
+    @EventHandler
+    public void onArmorStandExplosion(EntityDamageEvent e){
+    	if(
+    		e.getEntity().getType() == EntityType.ARMOR_STAND &&
+			e.getCause() == DamageCause.BLOCK_EXPLOSION &&
     		this.plugin.data.checkIsLimit(e.getEntity().getLocation().getBlock())
 		){
     		e.setCancelled(true);
@@ -99,8 +120,8 @@ public class CupboardExplosionProtectListener implements Listener {
     		}
     	}
 	}
-    
-    //模組爆炸?
+
+    //插件爆炸
     @EventHandler
     public void onHangingBreak(HangingBreakEvent e) {
     	if(!Config.ANTI_OTHERS_EXPLOSION.getBoolean())return;
