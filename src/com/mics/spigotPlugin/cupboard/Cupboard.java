@@ -29,13 +29,16 @@ public class Cupboard extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		INSTANCE = this;
-        data = new Data(getDataFolder(),this);
         
         //load config
         Config.load();
         this.logDebug("Loaded Config!");
         Locales.load();
         this.logDebug("Loaded Locales!");
+        
+        //load cupboards
+        data = new Data(getDataFolder(),this);
+        this.logDebug("Loaded Cupboards data!");
         
 	    setUpProtectEntity();
         setupPermissions();

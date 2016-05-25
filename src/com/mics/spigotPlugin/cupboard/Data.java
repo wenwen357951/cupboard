@@ -24,6 +24,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import com.google.gson.Gson;
+import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Util;
 
 public class Data {
@@ -32,12 +33,14 @@ public class Data {
 	private Map<String, HashSet<String>> location_limit_check_temp;
 	
 	private File cupboardsFile;
-	static private int PROTECT_DIST = 10;
-	static private int CUPBOARD_DIST = 18;
+	private int PROTECT_DIST;
+	private int CUPBOARD_DIST;
 	private Cupboard plugin;
 	Data(File dataFolder, Cupboard p){
 		this.plugin = p;
         cupboardsFile = new File(dataFolder, "cupboards.json");
+        PROTECT_DIST = Config.CUPBOARD_PROTECT_DIST.getInt()+1;
+        CUPBOARD_DIST = Config.CUPBOARD_BETWEEN_DIST.getInt()+1;
         this.loadCuppboards();
     }
     

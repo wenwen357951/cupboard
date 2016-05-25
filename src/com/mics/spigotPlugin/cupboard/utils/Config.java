@@ -14,6 +14,8 @@ public enum Config {
 	OP_BYPASS("is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),
 	ANTI_TNT_EXPLOSION("anti-tnt-explosion", true, "is cupboard protect explosion from TNT?"),
 	ANTI_CREEPER_EXPLOSION("anti-creeper-explosion", true, "is cupboard protect explosion from CREEPER?"),
+	CUPBOARD_PROTECT_DIST("cupboard_protect_dist", 9, "this is cupboard protect area size (ex 9 is 9+9+1 -> 19*19*19)"),
+	CUPBOARD_BETWEEN_DIST("cupboard_between_dist", 18, "this is how many block between cupboard can put another cupboard"),
 	LOCALE("locale", "en-EN", "language file name");
 	
 	private final Object value;
@@ -39,9 +41,13 @@ public enum Config {
 	public Object getDefaultValue() {
 	    return value;
 	}
-	
+
 	public boolean getBoolean() {
 	    return cfg.getBoolean(path);
+	}
+	
+	public int getInt() {
+	    return cfg.getInt(path);
 	}
 	
 	public double getDouble() {
@@ -57,40 +63,39 @@ public enum Config {
 	}
 	
 	public static void load() {
-	    Cupboard.getInstance().getDataFolder().mkdirs();
-	    reload(false);
-	    String header = "";
-	    for (Config c : values()) {
-	        header += c.getPath() + ": " + c.getDescription() + System.lineSeparator();
-	        if (!cfg.contains(c.getPath())) {
-	            c.set(c.getDefaultValue(), false);
-	        }
-	    }
-	    cfg.options().header(header);
-	    try {
-	        cfg.save(f);
-	    } catch (IOException ex) {
-	        ex.printStackTrace();
-	    }
+		boolean save_flag = false;
+		
+        Cupboard.getInstance().getDataFolder().mkdirs();
+        String header = "";
+		cfg = YamlConfiguration.loadConfiguration(f);
+
+        for (Config c : values()) {
+        	header += c.getPath() + ": " + c.getDescription() + System.lineSeparator();
+            if (!cfg.contains(c.getPath())) {
+            	save_flag = true;
+                c.set(c.getDefaultValue(), false);
+            }
+        }
+        cfg.options().header(header);
+        
+        if(save_flag){
+        	save();
+    		cfg = YamlConfiguration.loadConfiguration(f);
+        }
+	}
+	
+	public static void save(){
+		try {
+			cfg.save(f);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void set(Object value, boolean save) {
 	    cfg.set(path, value);
 	    if (save) {
-	        try {
-	            cfg.save(f);
-	        } catch (IOException ex) {
-	            ex.printStackTrace();
-	        }
-	        reload(false);
+            save();
 	    }
-	}
-	
-	public static void reload(boolean complete) {
-	    if (!complete) {
-	        cfg = YamlConfiguration.loadConfiguration(f);
-	        return;
-	    }
-	    load();
 	}
 }
