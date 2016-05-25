@@ -9,13 +9,19 @@ import com.mics.spigotPlugin.cupboard.Cupboard;
 public enum Config {
 
 	DEBUG("debug", false, "is plugin show debug message?"),
-	ANTI_NETHER_DOOR_BLOCK("anti-nether-door-block", true, "let nether door can't block"),
-	ANTI_NETHER_DOOR_ENTITY_TELEPORT("anti-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),
-	OP_BYPASS("is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),
-	ANTI_TNT_EXPLOSION("anti-tnt-explosion", false, "is cupboard protect explosion from TNT?"),
-	ANTI_CREEPER_EXPLOSION("anti-creeper-explosion", true, "is cupboard protect explosion from CREEPER?"),
-	CUPBOARD_PROTECT_DIST("cupboard_protect_dist", 9, "this is cupboard protect area size (ex 9 is 9+9+1 -> 19*19*19)"),
-	CUPBOARD_BETWEEN_DIST("cupboard_between_dist", 18, "this is how many block between cupboard can put another cupboard"),
+	CUPBOARD_PROTECT_DIST("cupboard.protect_dist", 9, "this is cupboard protect area size (ex 9 is 9+9+1 -> 19*19*19)"),
+	CUPBOARD_BETWEEN_DIST("cupboard.between_dist", 18, "this is how many block between cupboard can put another cupboard"),
+	ANTI_TNT_EXPLOSION("cupboard.anti-tnt-explosion", false, "is cupboard protect explosion from TNT?"),
+	ANTI_CREEPER_EXPLOSION("cupboard.anti-creeper-explosion", true, "is cupboard protect explosion from CREEPER?"),
+	OP_BYPASS("cupboard.is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),
+	ANTI_NETHER_DOOR_BLOCK("world-protect.anti-nether-door-block", true, "let nether door can't block"),
+	ANTI_NETHER_DOOR_ENTITY_TELEPORT("world-protect.anti-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),
+	TNT_SP_ENABLE("tnt.enable", true, "let TNT can desotry obsidian, water, lava."),
+	TNT_BREAK_RADIUS("tnt.break-radius", 3, "destory check radius"),
+	TNT_OBSIDIAN_BREAK_PROBABILITY("tnt.obsidian.break-probability", 0.3, "turn obsidian block probability"),
+	TNT_OBSIDIAN_BREAK_TO("tnt.obsidian.break-to", "COBBLESTONE", "turn obsidian to which block"),
+	TNT_WATER_BREAK_PROBABILITY("tnt.water.break-probability", 1, "turn water block to aire probability"),
+	TNT_LAVA_BREAK_PROBABILITY("tnt.lava.break-probability", 1, "turn lava to obsidian/cobblestone probability"),
 	LOCALE("locale", "en-EN", "language file name");
 	
 	private final Object value;

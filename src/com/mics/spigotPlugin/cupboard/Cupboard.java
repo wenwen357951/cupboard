@@ -15,6 +15,7 @@ import com.mics.spigotPlugin.cupboard.listener.CupboardExplosionProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardBlockProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardUseProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.GoldBlockListener;
+import com.mics.spigotPlugin.cupboard.listener.TNTExplosionListener;
 import com.mics.spigotPlugin.cupboard.listener.WorldProtectListener;
 import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
@@ -52,6 +53,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         new CupboardBlockProtectListener(this);
         new CupboardUseProtectListener(this);
         new GoldBlockListener(this);
+        new TNTExplosionListener(this);
         new WorldProtectListener(this);
     }
 	
@@ -90,8 +92,8 @@ public class Cupboard extends JavaPlugin implements Listener {
 
 	public void logDebug(String str, Object... args)
 	{
-		String message = String.format(str, args);
 		if(Config.DEBUG.getBoolean()) {
+		String message = String.format(str, args);
 			getLogger().info("(DEBUG) " + message);
 		}
 	}
