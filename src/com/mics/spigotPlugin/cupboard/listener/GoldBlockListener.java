@@ -14,7 +14,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.Util;
+import com.mics.spigotPlugin.cupboard.utils.Locales;
+import com.mics.spigotPlugin.cupboard.utils.Util;
 
 public class GoldBlockListener implements Listener {
 	private Cupboard plugin;
@@ -32,7 +33,7 @@ public class GoldBlockListener implements Listener {
     	if(event.getBlock().getType() == Material.GOLD_BLOCK){
     		Player p = event.getPlayer();
     		plugin.data.removeCupboard(event.getBlock());
-    		Util.msgToPlayer(p, "金磚已拆除");
+    		Util.msgToPlayer(p, Locales.GOLD_REMOVE.getString());
     	}
     }
     
@@ -43,12 +44,11 @@ public class GoldBlockListener implements Listener {
     	if(event.getBlockPlaced().getType() == Material.GOLD_BLOCK){
     		Player p = event.getPlayer();
     		if(!plugin.data.putCupboard(event.getBlockPlaced(), p)){
-    			Util.msgToPlayer(p, "距離其他金磚太近。");
+    			Util.msgToPlayer(p,Locales.GOLD_TOO_CLOSE.getString());
     			event.setCancelled(true);
     			return;
     		}
-    		Util.msgToPlayer(p, "金磚已放置並取得授權。(潛行右鍵取得說明)");
-    		//Util.msgToPlayer(p, "*** 貼心提醒: 金磚並不防止被活塞推動。 ***");
+    		Util.msgToPlayer(p, Locales.GOLD_PLACE.getString());
     	}
     }
     
@@ -84,31 +84,23 @@ public class GoldBlockListener implements Listener {
 			break;
     	}
     	if(front_block_loc.getBlock().getType().isSolid()){
-    		p.sendMessage("被擋住了，無法授權/取消授權。");
+    		p.sendMessage(Locales.GOLD_ACCESS_BLOCKED.getString());
     		return;
     	}
     	
 		if (p.isSneaking()){
-			//說明
-			p.sendMessage("§a金磚放置後產生19x19x19的方形保護區，金磚在正中央。");
-			p.sendMessage("§a保護區只防止下列事項: ");
-			p.sendMessage("§71. 未授權者無法放置/移除方塊。");
-			p.sendMessage("§72. 未授權者無法使用石製壓力版/石製按鈕。");
-			p.sendMessage("§73. 怪物/動物無法觸發石製壓力版");
-			p.sendMessage("§74. 防止任何種類爆炸炸掉保護區。");
-			p.sendMessage("§75. 防止金磚被活塞推動。");
-			p.sendMessage("§c特別警告以下為可執行事件: ");
-			p.sendMessage("§72. 使用木製門/按鈕/壓力版/箱子/控制桿/活塞/柵欄門");
-			p.sendMessage("§73. 打掉方塊使上方會掉落之方塊掉落");
+			for(String str : Locales.HELP.getStringList()){
+				p.sendMessage(str);
+			}
 			return;
 		}
 		String str;
 		if(!plugin.data.checkCupboardExist(event.getClickedBlock())){
-			str="此金磚非由玩家放置或資料遺失，請拆除後重新放置";
+			str=Locales.GOLD_DATA_NOT_FOUND.getString();
 		} else if(plugin.data.toggleBoardAccess(p, event.getClickedBlock())){
-			str="已授權";
+			str=Locales.GOLD_GRANT_ACCESS.getString();
 		} else {
-			str="已取消授權";
+			str=Locales.GOLD_REVOKE_ACCESS.getString();
 		}
 		event.setCancelled(true);
 		p.updateInventory();

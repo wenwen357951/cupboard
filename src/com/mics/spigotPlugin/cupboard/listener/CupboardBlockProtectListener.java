@@ -14,8 +14,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+
 import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.Data;
+import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 public class CupboardBlockProtectListener implements Listener {
 	private Cupboard plugin;
@@ -39,7 +41,7 @@ public class CupboardBlockProtectListener implements Listener {
         	if(data.checkIsLimit(b, p)){
         		if(this.plugin.isOP(p))return;
         		e.setCancelled(true);
-    			p.sendMessage("§4沒有權限 §7(被關住了? 試試 /esc)");
+    			p.sendMessage(Locales.NO_ACCESS.getString());
         	}
         } else {
         	if(data.checkIsLimit(b)){
@@ -56,7 +58,7 @@ public class CupboardBlockProtectListener implements Listener {
         	if(data.checkIsLimit(b, p)){
             	if(this.plugin.isOP(p))return;
         		e.setCancelled(true);
-    			p.sendMessage("§4沒有權限 §7(被關住了? 試試 /esc)");
+    			p.sendMessage(Locales.NO_ACCESS.getString());
         	}
         } else {
         	if(data.checkIsLimit(b))

@@ -16,32 +16,28 @@ import com.mics.spigotPlugin.cupboard.listener.CupboardBlockProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardUseProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.GoldBlockListener;
 import com.mics.spigotPlugin.cupboard.listener.WorldProtectListener;
+import com.mics.spigotPlugin.cupboard.utils.Config;
+import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 import net.milkbowl.vault.permission.Permission;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
-	// CONFIG
-	public boolean CFG_DEBUG = true;
-	public boolean CFG_ANTI_NETHER_DOOR_BLOCK = true;
-	public boolean CFG_ANTI_NETHER_DOOR_ENTITY_TELEPORT = true;
-	public boolean CFG_OP_BYPASS = true;
-	public boolean CFG_ANTI_TNT_EXPLOSION = false;
-	public boolean CFG_ANTI_CREEPER_EXPLOSION = true;
-	// END OF CONFIG
+    private static Cupboard INSTANCE;
 	
 	public Data data;
 	@Override
 	public void onEnable() {
-        getServer().getPluginManager().registerEvents(this, this);
-        
-        //TODO check cupboard.json file
-        //處理資料庫
+		INSTANCE = this;
         data = new Data(getDataFolder(),this);
         
-
-	    setUpProtectEntity();
+        //load config
+        Config.load();
+        this.logDebug("Loaded Config!");
+        Locales.load();
+        this.logDebug("Loaded Locales!");
         
+	    setUpProtectEntity();
         setupPermissions();
         
         //register command
@@ -83,7 +79,7 @@ public class Cupboard extends JavaPlugin implements Listener {
     
     public boolean isOP(Player p){
     	if(p.isOp() && p.getGameMode() == GameMode.CREATIVE){
-    		p.sendMessage("§c警告: 管理員權限已忽視保護區");
+    		p.sendMessage(Locales.OP_BYPASS.getString());
     		return true;
     	}
 		return false;
@@ -92,9 +88,20 @@ public class Cupboard extends JavaPlugin implements Listener {
 	public void logDebug(String str, Object... args)
 	{
 		String message = String.format(str, args);
-		if(this.CFG_DEBUG) {
+		if(Config.DEBUG.getBoolean()) {
 			getLogger().info("(DEBUG) " + message);
 		}
+	}
+	public void log(String str, Object... args)
+	{
+		String message = String.format(str, args);
+		if(Config.DEBUG.getBoolean()) {
+			getLogger().info(message);
+		}
+	}
+
+	public static Cupboard getInstance() {
+		return INSTANCE;
 	}
     
     

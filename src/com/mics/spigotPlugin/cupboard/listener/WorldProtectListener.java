@@ -10,6 +10,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
+import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 public class WorldProtectListener implements Listener {
 	private Cupboard plugin;
@@ -43,7 +44,7 @@ public class WorldProtectListener implements Listener {
 	        	if(b.getType() == Material.STONE_PLATE) return;
 	        	if(b.getType() == Material.IRON_PLATE) return;
 	        	if(b.getType() == Material.GOLD_PLATE) return;
-        		p.sendMessage("§7請勿將地獄門堵死");
+        		p.sendMessage(Locales.DO_NOT_BLOCK_NETHER_DOOR.getString());
         		e.setCancelled(true);
 	    	}
     	}

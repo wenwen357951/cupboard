@@ -1,0 +1,18 @@
+Message:
+  op-bypass: '&c警告: 管理員權限已忽視保護區'
+  place-gold-block: '金磚已放置並取得授權。(潛行右鍵取得說明)'
+  remove-gold-block: '金磚已拆除'
+  gold-block-too-close-to-place: 距離其他金磚太近
+  access-blocked-gold-block: 被擋住了，無法授權/取消授權。
+  gold-data-not-found: 此金磚不是由使用者放置或資料遺失，請重新放置。
+  grant-access: 已授權
+  revoke-access: 已取消授權
+  no-access: '&4沒有權限 &7(被關住了? 試試 /esc)'
+  do-not-block-nether-door: '&7請勿將地獄門堵死'
+Help:
+- '&a金磚放置後產生19x19x19的方形保護區，金磚在正中央。'
+- '&a保護區防止下列事項發生: '
+- '&71. 未授權者無法放置/移除方塊'
+- '&72. 未授權者無法使用石製壓力版/石製按鈕'
+- '&73. 怪物/動物無法觸發石製壓力版'
+- '&74. 防止苦力怕炸掉保護區'

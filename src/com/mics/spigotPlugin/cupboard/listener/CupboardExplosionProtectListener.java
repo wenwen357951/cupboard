@@ -19,6 +19,7 @@ import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.Data;
+import com.mics.spigotPlugin.cupboard.utils.Config;
 
 public class CupboardExplosionProtectListener implements Listener {
 	private Cupboard plugin;
@@ -37,10 +38,10 @@ public class CupboardExplosionProtectListener implements Listener {
     public void onExplode(EntityExplodeEvent event){
     	if(
 			(
-				this.plugin.CFG_ANTI_TNT_EXPLOSION &&
+				Config.ANTI_TNT_EXPLOSION.getBoolean() &&
 				event.getEntity().getType().equals(EntityType.PRIMED_TNT)
 			) || (
-				this.plugin.CFG_ANTI_CREEPER_EXPLOSION &&
+				Config.ANTI_CREEPER_EXPLOSION.getBoolean() &&
 				event.getEntity().getType().equals(EntityType.CREEPER)
 			)
 		){
@@ -82,7 +83,7 @@ public class CupboardExplosionProtectListener implements Listener {
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent e) {
     	//NEEDFIX -- TNT LIGHT BY ALLOW USER WILL DESTORY HANGING ITEM
-    	if(!this.plugin.CFG_ANTI_TNT_EXPLOSION)return;
+    	if(!Config.ANTI_TNT_EXPLOSION.getBoolean())return;
 		Location bl = e.getEntity().getLocation().getBlock().getLocation();
     	if (!(e.getRemover() instanceof Player)) {
     		if(e.getCause() == RemoveCause.ENTITY){ //by creeper
@@ -93,7 +94,7 @@ public class CupboardExplosionProtectListener implements Listener {
     
     @EventHandler
     public void onHangingBreak(HangingBreakEvent e) {
-    	if(!this.plugin.CFG_ANTI_CREEPER_EXPLOSION)return;
+    	if(!Config.ANTI_CREEPER_EXPLOSION.getBoolean())return;
     	Location bl = e.getEntity().getLocation().getBlock().getLocation();
 		if(e.getCause() == RemoveCause.EXPLOSION){ //by TNT
 			if(this.plugin.data.checkIsLimit(bl)) e.setCancelled(true);
