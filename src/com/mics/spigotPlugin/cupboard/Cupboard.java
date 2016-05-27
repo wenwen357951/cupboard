@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.mics.spigotPlugin.cupboard.command.EscCommand;
+import com.mics.spigotPlugin.cupboard.command.KillCommand;
 import com.mics.spigotPlugin.cupboard.listener.CupboardEntityProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardExplosionProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardBlockProtectListener;
@@ -42,10 +42,12 @@ public class Cupboard extends JavaPlugin implements Listener {
         this.logDebug("Loaded Cupboards data!");
         
 	    setUpProtectEntity();
-        setupPermissions();
+        //setupPermissions();
         
         //register command
-        this.getCommand("esc").setExecutor(new EscCommand(this));
+        //this.getCommand("esc").setExecutor(new EscCommand(this));
+        this.getCommand("kill").setExecutor(new KillCommand(this));
+        
         
         //register listener
         new CupboardEntityProtectListener(this);

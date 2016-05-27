@@ -1,7 +1,8 @@
 name: CupBoard
 main: com.mics.spigotPlugin.cupboard.Cupboard
-version: 1.0.0
+version: 1.0.1
 commands:
-  esc:
-    description: teleport out to non-protect zone
-    usage: /esc
+  kill:
+    description: kill yourself
+    aliases: [suicide]
+    usage: /kill

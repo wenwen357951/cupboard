@@ -7,7 +7,7 @@ gold-block:
   gold-data-not-found: 此金磚不是由使用者放置或資料遺失，請重新放置。
   grant-access: 已授權
   revoke-access: 已取消授權
-  no-access: '&4沒有權限 &7(被關住了? 試試 /esc)'
+  no-access: '&4沒有權限 &7'
 world-protect:
   do-not-block-nether-door: '&7請勿將地獄門堵死'
 teleport:
