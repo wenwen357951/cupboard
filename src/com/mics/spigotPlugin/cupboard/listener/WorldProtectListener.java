@@ -1,13 +1,20 @@
 package com.mics.spigotPlugin.cupboard.listener;
 
+import java.util.ArrayList;
+
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.utils.Config;
@@ -21,6 +28,36 @@ public class WorldProtectListener implements Listener {
 	    this.plugin = instance;
 	    this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
 	    this.plugin.logDebug("WorldProtectListener Registed.");
+	}
+	
+	//豬人會掉落地獄疙瘩
+	@EventHandler
+	public void onPigZombieDeath(EntityDeathEvent e){
+		if(!Config.PIGZOMBIE_DROP_NETHER_WART.getBoolean())return;
+		LivingEntity entity = e.getEntity();
+        World world = entity.getWorld();
+        ArrayList<ItemStack> will_remove = new ArrayList<ItemStack>();
+        boolean in_nether = world.getEnvironment().equals(World.Environment.NETHER);
+        int add_nether_wart_count = 0;
+        if (in_nether && entity instanceof PigZombie){
+        	for(ItemStack i : e.getDrops()){
+        		if(i.getType().equals(Material.GOLD_NUGGET)){
+        			if(Config.PIGZOMBIE_DROP_NETHER_WART_PERCENT.getDouble() >= Math.random()){
+            			will_remove.add(i);
+        			}
+        		}
+        	}
+        	//add
+        	for(int i = 0; i < add_nether_wart_count; i++){
+        	}
+        	//remove
+        	for(ItemStack i: will_remove){
+        		e.getDrops().remove(i);
+        		ItemStack ns = new ItemStack(Material.NETHER_STALK);
+        		ns.setAmount(i.getAmount());
+        		e.getDrops().add(ns);
+        	}
+        }
 	}
 	
 	//防止除玩家之外之物件透過地獄門傳送

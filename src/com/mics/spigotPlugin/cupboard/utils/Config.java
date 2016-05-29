@@ -14,8 +14,12 @@ public enum Config {
 	ANTI_TNT_EXPLOSION("cupboard.anti-tnt-explosion", false, "is cupboard protect explosion from TNT?"),
 	ANTI_OTHERS_EXPLOSION("cupboard.anti-creeper-explosion", true, "is cupboard protect explosion from CREEPER?"),
 	OP_BYPASS("cupboard.is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),
+	
 	ANTI_NETHER_DOOR_BLOCK("world-protect.anti-nether-door-block", true, "let nether door can't block"),
 	ANTI_NETHER_DOOR_ENTITY_TELEPORT("world-protect.anti-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),
+	PIGZOMBIE_DROP_NETHER_WART("world-protect.pigzombie-drop-nether-wart.enable", true, "let pig zombie drop nether-wart in nether"),
+	PIGZOMBIE_DROP_NETHER_WART_PERCENT("world-protect.pigzombie-drop-nether-wart.percent", 0.3, "0~1, this mean when drop gold nugget, how many percent will turn it to nether wart."),
+	
 	TNT_SP_ENABLE("tnt.enable", true, "let TNT can desotry obsidian, water, lava, and TNT hard to craft."),
 	TNT_BREAK_RADIUS("tnt.break-radius", 3, "destory check radius"),
 	TNT_OBSIDIAN_BREAK_PROBABILITY("tnt.obsidian.break-probability", 0.5, "turn obsidian block probability"),
