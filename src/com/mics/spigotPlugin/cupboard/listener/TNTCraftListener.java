@@ -85,6 +85,9 @@ public class TNTCraftListener implements Listener  {
     	
     	//setup TNT
     	item = new ItemStack(Material.TNT);
+    	meta = item.getItemMeta();
+    	meta.setLore(Locales.TNT_TNT_LORE.getStringList());
+    	item.setItemMeta(meta);
     	
     	//setup TNT recipes
     	shapedRecipe = new ShapedRecipe(item);

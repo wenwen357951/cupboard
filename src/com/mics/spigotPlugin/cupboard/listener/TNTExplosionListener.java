@@ -74,7 +74,7 @@ public class TNTExplosionListener  implements Listener {
 			public void run() {
 				cant_flow_liquid.remove(Util.LocToString(l));
 			}
-    	}, 20);
+    	}, 100);
     }
     
 

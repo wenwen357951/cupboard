@@ -39,6 +39,11 @@ public enum Locales {
 	    	"&r&6E G E   &bG is Block of Gold",
 	    	"&r&6E E E"
 	}),
+	TNT_TNT_LORE("tnt.tnt-lore", new String[] {
+			"&r&6Put in portect area, will Auto Ignite.",
+			"&r&6Can destory protect area.",
+			"&r&6Can destory water, lava and obsidian.",
+	}),
 	
 	//HELP
 	HELP("Help", new String[] {

@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,6 +18,7 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.Data;
+import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 public class CupboardBlockProtectListener implements Listener {
@@ -57,6 +59,11 @@ public class CupboardBlockProtectListener implements Listener {
         if( p != null){
         	if(data.checkIsLimit(b, p)){
             	if(this.plugin.isOP(p))return;
+            	if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT)){
+            		e.getBlockPlaced().setType(e.getBlockReplacedState().getType());
+            		b.getWorld().spawn(e.getBlockPlaced().getLocation().add(0.5,0,0.5), TNTPrimed.class);
+            		return;
+            	}
         		e.setCancelled(true);
     			p.sendMessage(Locales.NO_ACCESS.getString());
         	}
