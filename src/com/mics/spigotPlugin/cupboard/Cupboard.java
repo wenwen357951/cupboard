@@ -5,7 +5,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.mics.spigotPlugin.cupboard.command.KillCommand;
@@ -14,13 +13,12 @@ import com.mics.spigotPlugin.cupboard.listener.CupboardExplosionProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardBlockProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardUseProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.GoldBlockListener;
+import com.mics.spigotPlugin.cupboard.listener.RespawnListener;
 import com.mics.spigotPlugin.cupboard.listener.TNTCraftListener;
 import com.mics.spigotPlugin.cupboard.listener.TNTExplosionListener;
 import com.mics.spigotPlugin.cupboard.listener.WorldProtectListener;
 import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
-
-import net.milkbowl.vault.permission.Permission;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
@@ -57,6 +55,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         new GoldBlockListener(this);
         new TNTExplosionListener(this);
         new WorldProtectListener(this);
+        new RespawnListener(this);
         
         //rewrite TNT Receipts Listener
         if(Config.TNT_SP_ENABLE.getBoolean()){
@@ -82,12 +81,14 @@ public class Cupboard extends JavaPlugin implements Listener {
 
     }
 
+    /*
     public Permission perms;
     private boolean setupPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         perms = rsp.getProvider();
         return perms != null;
     }
+    */
     
     public boolean isOP(Player p){
     	if(p.isOp() && p.getGameMode() == GameMode.CREATIVE){

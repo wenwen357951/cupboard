@@ -13,12 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -35,6 +32,7 @@ public class Data {
 	private File cupboardsFile;
 	private int PROTECT_DIST;
 	private int CUPBOARD_DIST;
+	@SuppressWarnings("unused")
 	private Cupboard plugin;
 	Data(File dataFolder, Cupboard p){
 		this.plugin = p;
@@ -180,6 +178,7 @@ public class Data {
 		if(location_limit_check_temp.get(str_l).contains(p.getUniqueId().toString())) return false;
 		return true;
 	}
+	/*
 	public boolean checkIsLimitOffline(Block b, Player p){
 		Location l = b.getLocation();
 		boolean perm_flag = false;			//anyone has perm?
@@ -193,12 +192,13 @@ public class Data {
 		for(String auth_player_uuid_str: location_limit_check_temp.get(str_l)){
 			OfflinePlayer auth_player = this.plugin.getServer().getOfflinePlayer(UUID.fromString(auth_player_uuid_str));
 			if(auth_player.isOnline())online_flag = true;
-			if(this.plugin.perms.playerHas(null, auth_player, "cupboard.vip"))perm_flag = true;
+			//if(this.plugin.perms.playerHas(null, auth_player, "cupboard.vip"))perm_flag = true;
 		}
 		if(online_flag) return false;
 		if(perm_flag) return true;
 		return false;
 	}
+	*/
 	
 	//算出這格有誰保護~~~
 	private void calcLocationLimit(Location l){

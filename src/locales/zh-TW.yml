@@ -8,6 +8,7 @@ gold-block:
   grant-access: 已授權
   revoke-access: 已取消授權
   no-access: '&4沒有權限 &7'
+  spawn-without-access: '&c你的重生點在未授權保護區，下次將回到世界重生點'
 world-protect:
   do-not-block-nether-door: '&7請勿將地獄門堵死'
 teleport:
@@ -29,3 +30,7 @@ tnt:
   - '&r&6E E E   &bE 代表&4炸藥'
   - '&r&6E G E   &bG 代表金磚'
   - '&r&6E E E'
+  tnt-lore:
+  - '&r&6如果放置在未授權保護區內會直接點燃'
+  - '&r&6可以破壞保護區'
+  - '&r&6可以破壞水、岩漿、黑曜石'
