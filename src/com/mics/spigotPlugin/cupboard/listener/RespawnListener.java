@@ -27,8 +27,6 @@ public class RespawnListener implements Listener {
 			if(this.plugin.data.checkIsLimit(l, p)){
 				p.setBedSpawnLocation(null);
 				p.sendMessage(Locales.SPAWN_WITHOUT_ACCESS.getString());
-			} else {
-				//TODO offline delete spawn location
 			}
 		}
 	}
