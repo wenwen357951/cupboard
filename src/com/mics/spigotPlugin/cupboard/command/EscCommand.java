@@ -62,7 +62,7 @@ public class EscCommand implements CommandExecutor{
 	
 	private Location aroundSafeLocationFind(Player p, Location org_location, int count) {
 		Location location = org_location.clone();
-		location.add(count,0,0);
+		location.add(1,0,0);
 		Location location_sendtoGround = sendToGround(location);
 		if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
 			return location_sendtoGround;
@@ -86,6 +86,12 @@ public class EscCommand implements CommandExecutor{
 		}
 		for(int i= -count ; i < count; i++){
 			location.add(1,0,0);
+			location_sendtoGround = sendToGround(location);
+			if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+				return location_sendtoGround;
+		}
+		for(int i=0; i < count; i++){
+			location.add(0,0,1);
 			location_sendtoGround = sendToGround(location);
 			if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
 				return location_sendtoGround;
