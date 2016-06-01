@@ -8,9 +8,14 @@ gold-block:
   grant-access: 已授權
   revoke-access: 已取消授權
   no-access: '&4沒有權限 &7'
-  spawn-without-access: '&c你的重生點在未授權保護區，下次將回到世界重生點'
+  spawn-without-access: '&c你的重生點在未授權保護區，重生點已回到世界重生點'
 world-protect:
   do-not-block-nether-door: '&7請勿將地獄門堵死'
+  spawn-outside_border: '&c你的重生點在世界邊界外，重生點已回到世界重生點'
+world-border:
+  border-is-changed: |-
+    &e世界的邊界已經被改變  &7( 每 %.0f 分鐘就會縮小 %d 格 )
+    &b現在邊界: 現界 %d 地獄 %d 終界 %d
 teleport:
   teleport-fail: '&4傳送失敗.'
   teleport-now: 十秒後傳送, 請勿移動

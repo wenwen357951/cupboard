@@ -24,6 +24,13 @@ public enum Config {
 	WP_PIGZOMBIE_DROP_NETHER_WART("world-protect.pigzombie-drop-nether-wart.enable", true, "let pig zombie drop nether-wart in nether"),
 	WP_PIGZOMBIE_DROP_NETHER_WART_PERCENT("world-protect.pigzombie-drop-nether-wart.percent", 0.3, "0~1, this mean when drop gold nugget, how many percent will turn it to nether wart."),
 	
+	WB_ENABLE("world-border.enable", true, "enable world border system? (use this system please DO NOT modify time)"),
+	WB_INIT_RADIUS("world-border.init-radius", 1200, "it mean -x ~ x "),
+	WB_MIN_RADIUS("world-border.min-radius", 500, "it mean min -x ~ x "),
+	WB_DEDUCT_AMOUNT("world-border.deduct-amount", 1, "how many border to deduct every period"),
+	WB_DEDUCT_TIME("world-border.deduct-time", 3600, "deduct period (sec)"),
+	WB_NETHER_SCALE("world-border.nether-scale", 4, "nether border scale"),
+	WB_ENDER_SCALE("world-border.ender-scale", 4, "ender border scale"),
 	
 	TNT_SP_ENABLE("tnt.enable", true, "let TNT can desotry obsidian, water, lava, and TNT hard to craft."),
 	TNT_BREAK_RADIUS("tnt.break-radius", 3, "destory check radius"),

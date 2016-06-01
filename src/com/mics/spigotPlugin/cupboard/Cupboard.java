@@ -57,6 +57,11 @@ public class Cupboard extends JavaPlugin implements Listener {
         new WorldProtectListener(this);
         new RespawnListener(this);
         
+        //setup worldborder
+        if(Config.WB_ENABLE.getBoolean()){
+        	new WorldBorder(this);
+        }
+        
         //rewrite TNT Receipts Listener
         if(Config.TNT_SP_ENABLE.getBoolean()){
             new TNTCraftListener(this);
