@@ -14,17 +14,21 @@ public class WorldBorder {
 	Cupboard plugin;
 	Runnable runnable;
 	int schedule_id;
-	long last_border = 600000000;
+	long last_border;
 	public WorldBorder(Cupboard i){
 		this.plugin = i;
+		this.last_border = 600000000;
 		//init border
 		List<World> worlds = plugin.getServer().getWorlds();
-		long passed_sec = plugin.getServer().getWorld("world").getFullTime();
-		setWorldBorder(worlds, passed_sec);
+		long passed_sec = plugin.getServer().getWorld("world").getFullTime() / 20;
+		setWorldBorder(worlds, passed_sec, false);
 		setupRunnable();
 	}
-	
+
 	private void setWorldBorder(List<World> worlds, long passed_sec){
+		this.setWorldBorder(worlds, passed_sec, true);
+	}
+	private void setWorldBorder(List<World> worlds, long passed_sec, boolean notify){
 		long border = getSize(passed_sec,
 				Config.WB_INIT_RADIUS.getInt(), 
 				Config.WB_DEDUCT_TIME.getInt(),
@@ -54,10 +58,10 @@ public class WorldBorder {
 				ender_border
 			);
 		
+		if(!notify)return;
 		for (Player p : players){
 			p.sendMessage(str);
 		}
-		
 	}
 	
 	private long getSize(long passed_sec, int init, int deduct_time, int deduct_amount){
