@@ -1,8 +1,17 @@
 name: CupBoard
 main: com.mics.spigotPlugin.cupboard.Cupboard
-version: 1.2.1
+version: 1.2.2
 commands:
   kill:
     description: kill yourself
     aliases: [suicide]
     usage: /kill
+  cupboardreload:
+    description: Reload cupboard config
+    usage: /cupboardreload
+    permission: cupboard.admin
+    
+permissions:
+  cupboard.admin:
+    description: this can reload cupboard config
+    default: op

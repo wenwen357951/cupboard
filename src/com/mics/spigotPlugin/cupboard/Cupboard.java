@@ -2,11 +2,12 @@ package com.mics.spigotPlugin.cupboard;
 
 import java.util.ArrayList;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.mics.spigotPlugin.cupboard.command.ReloadCommand;
 import com.mics.spigotPlugin.cupboard.command.KillCommand;
 import com.mics.spigotPlugin.cupboard.listener.CupboardEntityProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardExplosionProtectListener;
@@ -25,12 +26,12 @@ import com.mics.spigotPlugin.cupboard.utils.Locales;
 public class Cupboard extends JavaPlugin implements Listener {
 	public Data data;
     private static Cupboard INSTANCE;
-    private ArrayList<MyListener> registedListeners;
+    private ArrayList<Object> registedObject;
 	
 	@Override
 	public void onEnable() {
 		INSTANCE = this;
-		registedListeners = new ArrayList<MyListener>();
+		registedObject = new ArrayList<Object>();
         //load config
         Config.load();
         this.logDebug("Loaded Config!");
@@ -40,65 +41,87 @@ public class Cupboard extends JavaPlugin implements Listener {
         //load cupboards
         data = new Data(getDataFolder(),this);
         this.logDebug("Loaded Cupboards data!");
-        
-	    setUpProtectEntity();
-        //setupPermissions();
-        
-        //register command
-        //this.getCommand("esc").setExecutor(new EscCommand(this));
+
         this.getCommand("kill").setExecutor(new KillCommand(this));
+        this.getCommand("cupboardreload").setExecutor(new ReloadCommand(this));
         
-        
-        //register listener
-        registedListeners.add(new CupboardEntityProtectListener(this));
-        registedListeners.add(new CupboardExplosionProtectListener(this));
-        registedListeners.add(new CupboardBlockProtectListener(this));
-        registedListeners.add(new CupboardUseProtectListener(this));
-        registedListeners.add(new GoldBlockListener(this));
-        registedListeners.add(new TNTExplosionListener(this));
-        registedListeners.add(new WorldProtectListener(this));
-        registedListeners.add(new RespawnListener(this));
-        
-        //setup worldborder
-        if(Config.WB_ENABLE.getBoolean()){
-        	//TODO let this unload able.
-        	new WorldBorder(this);
-        }
+        registerObject();
+    }
+	private void registerObject(){
+		//register listener
+        registedObject.add(new CupboardEntityProtectListener(this));
+        registedObject.add(new CupboardExplosionProtectListener(this));
+        registedObject.add(new CupboardBlockProtectListener(this));
+        registedObject.add(new CupboardUseProtectListener(this));
+        registedObject.add(new GoldBlockListener(this));
+        registedObject.add(new WorldProtectListener(this));
+        registedObject.add(new RespawnListener(this));
         
         //rewrite TNT Receipts Listener
         if(Config.TNT_SP_ENABLE.getBoolean()){
-        	registedListeners.add(new TNTCraftListener(this));
+            registedObject.add(new TNTExplosionListener(this));
+        	registedObject.add(new TNTCraftListener(this));
         }
-    }
+        
+        if(Config.WB_ENABLE.getBoolean()){
+        	registedObject.add(new WorldBorder(this));
+        }
+	}
 	
-	public ArrayList<Material> protect_vehicle;
-    private void setUpProtectEntity(){
-    	protect_vehicle = new ArrayList<Material>();
-    	protect_vehicle.add(Material.ARMOR_STAND);
-    	protect_vehicle.add(Material.BOAT);
-    	protect_vehicle.add(Material.MINECART );
-    	protect_vehicle.add(Material.COMMAND_MINECART );
-    	protect_vehicle.add(Material.EXPLOSIVE_MINECART );
-    	protect_vehicle.add(Material.HOPPER_MINECART );
-    	protect_vehicle.add(Material.POWERED_MINECART );
-    	protect_vehicle.add(Material.STORAGE_MINECART );
-    }
-	
+	public void reload(){
+		this.logDebug("");
+		this.logDebug("============================================");
+		this.logDebug("Unregister Object");
+		this.logDebug("============================================");
+		for(Object l : registedObject){
+			if(l instanceof MyListener){
+				((MyListener)l).unregisterListener();
+			} else if(l instanceof WorldBorder){
+				((WorldBorder)l).removeRunnable();
+			} else {
+				this.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				this.log("[ERROR] Object " + l.getClass().getName() + " Can't unreigster");
+				this.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			}
+		}
+
+		this.logDebug("");
+		this.logDebug("============================================");
+		this.logDebug("Unregister ALL Listener and Schedule tasks");
+		this.logDebug("============================================");
+		//force unregister again
+        this.logDebug("Unregister Listener!");
+		HandlerList.unregisterAll();
+        this.logDebug("Unregister Schedule tasks!");
+		this.getServer().getScheduler().cancelAllTasks();
+		
+		//new registerdListeners
+		registedObject = new ArrayList<Object>();
+        //load config
+		this.logDebug("");
+		this.logDebug("============================================");
+		this.logDebug("Reloading Config / Locales");
+		this.logDebug("============================================");
+        Config.load();
+        this.logDebug("Loaded Config!");
+        Locales.load();
+        this.logDebug("Loaded Locales!");
+
+		this.logDebug("");
+		this.logDebug("============================================");
+		this.logDebug("Register Listener");
+		this.logDebug("============================================");
+		registerObject();
+		this.logDebug("");
+        this.log("Config Reloaded!");
+	}
     @Override
     public void onDisable() {
 
     }
-
-    /*
-    public Permission perms;
-    private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        perms = rsp.getProvider();
-        return perms != null;
-    }
-    */
     
     public boolean isOP(Player p){
+    	if(!Config.OP_BYPASS.getBoolean())return false;
     	if(p.isOp() && p.getGameMode() == GameMode.CREATIVE){
     		p.sendMessage(Locales.OP_BYPASS.getString());
     		return true;
@@ -116,9 +139,7 @@ public class Cupboard extends JavaPlugin implements Listener {
 	public void log(String str, Object... args)
 	{
 		String message = String.format(str, args);
-		if(Config.DEBUG.getBoolean()) {
-			getLogger().info(message);
-		}
+		getLogger().info(message);
 	}
 
 	public static Cupboard getInstance() {

@@ -23,9 +23,22 @@ public class CupboardEntityProtectListener extends MyListener {
 	public CupboardEntityProtectListener(Cupboard instance)
 	{
 		super(instance);
-	    this.protect_vehicle = this.plugin.protect_vehicle;
+		
+		setUpProtectEntity();
 	    this.data = this.plugin.data;
 	}
+	
+    private void setUpProtectEntity(){
+    	protect_vehicle = new ArrayList<Material>();
+    	protect_vehicle.add(Material.ARMOR_STAND);
+    	protect_vehicle.add(Material.BOAT);
+    	protect_vehicle.add(Material.MINECART );
+    	protect_vehicle.add(Material.COMMAND_MINECART );
+    	protect_vehicle.add(Material.EXPLOSIVE_MINECART );
+    	protect_vehicle.add(Material.HOPPER_MINECART );
+    	protect_vehicle.add(Material.POWERED_MINECART );
+    	protect_vehicle.add(Material.STORAGE_MINECART );
+    }
 
 
     //防止Hanging類物品被未授權玩家放置

@@ -13,6 +13,7 @@ import com.mics.spigotPlugin.cupboard.utils.Locales;
 public class WorldBorder {
 	Cupboard plugin;
 	Runnable runnable;
+	int schedule_id;
 	long last_border = 600000000;
 	public WorldBorder(Cupboard i){
 		this.plugin = i;
@@ -65,6 +66,11 @@ public class WorldBorder {
 		return  radius;
 	}
 	
+	public void removeRunnable(){
+		this.plugin.getServer().getScheduler().cancelTask(schedule_id);
+		this.plugin.logDebug("WorldBorder check timer task removed");
+	}
+	
 	private void setupRunnable(){
 		runnable = new Runnable(){
 			@Override
@@ -74,6 +80,7 @@ public class WorldBorder {
 				setWorldBorder(worlds, passed_sec);
 			}
 		};
-		this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, runnable, 0, 20);
+		schedule_id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, runnable, 0, 20);
+		this.plugin.logDebug("WorldBorder check timer task added");
 	}
 }
