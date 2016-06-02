@@ -4,20 +4,16 @@ import org.bukkit.Location;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 
-public class RespawnListener implements Listener {
-	Cupboard plugin;
+public class RespawnListener extends MyListener {
 	public RespawnListener(Cupboard instance)
 	{
-		this.plugin = instance;
-	  	this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
-	  	this.plugin.logDebug("SpawnListener Registed.");
+		super(instance);
 	}
 	
     @EventHandler

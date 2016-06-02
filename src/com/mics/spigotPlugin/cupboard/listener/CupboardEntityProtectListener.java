@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -17,16 +16,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.Data;
 
-public class CupboardEntityProtectListener implements Listener {
-	private Cupboard plugin;
-	ArrayList<Material> protect_vehicle;
-	public Data data;
+public class CupboardEntityProtectListener extends MyListener {
+	private ArrayList<Material> protect_vehicle;
+	private Data data;
 
 	public CupboardEntityProtectListener(Cupboard instance)
 	{
-	    this.plugin = instance;
-	    this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
-	    this.plugin.logDebug("CupboardUseProtectListener Registed.");
+		super(instance);
 	    this.protect_vehicle = this.plugin.protect_vehicle;
 	    this.data = this.plugin.data;
 	}

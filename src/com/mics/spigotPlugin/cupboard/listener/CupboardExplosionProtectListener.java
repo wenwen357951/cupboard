@@ -23,15 +23,12 @@ import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.Data;
 import com.mics.spigotPlugin.cupboard.utils.Config;
 
-public class CupboardExplosionProtectListener implements Listener {
-	private Cupboard plugin;
-	public Data data;
+public class CupboardExplosionProtectListener extends MyListener {
+	private Data data;
 
 	public CupboardExplosionProtectListener(Cupboard instance)
 	{
-	    this.plugin = instance;
-	    this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
-	    this.plugin.logDebug("CupbloardExplosionProtectListener Registed.");
+	    super(instance);
 	    this.data = this.plugin.data;
 	}
 	

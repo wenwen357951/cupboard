@@ -9,7 +9,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
@@ -17,15 +16,13 @@ import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Util;
 
-public class TNTExplosionListener  implements Listener {
-	private Cupboard plugin;
+public class TNTExplosionListener extends MyListener {
 	private List<String> cant_flow_liquid;
+	
 	public TNTExplosionListener(Cupboard instance)
 	{
-	    this.plugin = instance;
+		super(instance);
 	    this.cant_flow_liquid = new ArrayList<String>();
-	    this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
-	    this.plugin.logDebug("TNTExplosionListener Registed.");
 	}
 
     @EventHandler(priority = EventPriority.HIGHEST)

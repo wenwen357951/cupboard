@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
@@ -16,16 +15,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
 
-public class TNTCraftListener implements Listener  {
-	private Cupboard plugin;
+public class TNTCraftListener extends MyListener {
 	public TNTCraftListener(Cupboard instance)
 	{
-	    this.plugin = instance;
-	    this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
-	    this.plugin.logDebug("TNTCraftListener Registed.");
+		super(instance);
 	    overwriteTNTRecipes();
 	}
-
 
     @EventHandler
 	public void onCrafting(PrepareItemCraftEvent event){

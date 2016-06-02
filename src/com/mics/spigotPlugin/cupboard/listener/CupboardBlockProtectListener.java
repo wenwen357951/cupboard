@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
@@ -21,18 +20,13 @@ import com.mics.spigotPlugin.cupboard.Data;
 import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
 
-public class CupboardBlockProtectListener implements Listener {
-	private Cupboard plugin;
-	public Data data;
-
+public class CupboardBlockProtectListener extends MyListener {
+	private Data data;
 	public CupboardBlockProtectListener(Cupboard instance)
 	{
-	    this.plugin = instance;
-	    this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
-	    this.plugin.logDebug("CupboardBlockProtectListener Registed.");
+	    super(instance);
 	    this.data = this.plugin.data;
 	}
-    
     
 	//防止其他玩家破壞方塊
     @EventHandler(priority = EventPriority.HIGH)

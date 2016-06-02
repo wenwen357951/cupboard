@@ -5,7 +5,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -13,15 +12,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.Data;
 
-public class CupboardUseProtectListener implements Listener {
-	private Cupboard plugin;
+public class CupboardUseProtectListener extends MyListener{
 	public Data data;
 
 	public CupboardUseProtectListener(Cupboard instance)
 	{
-	    this.plugin = instance;
-	    this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
-	    this.plugin.logDebug("CupboardUseProtectListener Registed.");
+		super(instance);
 	    this.data = this.plugin.data;
 	}
 	

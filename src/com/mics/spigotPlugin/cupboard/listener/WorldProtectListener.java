@@ -13,7 +13,6 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -28,16 +27,13 @@ import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
 import com.mics.spigotPlugin.cupboard.utils.Util;
 
-public class WorldProtectListener implements Listener {
-	private Cupboard plugin;
+public class WorldProtectListener extends MyListener {
 	private List<String> cant_flow_liquid;
 
 	public WorldProtectListener(Cupboard instance)
 	{
-	    this.plugin = instance;
+		super(instance);
 	    cant_flow_liquid = new ArrayList<String>();
-	    this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
-	    this.plugin.logDebug("WorldProtectListener Registed.");
 	}
 	
 	//更改地獄門搜尋半徑

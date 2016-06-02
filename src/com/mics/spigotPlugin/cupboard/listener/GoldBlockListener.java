@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -17,14 +16,10 @@ import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
 import com.mics.spigotPlugin.cupboard.utils.Util;
 
-public class GoldBlockListener implements Listener {
-	private Cupboard plugin;
-
+public class GoldBlockListener extends MyListener {
 	public GoldBlockListener(Cupboard instance)
 	{
-	    this.plugin = instance;
-	    this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
-	    this.plugin.logDebug("GoldBlockListener Registed.");
+	    super(instance);
 	}
 	//移除金磚
     @EventHandler(priority = EventPriority.MONITOR)
