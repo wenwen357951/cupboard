@@ -32,7 +32,7 @@ public enum Config {
 	WB_NETHER_SCALE("world-border.nether-scale", 4, "nether border scale"),
 	WB_ENDER_SCALE("world-border.ender-scale", 4, "ender border scale"),
 	
-	TNT_SP_ENABLE("tnt.enable", true, "let TNT can desotry obsidian, water, lava, and TNT hard to craft."),
+	TNT_SP_ENABLE("tnt.enable", true, "let TNT can desotry obsidian, water, lava, TNT Can put in protect area and TNT hard to craft."),
 	TNT_BREAK_RADIUS("tnt.break-radius", 3, "destory check radius"),
 	TNT_OBSIDIAN_BREAK_PROBABILITY("tnt.obsidian.break-probability", 0.5, "turn obsidian block probability"),
 	TNT_OBSIDIAN_BREAK_TO("tnt.obsidian.break-to", "COBBLESTONE", "turn obsidian to which block"),
