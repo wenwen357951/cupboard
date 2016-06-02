@@ -20,7 +20,7 @@ public enum Locales {
 	GOLD_DATA_NOT_FOUND("gold-block.gold-data-not-found", "This Block of Gold is not place by player or data missing."),
 	GOLD_GRANT_ACCESS("gold-block.grant-access", "Grant access."),
 	GOLD_REVOKE_ACCESS("gold-block.revoke-access", "Revoke access."),
-	NO_ACCESS("gold-block.no-access", "&4No access &7."),
+	NO_ACCESS("gold-block.no-access", "&4No access."),
 	SPAWN_WITHOUT_ACCESS("gold-block.spawn-without-access", "&cYour bed is in non-access area, you are spawn in world spawn."),
 	
 	//WORLD PROTECT
