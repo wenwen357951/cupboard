@@ -12,8 +12,9 @@ public class ReloadCommand implements CommandExecutor{
 		this.plugin = i;
 	}
 	@Override
-	public boolean onCommand(CommandSender arg0, Command arg1, String arg2, String[] arg3) {
+	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] arg3) {
 		plugin.reload();
+		sender.sendMessage("Config Reloaded!");
 		return true;
 	}
 }

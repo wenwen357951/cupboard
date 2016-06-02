@@ -113,7 +113,6 @@ public class Cupboard extends JavaPlugin implements Listener {
 		this.logDebug("============================================");
 		registerObject();
 		this.logDebug("");
-        this.log("Config Reloaded!");
 	}
     @Override
     public void onDisable() {
