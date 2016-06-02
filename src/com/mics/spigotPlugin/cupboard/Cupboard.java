@@ -13,6 +13,7 @@ import com.mics.spigotPlugin.cupboard.listener.CupboardExplosionProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardBlockProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardUseProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.GoldBlockListener;
+import com.mics.spigotPlugin.cupboard.listener.MyListener;
 import com.mics.spigotPlugin.cupboard.listener.RespawnListener;
 import com.mics.spigotPlugin.cupboard.listener.TNTCraftListener;
 import com.mics.spigotPlugin.cupboard.listener.TNTExplosionListener;
@@ -22,13 +23,14 @@ import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
-    private static Cupboard INSTANCE;
-	
 	public Data data;
+    private static Cupboard INSTANCE;
+    private ArrayList<MyListener> registedListeners;
+	
 	@Override
 	public void onEnable() {
 		INSTANCE = this;
-        
+		registedListeners = new ArrayList<MyListener>();
         //load config
         Config.load();
         this.logDebug("Loaded Config!");
@@ -48,38 +50,39 @@ public class Cupboard extends JavaPlugin implements Listener {
         
         
         //register listener
-        new CupboardEntityProtectListener(this);
-        new CupboardExplosionProtectListener(this);
-        new CupboardBlockProtectListener(this);
-        new CupboardUseProtectListener(this);
-        new GoldBlockListener(this);
-        new TNTExplosionListener(this);
-        new WorldProtectListener(this);
-        new RespawnListener(this);
+        registedListeners.add(new CupboardEntityProtectListener(this));
+        registedListeners.add(new CupboardExplosionProtectListener(this));
+        registedListeners.add(new CupboardBlockProtectListener(this));
+        registedListeners.add(new CupboardUseProtectListener(this));
+        registedListeners.add(new GoldBlockListener(this));
+        registedListeners.add(new TNTExplosionListener(this));
+        registedListeners.add(new WorldProtectListener(this));
+        registedListeners.add(new RespawnListener(this));
         
         //setup worldborder
         if(Config.WB_ENABLE.getBoolean()){
+        	//TODO let this unload able.
         	new WorldBorder(this);
         }
         
         //rewrite TNT Receipts Listener
         if(Config.TNT_SP_ENABLE.getBoolean()){
-            new TNTCraftListener(this);
+        	registedListeners.add(new TNTCraftListener(this));
         }
     }
 	
-		public ArrayList<Material> protect_vehicle;
-	    private void setUpProtectEntity(){
-	    	protect_vehicle = new ArrayList<Material>();
-	    	protect_vehicle.add(Material.ARMOR_STAND);
-	    	protect_vehicle.add(Material.BOAT);
-	    	protect_vehicle.add(Material.MINECART );
-	    	protect_vehicle.add(Material.COMMAND_MINECART );
-	    	protect_vehicle.add(Material.EXPLOSIVE_MINECART );
-	    	protect_vehicle.add(Material.HOPPER_MINECART );
-	    	protect_vehicle.add(Material.POWERED_MINECART );
-	    	protect_vehicle.add(Material.STORAGE_MINECART );
-	    }
+	public ArrayList<Material> protect_vehicle;
+    private void setUpProtectEntity(){
+    	protect_vehicle = new ArrayList<Material>();
+    	protect_vehicle.add(Material.ARMOR_STAND);
+    	protect_vehicle.add(Material.BOAT);
+    	protect_vehicle.add(Material.MINECART );
+    	protect_vehicle.add(Material.COMMAND_MINECART );
+    	protect_vehicle.add(Material.EXPLOSIVE_MINECART );
+    	protect_vehicle.add(Material.HOPPER_MINECART );
+    	protect_vehicle.add(Material.POWERED_MINECART );
+    	protect_vehicle.add(Material.STORAGE_MINECART );
+    }
 	
     @Override
     public void onDisable() {
