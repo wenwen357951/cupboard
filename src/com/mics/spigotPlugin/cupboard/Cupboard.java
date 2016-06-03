@@ -19,6 +19,7 @@ import com.mics.spigotPlugin.cupboard.listener.RespawnListener;
 import com.mics.spigotPlugin.cupboard.listener.TNTCraftListener;
 import com.mics.spigotPlugin.cupboard.listener.TNTExplosionListener;
 import com.mics.spigotPlugin.cupboard.listener.WorldProtectListener;
+import com.mics.spigotPlugin.cupboard.schedule.AirDrop;
 import com.mics.spigotPlugin.cupboard.schedule.WorldBorder;
 import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
@@ -63,9 +64,13 @@ public class Cupboard extends JavaPlugin implements Listener {
             registedObject.add(new TNTExplosionListener(this));
         	registedObject.add(new TNTCraftListener(this));
         }
-        
+
         if(Config.WB_ENABLE.getBoolean()){
         	registedObject.add(new WorldBorder(this));
+        }
+        
+        if(Config.AIR_DROP_ENABLE.getBoolean()){
+        	registedObject.add(new AirDrop(this));
         }
 	}
 	

@@ -31,6 +31,13 @@ public enum Config {
 	WB_DEDUCT_TIME("world-border.deduct-time", 3600, "deduct period (sec)"),
 	WB_NETHER_SCALE("world-border.nether-scale", 4, "nether border scale"),
 	WB_ENDER_SCALE("world-border.ender-scale", 4, "ender border scale"),
+
+	AIR_DROP_ENABLE("air-drop.enable", true, "enable airdrop?"),
+	AIR_DROP_MIN_TIME("air-drop.min-time", 40, "airdrop min period time (min)"),
+	AIR_DROP_MAX_TIME("air-drop.max-time", 80, "airdrop max period time (min)"),
+	AIR_NOTIFY_TIME("air-drop.notify-time", 10, "notify all player before this time (have to small than min-time)"),
+	AIR_CLEAR_TIME("air-drop.clear-time", 20, "will remove over this time (min)"),
+	AIR_MIN_PLAYER("air-drop.min-player", 3, "have to more than this amount player to airdrop"),
 	
 	TNT_SP_ENABLE("tnt.enable", true, "let TNT can desotry obsidian, water, lava, TNT Can put in protect area and TNT hard to craft."),
 	TNT_BREAK_RADIUS("tnt.break-radius", 3, "destory check radius"),
