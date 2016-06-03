@@ -19,6 +19,7 @@ import com.mics.spigotPlugin.cupboard.listener.RespawnListener;
 import com.mics.spigotPlugin.cupboard.listener.TNTCraftListener;
 import com.mics.spigotPlugin.cupboard.listener.TNTExplosionListener;
 import com.mics.spigotPlugin.cupboard.listener.WorldProtectListener;
+import com.mics.spigotPlugin.cupboard.schedule.WorldBorder;
 import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
 

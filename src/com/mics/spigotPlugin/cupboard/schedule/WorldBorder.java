@@ -1,4 +1,4 @@
-package com.mics.spigotPlugin.cupboard;
+package com.mics.spigotPlugin.cupboard.schedule;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,6 +7,7 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 
+import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
 
