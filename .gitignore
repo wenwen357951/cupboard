@@ -1,3 +1,6 @@
-bin/*
-dist/*
+/dist/
 /bin/
+/.classpath
+/.externalToolBuilders
+/.project
+/.settings
