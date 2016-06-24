@@ -12,7 +12,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.utils.Config;
+import com.mics.spigotPlugin.cupboard.config.Config;
 
 public class TNTExplosionListener extends MyListener {
 	public TNTExplosionListener(Cupboard instance)

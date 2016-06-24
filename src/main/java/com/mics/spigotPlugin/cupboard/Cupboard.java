@@ -8,8 +8,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.mics.spigotPlugin.cupboard.command.ReloadCommand;
+import com.mics.spigotPlugin.cupboard.config.Config;
+import com.mics.spigotPlugin.cupboard.config.Drops;
+import com.mics.spigotPlugin.cupboard.config.Locales;
 import com.mics.spigotPlugin.cupboard.data.Cupboards;
-import com.mics.spigotPlugin.cupboard.data.Drops;
 import com.mics.spigotPlugin.cupboard.entity.LandedPackageEntity;
 import com.mics.spigotPlugin.cupboard.command.AirdropCommand;
 import com.mics.spigotPlugin.cupboard.command.KillCommand;
@@ -27,8 +29,6 @@ import com.mics.spigotPlugin.cupboard.listener.TNTExplosionListener;
 import com.mics.spigotPlugin.cupboard.listener.WorldProtectListener;
 import com.mics.spigotPlugin.cupboard.schedule.AirDrop;
 import com.mics.spigotPlugin.cupboard.schedule.WorldBorder;
-import com.mics.spigotPlugin.cupboard.utils.Config;
-import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
@@ -48,9 +48,11 @@ public class Cupboard extends JavaPlugin implements Listener {
         Locales.load();
         this.logDebug("Loaded Locales!");
         
+        //load Airdrops
+        drops = new Drops();
+        
         //load cupboards
         cupboards = new Cupboards(getDataFolder(),this);
-        drops = new Drops();
         this.logDebug("Loaded Cupboards data!");
 
         this.getCommand("kill").setExecutor(new KillCommand(this));

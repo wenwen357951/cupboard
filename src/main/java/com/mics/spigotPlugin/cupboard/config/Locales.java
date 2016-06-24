@@ -1,4 +1,4 @@
-package com.mics.spigotPlugin.cupboard.utils;
+package com.mics.spigotPlugin.cupboard.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
+import com.mics.spigotPlugin.cupboard.utils.Util;
 
 public enum Locales {
 

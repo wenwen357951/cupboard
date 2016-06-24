@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.utils.Config;
+import com.mics.spigotPlugin.cupboard.config.Config;
 import com.mics.spigotPlugin.cupboard.utils.Util;
 
 //import net.minecraft.server.v1_9_R2.nbtTag

@@ -19,8 +19,8 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
+import com.mics.spigotPlugin.cupboard.config.Config;
 import com.mics.spigotPlugin.cupboard.data.Cupboards;
-import com.mics.spigotPlugin.cupboard.utils.Config;
 
 public class CupboardExplosionProtectListener extends MyListener {
 	private Cupboards data;

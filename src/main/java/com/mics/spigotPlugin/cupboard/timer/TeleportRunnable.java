@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.mics.spigotPlugin.cupboard.utils.Locales;
+import com.mics.spigotPlugin.cupboard.config.Locales;
 
 public class TeleportRunnable implements Runnable  {
 	Location dest;

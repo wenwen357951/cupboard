@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
+import com.mics.spigotPlugin.cupboard.config.Drops;
 
 public class AirdropInteractListener extends MyListener {
 	public AirdropInteractListener(Cupboard instance) {
@@ -49,10 +50,7 @@ public class AirdropInteractListener extends MyListener {
 	}
 	
 	private List<ItemStack> getDrops(){
-		List<ItemStack> items = new ArrayList<ItemStack>();
-		items.add(new ItemStack(Material.DIAMOND));
-		items.add(new ItemStack(Material.TNT));
-		return items;
+		return Drops.getDrops(10);
 	}
 	
 	private void summonBreakFirework(Location loc){

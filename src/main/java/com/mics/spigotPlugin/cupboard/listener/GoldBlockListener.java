@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.utils.Locales;
+import com.mics.spigotPlugin.cupboard.config.Locales;
 import com.mics.spigotPlugin.cupboard.utils.Util;
 
 public class GoldBlockListener extends MyListener {

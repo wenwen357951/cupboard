@@ -8,8 +8,8 @@ import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.utils.Config;
-import com.mics.spigotPlugin.cupboard.utils.Locales;
+import com.mics.spigotPlugin.cupboard.config.Config;
+import com.mics.spigotPlugin.cupboard.config.Locales;
 
 public class WorldBorder {
 	Cupboard plugin;

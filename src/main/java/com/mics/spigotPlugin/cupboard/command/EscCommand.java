@@ -12,8 +12,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
+import com.mics.spigotPlugin.cupboard.config.Locales;
 import com.mics.spigotPlugin.cupboard.timer.TeleportRunnable;
-import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 
 public class EscCommand implements CommandExecutor{

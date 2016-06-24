@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
 
 import com.google.gson.Gson;
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.utils.Config;
+import com.mics.spigotPlugin.cupboard.config.Config;
 import com.mics.spigotPlugin.cupboard.utils.Util;
 
 public class Cupboards {

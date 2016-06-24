@@ -13,7 +13,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.utils.Locales;
+import com.mics.spigotPlugin.cupboard.config.Locales;
 
 public class TNTCraftListener extends MyListener {
 	public TNTCraftListener(Cupboard instance)

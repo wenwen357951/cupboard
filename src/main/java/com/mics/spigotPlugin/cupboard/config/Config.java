@@ -1,10 +1,11 @@
-package com.mics.spigotPlugin.cupboard.utils;
+package com.mics.spigotPlugin.cupboard.config;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.bukkit.configuration.file.YamlConfiguration;
 import com.mics.spigotPlugin.cupboard.Cupboard;
+import com.mics.spigotPlugin.cupboard.utils.Util;
 
 public enum Config {
 
