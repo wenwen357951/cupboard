@@ -11,7 +11,7 @@ import com.mics.spigotPlugin.cupboard.command.ReloadCommand;
 import com.mics.spigotPlugin.cupboard.config.Config;
 import com.mics.spigotPlugin.cupboard.config.Drops;
 import com.mics.spigotPlugin.cupboard.config.Locales;
-import com.mics.spigotPlugin.cupboard.data.Cupboards;
+import com.mics.spigotPlugin.cupboard.data.CupboardsData;
 import com.mics.spigotPlugin.cupboard.entity.LandedPackageEntity;
 import com.mics.spigotPlugin.cupboard.command.AirdropCommand;
 import com.mics.spigotPlugin.cupboard.command.KillCommand;
@@ -32,7 +32,7 @@ import com.mics.spigotPlugin.cupboard.schedule.WorldBorder;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
-	public Cupboards cupboards;
+	public CupboardsData cupboards;
     public Drops drops;
     private static Cupboard INSTANCE;
     private ArrayList<Object> registedObject;
@@ -52,7 +52,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         drops = new Drops();
         
         //load cupboards
-        cupboards = new Cupboards(getDataFolder(),this);
+        cupboards = new CupboardsData(getDataFolder(),this);
         this.logDebug("Loaded Cupboards data!");
 
         this.getCommand("kill").setExecutor(new KillCommand(this));

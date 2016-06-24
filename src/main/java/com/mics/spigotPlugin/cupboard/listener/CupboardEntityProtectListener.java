@@ -14,11 +14,11 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.data.Cupboards;
+import com.mics.spigotPlugin.cupboard.data.CupboardsData;
 
 public class CupboardEntityProtectListener extends MyListener {
 	private ArrayList<Material> protect_vehicle;
-	private Cupboards data;
+	private CupboardsData data;
 
 	public CupboardEntityProtectListener(Cupboard instance)
 	{

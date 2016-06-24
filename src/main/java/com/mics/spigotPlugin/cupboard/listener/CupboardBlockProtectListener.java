@@ -18,10 +18,10 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.config.Config;
 import com.mics.spigotPlugin.cupboard.config.Locales;
-import com.mics.spigotPlugin.cupboard.data.Cupboards;
+import com.mics.spigotPlugin.cupboard.data.CupboardsData;
 
 public class CupboardBlockProtectListener extends MyListener {
-	private Cupboards data;
+	private CupboardsData data;
 	public CupboardBlockProtectListener(Cupboard instance)
 	{
 	    super(instance);

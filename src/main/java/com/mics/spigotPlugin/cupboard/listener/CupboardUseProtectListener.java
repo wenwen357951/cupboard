@@ -10,10 +10,10 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.data.Cupboards;
+import com.mics.spigotPlugin.cupboard.data.CupboardsData;
 
 public class CupboardUseProtectListener extends MyListener{
-	public Cupboards data;
+	public CupboardsData data;
 
 	public CupboardUseProtectListener(Cupboard instance)
 	{

@@ -25,7 +25,7 @@ import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.config.Config;
 import com.mics.spigotPlugin.cupboard.utils.Util;
 
-public class Cupboards {
+public class CupboardsData {
 	private HashMap<String, List<String>> cupboards;
 	
 	private Map<String, HashSet<String>> location_limit_check_temp;
@@ -37,7 +37,7 @@ public class Cupboards {
 	
 	@SuppressWarnings("unused")
 	private Cupboard plugin;
-	public Cupboards(File dataFolder, Cupboard p){
+	public CupboardsData(File dataFolder, Cupboard p){
 		this.plugin = p;
         cupboardsFile = new File(dataFolder, "cupboards.json");
         PROTECT_DIST = Config.CUPBOARD_PROTECT_DIST.getInt()+1;
