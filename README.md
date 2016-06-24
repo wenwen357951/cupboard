@@ -1,8 +1,8 @@
 # Cupboard
 ### Description
-This plugin is made for PvP style server, let player can protect thire building / items, 
-still passable destory by TNT, but TNT is hard to craft. (configurable).
-This plugin goal is made a PvP server as like as Rust fun, 
+This plugin is made for PvP server use, this plugin able to let players protect their building and items,
+and still have a destructive by TNT, but TNT is hard to craft (Configurable).
+This plugin's goal is makes your PvP server as like Rust fun,
 but still keep Minecraft original play style.
 
 ### Features
