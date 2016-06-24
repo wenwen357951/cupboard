@@ -34,7 +34,7 @@ public class EscCommand implements CommandExecutor{
 		}
 		Player p = (Player) sender;
 		Location oringal_location = p.getLocation();
-		if(!plugin.data.checkIsLimit(oringal_location, p)){
+		if(!plugin.cupboards.checkIsLimit(oringal_location, p)){
 			p.sendMessage(Locales.NOT_IN_NO_ACCESS_AREA.getString());
 			return true;
 		}
@@ -63,36 +63,36 @@ public class EscCommand implements CommandExecutor{
 		Location location = org_location.clone();
 		location.add(1,0,0);
 		Location location_sendtoGround = sendToGround(location);
-		if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+		if(location_sendtoGround != null && !this.plugin.cupboards.checkIsLimit(location_sendtoGround, p))
 			return location_sendtoGround;
 		for(int i=0; i < count; i++){
 			location.add(0,0,1);
 			location_sendtoGround = sendToGround(location);
-			if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+			if(location_sendtoGround != null && !this.plugin.cupboards.checkIsLimit(location_sendtoGround, p))
 				return location_sendtoGround;
 		}
 		for(int i= -count ; i < count; i++){
 			location.add(-1,0,0);
 			location_sendtoGround = sendToGround(location);
-			if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+			if(location_sendtoGround != null && !this.plugin.cupboards.checkIsLimit(location_sendtoGround, p))
 				return location_sendtoGround;
 		}
 		for(int i= -count; i < count; i++){
 			location.add(0,0,-1);
 			location_sendtoGround = sendToGround(location);
-			if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+			if(location_sendtoGround != null && !this.plugin.cupboards.checkIsLimit(location_sendtoGround, p))
 				return location_sendtoGround;
 		}
 		for(int i= -count ; i < count; i++){
 			location.add(1,0,0);
 			location_sendtoGround = sendToGround(location);
-			if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+			if(location_sendtoGround != null && !this.plugin.cupboards.checkIsLimit(location_sendtoGround, p))
 				return location_sendtoGround;
 		}
 		for(int i=0; i < count; i++){
 			location.add(0,0,1);
 			location_sendtoGround = sendToGround(location);
-			if(location_sendtoGround != null && !this.plugin.data.checkIsLimit(location_sendtoGround, p))
+			if(location_sendtoGround != null && !this.plugin.cupboards.checkIsLimit(location_sendtoGround, p))
 				return location_sendtoGround;
 		}
 		return null;

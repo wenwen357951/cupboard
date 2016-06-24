@@ -19,16 +19,16 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.Data;
+import com.mics.spigotPlugin.cupboard.data.Cupboards;
 import com.mics.spigotPlugin.cupboard.utils.Config;
 
 public class CupboardExplosionProtectListener extends MyListener {
-	private Data data;
+	private Cupboards data;
 
 	public CupboardExplosionProtectListener(Cupboard instance)
 	{
 	    super(instance);
-	    this.data = this.plugin.data;
+	    this.data = this.plugin.cupboards;
 	}
 	
     //TNT or Creeper爆炸
@@ -79,7 +79,7 @@ public class CupboardExplosionProtectListener extends MyListener {
 				(Config.ANTI_TNT_EXPLOSION.getBoolean() && e.getDamager().getType() == EntityType.PRIMED_TNT) ||
 				(Config.ANTI_OTHERS_EXPLOSION.getBoolean() && e.getDamager().getType() != EntityType.PRIMED_TNT)
 			)
-    			if(this.plugin.data.checkIsLimit(e.getEntity().getLocation().getBlock()))
+    			if(this.plugin.cupboards.checkIsLimit(e.getEntity().getLocation().getBlock()))
     				e.setCancelled(true);
     	}
     }
@@ -90,7 +90,7 @@ public class CupboardExplosionProtectListener extends MyListener {
     	if(
     		e.getEntity().getType() == EntityType.ARMOR_STAND &&
 			e.getCause() == DamageCause.BLOCK_EXPLOSION &&
-    		this.plugin.data.checkIsLimit(e.getEntity().getLocation().getBlock())
+    		this.plugin.cupboards.checkIsLimit(e.getEntity().getLocation().getBlock())
 		){
     		e.setCancelled(true);
     	}
@@ -112,7 +112,7 @@ public class CupboardExplosionProtectListener extends MyListener {
     					(Config.ANTI_TNT_EXPLOSION.getBoolean() && e.getRemover().getType() == EntityType.PRIMED_TNT) ||
     					(Config.ANTI_OTHERS_EXPLOSION.getBoolean() && e.getRemover().getType() != EntityType.PRIMED_TNT)
 				)
-    			if(this.plugin.data.checkIsLimit(bl)) e.setCancelled(true);
+    			if(this.plugin.cupboards.checkIsLimit(bl)) e.setCancelled(true);
     		}
     	}
 	}
@@ -123,7 +123,7 @@ public class CupboardExplosionProtectListener extends MyListener {
     	if(!Config.ANTI_OTHERS_EXPLOSION.getBoolean())return;
     	Location bl = e.getEntity().getLocation().getBlock().getLocation();
 		if(e.getCause() == RemoveCause.EXPLOSION){
-			if(this.plugin.data.checkIsLimit(bl)) e.setCancelled(true);
+			if(this.plugin.cupboards.checkIsLimit(bl)) e.setCancelled(true);
 		}
     }
 

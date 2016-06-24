@@ -16,16 +16,16 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.Data;
+import com.mics.spigotPlugin.cupboard.data.Cupboards;
 import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 public class CupboardBlockProtectListener extends MyListener {
-	private Data data;
+	private Cupboards data;
 	public CupboardBlockProtectListener(Cupboard instance)
 	{
 	    super(instance);
-	    this.data = this.plugin.data;
+	    this.data = this.plugin.cupboards;
 	}
     
 	//防止其他玩家破壞方塊

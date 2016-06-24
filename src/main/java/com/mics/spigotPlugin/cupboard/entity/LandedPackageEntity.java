@@ -1,5 +1,7 @@
 package com.mics.spigotPlugin.cupboard.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -13,11 +15,17 @@ public class LandedPackageEntity extends PackageEntity {
 	Location loc;
 	World world;
 	Material material;
+	static List<LandedPackageEntity> landedPackageEntities;
 	
 	public LandedPackageEntity(Location loc, Material m){
 		this.loc = loc;
 		world = loc.getWorld();
 		material = m;
+		
+		if(landedPackageEntities == null){
+			landedPackageEntities = new ArrayList<LandedPackageEntity>();
+		}
+		landedPackageEntities.add(this);
 		
 		summon();
 	}
@@ -39,15 +47,21 @@ public class LandedPackageEntity extends PackageEntity {
 			loc.getWorld().spawnParticle(Particle.SPELL_WITCH, loc, 1, 0.1, 0.1, 0.1, 0.1);
 			
 			retick();
-		} else {
-			
 		}
 	}
-
-	@Override
+	
 	public void remove() {
-		
+		loc.getBlock().setType(Material.AIR);
 	}
+
+	public static void removeAll() {
+		if(landedPackageEntities == null) return;
+		for(LandedPackageEntity e : landedPackageEntities){
+			e.remove();
+		}
+	}
+	
+	
 
 }
 

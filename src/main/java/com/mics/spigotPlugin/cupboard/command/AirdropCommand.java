@@ -1,11 +1,14 @@
 package com.mics.spigotPlugin.cupboard.command;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
+import com.mics.spigotPlugin.cupboard.entity.FallingPackageEntity;
 
 public class AirdropCommand  implements CommandExecutor {
 	Cupboard plugin;
@@ -23,10 +26,12 @@ public class AirdropCommand  implements CommandExecutor {
 			}
 		} else if( (sender instanceof Player) && arg3.length == 0 ){
 			airdrop(((Player)sender).getLocation().getBlockX(), ((Player)sender).getLocation().getBlockZ());
+			return true;
 		}
 		return false;
 	}
 	private void airdrop(double x, double z){
 		//plugin.logDebug(String.format("Command Call Airdrop at %f %f location", x, z));
+		new FallingPackageEntity(new Location(plugin.getServer().getWorld("world"), x, 255, z), Material.NOTE_BLOCK);
 	}
 }

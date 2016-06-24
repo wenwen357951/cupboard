@@ -8,10 +8,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.mics.spigotPlugin.cupboard.command.ReloadCommand;
+import com.mics.spigotPlugin.cupboard.data.Cupboards;
+import com.mics.spigotPlugin.cupboard.data.Drops;
+import com.mics.spigotPlugin.cupboard.entity.LandedPackageEntity;
 import com.mics.spigotPlugin.cupboard.command.AirdropCommand;
 import com.mics.spigotPlugin.cupboard.command.KillCommand;
 import com.mics.spigotPlugin.cupboard.listener.CupboardEntityProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardExplosionProtectListener;
+import com.mics.spigotPlugin.cupboard.listener.AirdropInteractListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardBlockProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardUseProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.GoldBlockListener;
@@ -28,12 +32,14 @@ import com.mics.spigotPlugin.cupboard.utils.Locales;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
-	public Data data;
+	public Cupboards cupboards;
+    public Drops drops;
     private static Cupboard INSTANCE;
     private ArrayList<Object> registedObject;
 	
 	@Override
 	public void onEnable() {
+		
 		INSTANCE = this;
 		registedObject = new ArrayList<Object>();
         //load config
@@ -43,7 +49,8 @@ public class Cupboard extends JavaPlugin implements Listener {
         this.logDebug("Loaded Locales!");
         
         //load cupboards
-        data = new Data(getDataFolder(),this);
+        cupboards = new Cupboards(getDataFolder(),this);
+        drops = new Drops();
         this.logDebug("Loaded Cupboards data!");
 
         this.getCommand("kill").setExecutor(new KillCommand(this));
@@ -62,6 +69,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         registedObject.add(new WorldProtectListener(this));
         registedObject.add(new RespawnListener(this));
         registedObject.add(new SuicideListener(this));
+        registedObject.add(new AirdropInteractListener(this));
         
         //rewrite TNT Receipts Listener
         if(Config.TNT_SP_ENABLE.getBoolean()){
@@ -126,7 +134,7 @@ public class Cupboard extends JavaPlugin implements Listener {
 	}
     @Override
     public void onDisable() {
-
+    	LandedPackageEntity.removeAll(); //remove all airdrop
     }
     
     public boolean isOP(Player p){

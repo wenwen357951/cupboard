@@ -14,18 +14,18 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
-import com.mics.spigotPlugin.cupboard.Data;
+import com.mics.spigotPlugin.cupboard.data.Cupboards;
 
 public class CupboardEntityProtectListener extends MyListener {
 	private ArrayList<Material> protect_vehicle;
-	private Data data;
+	private Cupboards data;
 
 	public CupboardEntityProtectListener(Cupboard instance)
 	{
 		super(instance);
 		
 		setUpProtectEntity();
-	    this.data = this.plugin.data;
+	    this.data = this.plugin.cupboards;
 	}
 	
     private void setUpProtectEntity(){
@@ -60,7 +60,7 @@ public class CupboardEntityProtectListener extends MyListener {
 		Location bl = e.getEntity().getLocation().getBlock().getLocation();
     	if (e.getRemover() instanceof Player){
     		Player p = (Player) e.getRemover();
-    		if(this.plugin.data.checkIsLimit(bl, p)){
+    		if(this.plugin.cupboards.checkIsLimit(bl, p)){
     			if(this.plugin.isOP(p)) return;
     			e.setCancelled(true);
     		}
@@ -77,7 +77,7 @@ public class CupboardEntityProtectListener extends MyListener {
 			protect_vehicle.contains(e.getItem().getType())
 		){
     	Player p = e.getPlayer();
-	    	if(this.plugin.data.checkIsLimit(e.getClickedBlock(), p)){
+	    	if(this.plugin.cupboards.checkIsLimit(e.getClickedBlock(), p)){
 	    		if(this.plugin.isOP(p))return;
 	    		e.setCancelled(true);
 	    		e.getPlayer().updateInventory();
@@ -91,7 +91,7 @@ public class CupboardEntityProtectListener extends MyListener {
     	if (e.getEntity().getType() != EntityType.ARMOR_STAND) return;
     	if (e.getDamager() instanceof Player){
     		Player p = (Player) e.getDamager();
-        	if (this.plugin.data.checkIsLimit(e.getEntity().getLocation().getBlock(), p)){
+        	if (this.plugin.cupboards.checkIsLimit(e.getEntity().getLocation().getBlock(), p)){
         		if(this.plugin.isOP(p))return;
         		e.setCancelled(true);
         	}

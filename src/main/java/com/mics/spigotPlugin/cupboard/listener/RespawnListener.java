@@ -21,7 +21,7 @@ public class RespawnListener extends MyListener {
 		Location l = event.getRespawnLocation();
 		Player p = event.getPlayer();
 		if(event.isBedSpawn()){
-			if(this.plugin.data.checkIsLimit(l, p)){
+			if(this.plugin.cupboards.checkIsLimit(l, p)){
 				p.setBedSpawnLocation(null);
 				p.sendMessage(Locales.SPAWN_WITHOUT_ACCESS.getString());
 			}

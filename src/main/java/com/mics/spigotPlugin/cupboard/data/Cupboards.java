@@ -1,4 +1,4 @@
-package com.mics.spigotPlugin.cupboard;
+package com.mics.spigotPlugin.cupboard.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,10 +21,11 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import com.google.gson.Gson;
+import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.utils.Config;
 import com.mics.spigotPlugin.cupboard.utils.Util;
 
-public class Data {
+public class Cupboards {
 	private HashMap<String, List<String>> cupboards;
 	
 	private Map<String, HashSet<String>> location_limit_check_temp;
@@ -32,9 +33,11 @@ public class Data {
 	private File cupboardsFile;
 	private int PROTECT_DIST;
 	private int CUPBOARD_DIST;
+	final int maxEntries = 10000;
+	
 	@SuppressWarnings("unused")
 	private Cupboard plugin;
-	Data(File dataFolder, Cupboard p){
+	public Cupboards(File dataFolder, Cupboard p){
 		this.plugin = p;
         cupboardsFile = new File(dataFolder, "cupboards.json");
         PROTECT_DIST = Config.CUPBOARD_PROTECT_DIST.getInt()+1;
@@ -50,10 +53,10 @@ public class Data {
 			FileReader file = new FileReader(cupboardsFile);
 			cupboards = gson.fromJson(file, HashMap.class);
 		} catch (FileNotFoundException e) {
-			//e.printStackTrace(); //if not exist
 			cupboards = new HashMap<String, List<String>>();
-		}  
-    	final int maxEntries = 10000;
+		}
+    	
+    	//temp owner
     	location_limit_check_temp = new LinkedHashMap<String, HashSet<String>>(maxEntries*10/7, 0.7f, true) {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -75,6 +78,7 @@ public class Data {
     	this.save();
     	return true;
     }
+	
     public void removeCupboard(Block b){
     	Location pubBlockLocation = b.getLocation();
     	String pubBlockLocation_str = Util.LocToString(pubBlockLocation);
@@ -117,7 +121,6 @@ public class Data {
 			file.write(strObject);
 			file.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
