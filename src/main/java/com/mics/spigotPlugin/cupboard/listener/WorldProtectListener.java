@@ -107,7 +107,6 @@ public class WorldProtectListener extends MyListener {
 			}
 			cant_flow_liquid.add(Util.LocToString(tmp_l));
 			this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable(){
-				@Override
 				public void run() {
 					cant_flow_liquid.remove(Util.LocToString(tmp_l));
 				}

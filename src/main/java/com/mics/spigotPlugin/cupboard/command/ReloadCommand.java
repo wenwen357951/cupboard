@@ -11,7 +11,6 @@ public class ReloadCommand implements CommandExecutor{
 	public ReloadCommand(Cupboard i){
 		this.plugin = i;
 	}
-	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] arg3) {
 		plugin.reload();
 		sender.sendMessage("Config Reloaded!");

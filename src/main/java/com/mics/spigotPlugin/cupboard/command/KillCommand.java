@@ -18,7 +18,6 @@ public class KillCommand implements CommandExecutor{
 		this.plugin = i;
 	}
 
-	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("§4this command must run on player");
