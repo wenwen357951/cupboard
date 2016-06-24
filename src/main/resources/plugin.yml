@@ -1,6 +1,6 @@
 name: CupBoard
 main: com.mics.spigotPlugin.cupboard.Cupboard
-version: 1.2.4
+version: 1.2.3
 commands:
   kill:
     description: kill yourself
