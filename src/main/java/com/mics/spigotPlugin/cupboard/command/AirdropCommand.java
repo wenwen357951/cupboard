@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.mics.spigotPlugin.cupboard.Cupboard;
+import com.mics.spigotPlugin.cupboard.config.Drops;
 import com.mics.spigotPlugin.cupboard.entity.FallingPackageEntity;
 
 public class AirdropCommand  implements CommandExecutor {
@@ -16,22 +17,64 @@ public class AirdropCommand  implements CommandExecutor {
 		this.plugin = i;
 	}
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] arg3) {
-		if (arg3.length == 2 ){
-			try {
-				double x = Integer.valueOf(arg3[0]);
-				double z = Integer.valueOf(arg3[1]);
-				airdrop(x, z);
-				return true;
-			} catch (NumberFormatException err) {
+		if( arg3.length == 0 ){
+			sendHelp(sender);
+		} else if( arg3[0].equalsIgnoreCase("summon") ) {
+			if (arg3.length == 3 ){
+				try {
+					double x = Integer.valueOf(arg3[1]);
+					double z = Integer.valueOf(arg3[2]);
+					airdrop(x, z);
+					sender.sendMessage(String.format("Airdrop summon on x: %f z: %f", x, z));
+				} catch (NumberFormatException err) {
+					sendHelp(sender);
+				}
+			} else if( (sender instanceof Player) && arg3.length == 1 ){
+				airdrop(((Player)sender).getLocation());
+				sender.sendMessage("Airdrop summon on your location.");
+			} else {
+				sendHelp(sender);
 			}
-		} else if( (sender instanceof Player) && arg3.length == 0 ){
-			airdrop(((Player)sender).getLocation().getBlockX(), ((Player)sender).getLocation().getBlockZ());
-			return true;
+		} else if (arg3[0].equalsIgnoreCase("additem")) {
+			if(!(sender instanceof Player)){
+				sender.sendMessage("§4this command must run on player");
+				return true;
+			} else if(arg3.length == 2) {
+				try {
+					double chance = Integer.valueOf(arg3[1]);
+					Player p = (Player) sender;
+					Drops.addDrops(p.getInventory().getItemInMainHand(), chance);
+					return true;
+				} catch (NumberFormatException err) {
+					sendHelp(sender);
+				}
+			} else {
+				sendHelp(sender);
+			}
+		} else if (arg3[0].equalsIgnoreCase("reload")) {
+			Drops.reload();
+			sender.sendMessage("drops.yml loaded.");
+		} else {
+			sendHelp(sender);
 		}
-		return false;
+		return true;
 	}
+	
+	private void sendHelp(CommandSender sender){
+		sender.sendMessage("/airdrop summon <x> <z>    - this will summon airdrop");
+		sender.sendMessage("/airdrop additem <chance>  - this can add your on hand item to drops.yml");
+		sender.sendMessage("/airdrop reload            - reload drops.yml");
+	}
+	
 	private void airdrop(double x, double z){
-		//plugin.logDebug(String.format("Command Call Airdrop at %f %f location", x, z));
-		new FallingPackageEntity(new Location(plugin.getServer().getWorld("world"), x, 255, z), Material.NOTE_BLOCK);
+		airdrop(new Location(plugin.getServer().getWorld("world"), x, 255, z));
 	}
+
+	private void airdrop(Location l){
+		Location drop_loc = l.clone();
+		
+		drop_loc.setY(l.getWorld().getMaxHeight());
+		new FallingPackageEntity(drop_loc, Material.NOTE_BLOCK);
+	}
+	
 }

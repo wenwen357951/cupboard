@@ -48,8 +48,7 @@ public class Drops{
 		return null;
   	}
   
-  @SuppressWarnings("unused")
-private void save()
+  private void save()
   {  
 	  try {
 		  drops_cfg.set("Drops", drops.toArray());
@@ -73,27 +72,37 @@ private void save()
   }
   
   //============== Below is for TESTING ===================
-  public void makeTestDrops(){
+  	public void makeTestDrops(){
 	  Drop diamondDrop = new Drop();
 	  
 	  ItemStack diamond = new ItemStack(Material.DIAMOND, 5);
-      ItemMeta diamondMeta = diamond.getItemMeta();
-    
-      diamondMeta.setDisplayName("GOD DIAMOND");
-      diamondMeta.setLore(Arrays.asList(new String[] { "YoyoTV", "HAHAHA" }));
-      diamond.setItemMeta(diamondMeta);
+	  ItemMeta diamondMeta = diamond.getItemMeta();
+	
+	  diamondMeta.setDisplayName("GOD DIAMOND");
+	  diamondMeta.setLore(Arrays.asList(new String[] { "YoyoTV", "HAHAHA" }));
+	  diamond.setItemMeta(diamondMeta);
 	    
-      diamondDrop.item = diamond;
-      diamondDrop.drop_chance = 5;
-
+	  diamondDrop.item = diamond;
+	  diamondDrop.drop_chance = 5;
+	
 	  Drop appleDrop = new Drop();
-      ItemStack apple = new ItemStack(Material.APPLE, 5);
-      appleDrop.item = apple;
+	  ItemStack apple = new ItemStack(Material.APPLE, 5);
+	  appleDrop.item = apple;
 	  appleDrop.drop_chance = 5;
-
+	
 	  if(drops_cfg == null)drops_cfg = new YamlConfiguration();
 	  this.drops = new ArrayList<Drop>();
 	  drops.add(diamondDrop);
 	  drops.add(appleDrop);
-  }
+  	}
+
+  	public static void addDrops(ItemStack item, double chance) {
+  		Drop newDrop = new Drop(item, chance);
+  		instance.drops.add(newDrop);
+  		instance.save();
+  	}
+
+	public static void reload() {
+		instance.load();
+	}
 }

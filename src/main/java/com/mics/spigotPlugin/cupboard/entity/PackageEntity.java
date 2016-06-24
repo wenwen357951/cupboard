@@ -26,6 +26,6 @@ public class PackageEntity {
 				tick();
 			}
 			
-		}, 1L);
+		}, 5L);
 	}
 }

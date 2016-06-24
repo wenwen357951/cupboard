@@ -25,17 +25,22 @@ public class FallingPackageEntity extends PackageEntity {
 	Material material;
 	FallingBlock blocky = null;
 	
+	public FallingPackageEntity(Location loc, Material m, int offset){
+		summon(applyOffset(loc), m);
+	}
+	
 	public FallingPackageEntity(Location loc, Material m){
-		
-		startLoc = applyOffset(loc);
-		world = loc.getWorld();
-		material = m;
-		
-		summon();
+		summon(loc, m);
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void summon() {
+	private void summon(Location loc, Material m) {
+		
+		startLoc = loc;
+		startLoc.getChunk().load();
+		
+		world = loc.getWorld();
+		material = m;
 		
 		blocky = world.spawnFallingBlock(startLoc, material, (byte) 0);
 		summonSpawnFireworks();
@@ -45,10 +50,7 @@ public class FallingPackageEntity extends PackageEntity {
 
 	@SuppressWarnings("deprecation")
 	public void tick(){
-		
 		if(world.getBlockAt(blocky.getLocation().clone().add(0, -1, 0)).getType() == Material.AIR){
-			
-			counter++;
 			world.spawnParticle(Particle.SMOKE_NORMAL, blocky.getLocation(), 50, 0.1, 0.1, 0.1, 0.1);
 			
 			if (blocky.isDead()){
@@ -59,9 +61,7 @@ public class FallingPackageEntity extends PackageEntity {
 				blocky.setVelocity(oldVelocity);
 			}
 			
-			if (counter % 5 == 0){
-				summonUpdateFireworks();
-			}
+			summonUpdateFireworks();
 			
 			
 			retick();
