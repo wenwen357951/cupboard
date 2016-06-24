@@ -78,7 +78,7 @@ public class FallingPackageEntity extends PackageEntity {
 	
 	private void summonUpdateFireworks(){
 		if ( true ){ //fireworks_on_fall
-            Firework fw = (Firework) world.spawnEntity(blocky.getLocation(), EntityType.FIREWORK);
+			final Firework fw = (Firework) world.spawnEntity(blocky.getLocation(), EntityType.FIREWORK);
             FireworkMeta fwm = fw.getFireworkMeta();
 			
             fwm.addEffect(FireworkEffect.builder().with(Type.BALL).withColor(Color.RED).withColor(Color.WHITE).build());
@@ -97,7 +97,7 @@ public class FallingPackageEntity extends PackageEntity {
 	
 	private void summonSpawnFireworks(){
 		if ( true ){ //firework
-            Firework fw = (Firework) world.spawnEntity(blocky.getLocation(), EntityType.FIREWORK);
+            final Firework fw = (Firework) world.spawnEntity(blocky.getLocation(), EntityType.FIREWORK);
             FireworkMeta fwm = fw.getFireworkMeta();
 			
             fwm.addEffect(FireworkEffect.builder().with(Type.BALL_LARGE).withColor(Color.RED).withColor(Color.WHITE).build());

@@ -10,6 +10,10 @@ commands:
     description: Reload cupboard config
     usage: /cupboardreload
     permission: cupboard.admin
+  airdrop:
+    description: Reload cupboard config
+    usage: /airdrop <x> <z>
+    permission: cupboard.admin
     
 permissions:
   cupboard.admin:

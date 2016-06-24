@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.mics.spigotPlugin.cupboard.command.ReloadCommand;
+import com.mics.spigotPlugin.cupboard.command.AirdropCommand;
 import com.mics.spigotPlugin.cupboard.command.KillCommand;
 import com.mics.spigotPlugin.cupboard.listener.CupboardEntityProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.CupboardExplosionProtectListener;
@@ -47,6 +48,7 @@ public class Cupboard extends JavaPlugin implements Listener {
 
         this.getCommand("kill").setExecutor(new KillCommand(this));
         this.getCommand("cupboardreload").setExecutor(new ReloadCommand(this));
+        this.getCommand("airdrop").setExecutor(new AirdropCommand(this));
         
         registerObject();
     }

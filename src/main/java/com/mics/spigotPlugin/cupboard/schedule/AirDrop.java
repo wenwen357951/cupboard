@@ -79,7 +79,6 @@ public class AirDrop {
 	
 	private void setupRunnable(){
 		runnable = new Runnable(){
-			@Override
 			public void run() {
 				everyMin();
 				running();
