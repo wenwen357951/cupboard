@@ -26,7 +26,7 @@ public class FallingPackageEntity extends PackageEntity {
 	FallingBlock blocky = null;
 	
 	public FallingPackageEntity(Location loc, Material m, int offset){
-		summon(applyOffset(loc), m);
+		summon(applyOffset(loc, offset), m);
 	}
 	
 	public FallingPackageEntity(Location loc, Material m){
@@ -39,7 +39,7 @@ public class FallingPackageEntity extends PackageEntity {
 		startLoc = loc;
 		startLoc.getChunk().load();
 		
-		world = loc.getWorld();
+		world = startLoc.getWorld();
 		material = m;
 		
 		blocky = world.spawnFallingBlock(startLoc, material, (byte) 0);
@@ -114,22 +114,23 @@ public class FallingPackageEntity extends PackageEntity {
 		}
 	}
 	
-	private Location applyOffset(Location loc){
-		
-		int bounds = 5; //drop_location_offset
+	private Location applyOffset(Location loc, int bounds){
 		
 		if ( bounds < 1 ){
+			Cupboard.getInstance().logDebug("WTF");
 			return loc;
 		}
 		
 		int xOff;
 		int zOff;
-		Random r = new Random();
+		int rand = new Random().nextInt(bounds * 2);
+		int rand2 = new Random().nextInt(bounds * 2);
 		
-		zOff = (r.nextInt(bounds * 2) + 1) - bounds;
-		xOff = (r.nextInt(bounds * 2) + 1) - bounds;
-		
-		return loc.add(xOff, 0, zOff);
+		zOff = rand - bounds;
+		xOff = rand2 - bounds;
+
+		loc.add(xOff, 0, zOff);
+		return loc;
 		
 	}
 	
