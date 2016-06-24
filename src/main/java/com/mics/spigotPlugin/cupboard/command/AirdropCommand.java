@@ -22,8 +22,8 @@ public class AirdropCommand  implements CommandExecutor {
 		} else if( arg3[0].equalsIgnoreCase("summon") ) {
 			if (arg3.length == 3 ){
 				try {
-					double x = Integer.valueOf(arg3[1]);
-					double z = Integer.valueOf(arg3[2]);
+					double x = Double.valueOf(arg3[1]);
+					double z = Double.valueOf(arg3[2]);
 					airdrop(x, z);
 					sender.sendMessage(String.format("Airdrop summon on x: %f z: %f", x, z));
 				} catch (NumberFormatException err) {
@@ -41,9 +41,10 @@ public class AirdropCommand  implements CommandExecutor {
 				return true;
 			} else if(arg3.length == 2) {
 				try {
-					double chance = Integer.valueOf(arg3[1]);
+					double chance = Double.valueOf(arg3[1]);
 					Player p = (Player) sender;
 					Drops.addDrops(p.getInventory().getItemInMainHand(), chance);
+					sender.sendMessage("Items is added, and drops.yml is saved.");
 					return true;
 				} catch (NumberFormatException err) {
 					sendHelp(sender);
