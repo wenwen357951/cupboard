@@ -1,0 +1,93 @@
+<!--
+  ~ This file is part of
+  ~ ExtraHardMode Server Plugin for Minecraft
+  ~
+  ~ Copyright (C) 2012 Ryan Hamshire
+  ~ Copyright (C) 2013 Diemex
+  ~
+  ~ ExtraHardMode is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ExtraHardMode is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero Public License
+  ~ along with ExtraHardMode.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Project properties. -->
+  <groupId>com.mics.spigotPlugin.cupboard</groupId>
+    <artifactId>Cupboard</artifactId>
+    <packaging>jar</packaging>
+    <version>1.2.4</version>
+    <name>Cupboard</name>
+    <url>http://mics.tw</url>
+    <description>Let a PvP server as like as Rust fun, but still keep Minecraft original play style.</description>
+
+    <!-- Properties -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.mainclass>com.mics.spigotPlugin..cupboard.Cupboard</project.mainclass>
+        <!--Use a profile to overwrite this-->
+        <outputdir>${project.build.outputDirectory}</outputdir>
+        <mc-version>1.10</mc-version>
+        <bukkit-ver>R0.1-SNAPSHOT</bukkit-ver>
+        <testDir>${basedir}/src/test/</testDir>
+        <srcDir>${basedir}/src/main/java/</srcDir>
+    </properties>
+
+    <!-- Build instructions -->
+    <build>
+        <finalName>${project.name}</finalName>
+        <defaultGoal>package</defaultGoal>
+        <testSourceDirectory>${testDir}</testSourceDirectory>
+        <sourceDirectory>${srcDir}</sourceDirectory>
+
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources/</directory>
+            </resource>
+        </resources>
+    </build>
+
+    <!-- Repositories -->
+    <repositories>
+        <repository>
+          <id>central</id>
+          <name>Maven repository</name>
+          <url>http://repo1.maven.org/maven2</url>
+        </repository>
+        
+        <!-- Spigot -->
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!--Spigot API-->
+        <dependency>
+               <groupId>org.spigotmc</groupId>
+               <artifactId>spigot-api</artifactId>
+               <version>1.10-R0.1-SNAPSHOT</version>
+               <scope>provided</scope>
+        </dependency>
+        <!--Bukkit API-->
+        <dependency>
+                <groupId>org.bukkit</groupId>
+                <artifactId>bukkit</artifactId>
+                <version>1.10-R0.1-SNAPSHOT</version>
+                <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>

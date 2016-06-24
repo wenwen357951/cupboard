@@ -1,4 +1,4 @@
-﻿package com.mics.spigotPlugin.cupboard.listener;
+package com.mics.spigotPlugin.cupboard.listener;
 
 import java.util.ArrayList;
 
