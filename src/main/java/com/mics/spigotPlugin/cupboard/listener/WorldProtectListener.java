@@ -94,7 +94,7 @@ public class WorldProtectListener extends MyListener {
 	}
 	
 	private void lavaClean(Location l, boolean place_floor){
-		Location tmp_l = l.clone();
+		final Location tmp_l = l.clone();
 		if(l.getBlock().getType() == Material.LAVA || l.getBlock().getType() == Material.STATIONARY_LAVA){
 			if(place_floor){
 				if(l.getWorld().getEnvironment() == Environment.NORMAL){
