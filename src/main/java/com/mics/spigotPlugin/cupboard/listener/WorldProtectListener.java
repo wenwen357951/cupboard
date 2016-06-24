@@ -94,7 +94,7 @@ public class WorldProtectListener extends MyListener {
 	}
 	
 	private void lavaClean(Location l, boolean place_floor){
-		Location tmp_l = l.clone();
+		final Location tmp_l = l.clone();
 		if(l.getBlock().getType() == Material.LAVA || l.getBlock().getType() == Material.STATIONARY_LAVA){
 			if(place_floor){
 				if(l.getWorld().getEnvironment() == Environment.NORMAL){
@@ -107,7 +107,6 @@ public class WorldProtectListener extends MyListener {
 			}
 			cant_flow_liquid.add(Util.LocToString(tmp_l));
 			this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable(){
-				@Override
 				public void run() {
 					cant_flow_liquid.remove(Util.LocToString(tmp_l));
 				}

@@ -16,6 +16,7 @@ import com.mics.spigotPlugin.cupboard.listener.CupboardUseProtectListener;
 import com.mics.spigotPlugin.cupboard.listener.GoldBlockListener;
 import com.mics.spigotPlugin.cupboard.listener.MyListener;
 import com.mics.spigotPlugin.cupboard.listener.RespawnListener;
+import com.mics.spigotPlugin.cupboard.listener.SuicideListener;
 import com.mics.spigotPlugin.cupboard.listener.TNTCraftListener;
 import com.mics.spigotPlugin.cupboard.listener.TNTExplosionListener;
 import com.mics.spigotPlugin.cupboard.listener.WorldProtectListener;
@@ -58,6 +59,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         registedObject.add(new GoldBlockListener(this));
         registedObject.add(new WorldProtectListener(this));
         registedObject.add(new RespawnListener(this));
+        registedObject.add(new SuicideListener(this));
         
         //rewrite TNT Receipts Listener
         if(Config.TNT_SP_ENABLE.getBoolean()){

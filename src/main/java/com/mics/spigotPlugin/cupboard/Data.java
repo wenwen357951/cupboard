@@ -53,7 +53,7 @@ public class Data {
 			//e.printStackTrace(); //if not exist
 			cupboards = new HashMap<String, List<String>>();
 		}  
-    	int maxEntries = 10000;
+    	final int maxEntries = 10000;
     	location_limit_check_temp = new LinkedHashMap<String, HashSet<String>>(maxEntries*10/7, 0.7f, true) {
 			private static final long serialVersionUID = 1L;
 			@Override

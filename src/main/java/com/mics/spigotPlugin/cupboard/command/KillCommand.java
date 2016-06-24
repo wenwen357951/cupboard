@@ -7,7 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
+import org.bukkit.metadata.FixedMetadataValue;
 import com.mics.spigotPlugin.cupboard.Cupboard;
 
 
@@ -18,14 +18,14 @@ public class KillCommand implements CommandExecutor{
 		this.plugin = i;
 	}
 
-	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("§4this command must run on player");
 			return true;
 		}
 		Player p = (Player) sender;
-		p.damage(p.getMaxHealth());
+		p.setMetadata("suicide", new FixedMetadataValue(plugin, "123"));
+		p.setHealth(0);
 		return true;
 	}
 }

@@ -78,7 +78,6 @@ public class WorldBorder {
 	
 	private void setupRunnable(){
 		runnable = new Runnable(){
-			@Override
 			public void run() {
 				List<World> worlds = plugin.getServer().getWorlds();
 				long passed_sec = plugin.getServer().getWorld("world").getFullTime() / 20;
