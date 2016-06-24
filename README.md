@@ -24,7 +24,7 @@ but still keep Minecraft original play style.
 
 Block of Gold can protect 19x19x19 area, Block of Gold is at center。
 
-It can grant /revoke access by right click Block of Gold, It Protect following:
+It can grant / revoke access by right click Block of Gold, It Protect following:
 
 1. No access player can't place/remove block
 2. No access player can't use stone plate/stone button
