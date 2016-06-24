@@ -31,7 +31,7 @@ public class LandedPackageEntity extends PackageEntity {
 	}
 	
 	@Override
-	public void summon() {
+	protected void summon() {
 		loc.getWorld().getBlockAt(loc).setType(material);
 		world.getBlockAt(loc).setMetadata("isPackage", new FixedMetadataValue(Cupboard.getInstance(), true));
 		
@@ -39,7 +39,7 @@ public class LandedPackageEntity extends PackageEntity {
 	}
 	
 	@Override
-	public void tick(){
+	protected void tick(){
 		if (loc.getWorld().getBlockAt(loc).getType() == material){
 			
 			counter++;

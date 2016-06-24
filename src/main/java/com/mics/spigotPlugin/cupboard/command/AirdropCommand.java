@@ -65,11 +65,12 @@ public class AirdropCommand  implements CommandExecutor {
 		sender.sendMessage("/airdrop additem <chance>  - this can add your on hand item to drops.yml");
 		sender.sendMessage("/airdrop reload            - reload drops.yml");
 	}
-	
+
 	private void airdrop(double x, double z){
 		airdrop(new Location(plugin.getServer().getWorld("world"), x, 255, z));
 	}
 
+	//TODO this is have a little diffirent one at schedule.Airdrop
 	private void airdrop(Location l){
 		Location drop_loc = l.clone();
 		

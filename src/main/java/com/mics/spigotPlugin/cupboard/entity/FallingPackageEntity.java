@@ -34,7 +34,7 @@ public class FallingPackageEntity extends PackageEntity {
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void summon(Location loc, Material m) {
+	protected void summon(Location loc, Material m) {
 		
 		startLoc = loc;
 		startLoc.getChunk().load();
@@ -49,7 +49,7 @@ public class FallingPackageEntity extends PackageEntity {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void tick(){
+	protected void tick(){
 		if(world.getBlockAt(blocky.getLocation().clone().add(0, -1, 0)).getType() == Material.AIR){
 			world.spawnParticle(Particle.SMOKE_NORMAL, blocky.getLocation(), 50, 0.1, 0.1, 0.1, 0.1);
 			

@@ -6,7 +6,7 @@ public class PackageEntity {
 	
 	protected int counter = 0;
 	
-	public void summon(){
+	protected void summon(){
 		
 	}
 	
