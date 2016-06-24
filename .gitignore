@@ -1,6 +1,8 @@
+#maven
 /target/
-/dist/
 /bin/
+
+#eclipse
 /.classpath
 /.externalToolBuilders
 /.project
