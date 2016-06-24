@@ -3,27 +3,21 @@
 	<property name="bukkit.jar" location="../../TestServer/spigot.jar"/>
 	<property name="plugins" location="../../TestServer/plugins/"/>
 
-	<property name="src" location="src"/>
-	<property name="bin" location="bin"/>
-	<property name="dist" location="dist"/>
+	<property name="src" location="src/main/java"/>
+	<property name="bin" location="target/classes"/>
+	<property name="dist" location="target"/>
 	
 	<target name="init">
 		<mkdir dir="${bin}"/>
 	</target>
 	
 	<target name="compile" depends="init">
-		<javac srcdir="${src}" destdir="${bin}" includeantruntime="false" encoding="utf-8">
-			<classpath>
-				<pathelement location="${bukkit.jar}"/>
-			</classpath>
-		</javac>
 	</target>
 	
 	<target name="dist" depends="compile">
 		<mkdir dir="${dist}"/>
 		<jar jarfile="${dist}/${pluginname}.jar">
 			<fileset dir="${bin}"/>
-			<fileset file="${src}/plugin.yml"/>
 		</jar>
 	</target>
 	
