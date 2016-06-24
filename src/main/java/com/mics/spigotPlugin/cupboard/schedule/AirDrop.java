@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import com.mics.spigotPlugin.cupboard.Cupboard;
 import com.mics.spigotPlugin.cupboard.config.Config;
+import com.mics.spigotPlugin.cupboard.config.Locales;
 import com.mics.spigotPlugin.cupboard.entity.FallingPackageEntity;
 import com.mics.spigotPlugin.cupboard.utils.Util;
 
@@ -40,10 +41,10 @@ public class AirDrop {
 			}
 		} else if(drop_time_count <= 0){
 			if( playerMoreThanMinPlayer() ){
-				broadcast("空投物資已經投放。");
+				broadcast(Locales.AIRDROP_DROPED.getString());
 				airdrop(airdrop_location);
 			} else {
-				broadcast("因為玩家過少，空投物資已經取消。");
+				broadcast( String.format(Locales.AIRDROP_CANCEL.getString(), Config.AIR_MIN_PLAYER.getInt()));
 			}
 			drop_time_count = getNextDropRandomTime();
 		}
@@ -55,7 +56,7 @@ public class AirDrop {
 	}
 	
 	private void airdropNotify() {
-		String str = String.format("空投物資即將在 %d 分鐘後投放在 x:%d z:%d 附近", drop_time_count, airdrop_location.getBlockX(), airdrop_location.getBlockZ());
+		String str = String.format(Locales.AIRDROP_WILL_DROP.getString(), drop_time_count, airdrop_location.getBlockX(), airdrop_location.getBlockZ());
 		broadcast(str);
 	}
 	

@@ -39,6 +39,7 @@ public enum Config {
 	AIR_NOTIFY_TIME("air-drop.notify-time", 10, "notify all player before this time (have to small than min-time)"),
 	AIR_MIN_PLAYER("air-drop.min-player", 3, "have to more than this amount player to airdrop"),
 	AIR_DROP_OFFSET("air-drop.offset", 20, "let airdrop not drop at show up location"),
+	AIR_DROP_ITEM_AMOUNT("air-drop.item-amount", 5, "how many items will droped?"),
 	
 	TNT_SP_ENABLE("tnt.enable", true, "let TNT can desotry obsidian, water, lava, TNT Can put in protect area and TNT hard to craft."),
 	TNT_EXPLOSION_RADIUS("tnt.radius", 10, "TNT power radius"),

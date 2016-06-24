@@ -29,7 +29,7 @@ public enum Locales {
 	
 	//WORLD BORDER
 	BORDER_IS_CHANGED("world-border.border-is-changed", "&eWorld border is changed  &7( Every %.0f min deduct %d )\n&bNow Border: World %d Nether %d The End %d"),
-	SPAWN_OUTSIDE_BORDER("world-border.spawn-outside_border", "&cYour bed is outside world border, you are spawn in world spawn."),
+	SPAWN_OUTSIDE_BORDER("world-border.spawn-outside-border", "&cYour bed is outside world border, you are spawn in world spawn."),
 	
 	//TELEPORT
 	TELEPORT_FAIL("teleport.teleport-fail", "&4Teleport fail."),
@@ -45,6 +45,7 @@ public enum Locales {
 	    	"&r&6E G E   &bG is Block of Gold",
 	    	"&r&6E E E"
 	}),
+	
 	TNT_TNT_LORE("tnt.tnt-lore", new String[] {
 			"&r&6Put in portect area, will Auto Ignite.",
 			"&r&6Can destory protect area.",
@@ -59,7 +60,13 @@ public enum Locales {
 		"&72. No access player can't use stone plate/button",
 		"&73. Mobs can't trigger stone plate.",
 		"&74. Creeper can't destory block in protect area."
-	});
+	}),
+	
+	//AIRDROP
+	AIRDROP_DROPED("airdrop.droped", "空投物資已經投放"),
+	AIRDROP_CANCEL("airdrop.cancel", "因為玩家少於 %d 人，空投物資已經取消。"),
+	AIRDROP_WILL_DROP("airdrop.will_drop", "空投物資即將在 %d 分鐘後投放在 x:%d z:%d 附近");
+	
 	
 	private final Object value;
 	private final String path;

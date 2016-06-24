@@ -11,11 +11,11 @@ gold-block:
   spawn-without-access: '&c你的重生點在未授權保護區，重生點已回到世界重生點'
 world-protect:
   do-not-block-nether-door: '&7請勿將地獄門堵死'
-  spawn-outside_border: '&c你的重生點在世界邊界外，重生點已回到世界重生點'
 world-border:
   border-is-changed: |-
     &e世界的邊界已經被改變  &7( 每 %.0f 分鐘就會縮小 %d 格 )
     &b現在邊界: 現界 %d 地獄 %d 終界 %d
+  spawn-outside_border: '&c你的重生點在世界邊界外，重生點已回到世界重生點'
 teleport:
   teleport-fail: '&4傳送失敗.'
   teleport-now: 十秒後傳送, 請勿移動
@@ -43,3 +43,7 @@ tnt:
   - '&r&6如果放置在未授權保護區內會直接點燃'
   - '&r&6可以破壞保護區'
   - '&r&6可以破壞水、岩漿、黑曜石'
+airdrop:
+  droped: 空投物資已經投放
+  cancel: 因為玩家少於 %d 人，空投物資已經取消。
+  will_drop: 空投物資即將在 %d 分鐘後投放在 x:%d z:%d 附近
