@@ -24,16 +24,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Project properties. -->
-    <groupId>com.mics.spigotPlugin</groupId>
+  <groupId>com.mics.spigotPlugin.cupboard</groupId>
     <artifactId>Cupboard</artifactId>
+    <packaging>jar</packaging>
     <version>1.2.4</version>
     <name>Cupboard</name>
+    <url>http://mics.tw</url>
     <description>Let a PvP server as like as Rust fun, but still keep Minecraft original play style.</description>
 
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.mainclass>com.mics.spigotPlugin.Cupboard</project.mainclass>
+        <project.mainclass>com.mics.spigotPlugin..cupboard.Cupboard</project.mainclass>
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
         <mc-version>1.10</mc-version>
@@ -51,11 +53,7 @@
 
         <resources>
             <resource>
-                <includes>
-                    <include>plugin.yml</include>
-                </includes>
                 <directory>${basedir}/src/main/resources/</directory>
-                <filtering>true</filtering>
             </resource>
         </resources>
     </build>
@@ -67,6 +65,7 @@
           <name>Maven repository</name>
           <url>http://repo1.maven.org/maven2</url>
         </repository>
+        
         <!-- Spigot -->
         <repository>
             <id>spigot-repo</id>
@@ -74,19 +73,21 @@
         </repository>
     </repositories>
 
-    <!--Spigot API-->
-    <dependency>
-           <groupId>org.spigotmc</groupId>
-           <artifactId>spigot-api</artifactId>
-           <version>1.10-R0.1-SNAPSHOT</version>
-           <scope>provided</scope>
-    </dependency>
-    <!--Bukkit API-->
-    <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.10-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-    </dependency>
+    <dependencies>
+        <!--Spigot API-->
+        <dependency>
+               <groupId>org.spigotmc</groupId>
+               <artifactId>spigot-api</artifactId>
+               <version>1.10-R0.1-SNAPSHOT</version>
+               <scope>provided</scope>
+        </dependency>
+        <!--Bukkit API-->
+        <dependency>
+                <groupId>org.bukkit</groupId>
+                <artifactId>bukkit</artifactId>
+                <version>1.10-R0.1-SNAPSHOT</version>
+                <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>
