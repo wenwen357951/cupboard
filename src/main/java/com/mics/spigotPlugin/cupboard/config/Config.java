@@ -36,8 +36,8 @@ public enum Config {
 	AIR_DROP_ENABLE("air-drop.enable", true, "enable airdrop?"),
 	AIR_DROP_MIN_TIME("air-drop.min-time", 40, "airdrop min period time (min)"),
 	AIR_DROP_MAX_TIME("air-drop.max-time", 80, "airdrop max period time (min)"),
-	AIR_NOTIFY_TIME("air-drop.notify-time", 10, "notify all player before this time (have to small than min-time)"),
-	AIR_MIN_PLAYER("air-drop.min-player", 3, "have to more than this amount player to airdrop"),
+	AIR_NOTIFY_TIME("air-drop.notify-time", 5, "notify all player before this time (have to small than min-time)"),
+	AIR_MIN_PLAYER("air-drop.min-player", 5, "have to more than this amount player to airdrop"),
 	AIR_DROP_OFFSET("air-drop.offset", 20, "let airdrop not drop at show up location"),
 	AIR_DROP_ITEM_AMOUNT("air-drop.item-amount", 5, "how many items will droped?"),
 	
