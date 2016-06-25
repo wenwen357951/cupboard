@@ -52,6 +52,10 @@ public class AirdropCommand  implements CommandExecutor {
 			} else {
 				sendHelp(sender);
 			}
+		} else if (arg3[0].equalsIgnoreCase("getdrop")) {
+			sender.sendMessage("This command is not finish :(");
+		} else if (arg3[0].equalsIgnoreCase("getitemlist")) {
+			sender.sendMessage("This command is not finish :(");
 		} else if (arg3[0].equalsIgnoreCase("reload")) {
 			Drops.reload();
 			sender.sendMessage("drops.yml loaded.");
@@ -64,6 +68,8 @@ public class AirdropCommand  implements CommandExecutor {
 	private void sendHelp(CommandSender sender){
 		sender.sendMessage("/airdrop summon <x> <z>    - this will summon airdrop");
 		sender.sendMessage("/airdrop additem <chance>  - this can add your on hand item to drops.yml");
+		sender.sendMessage("/airdrop getitem <number>  - get airdrop item");
+		sender.sendMessage("/airdrop getitemlist       - get airdrop item");
 		sender.sendMessage("/airdrop reload            - reload drops.yml");
 	}
 
