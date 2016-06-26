@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Project properties. -->
-    <groupId>com.mics.spigotPlugin.cupboard</groupId>
+    <groupId>tw.mics.spigot.plugin.cupboard</groupId>
     <artifactId>Cupboard</artifactId>
     <packaging>jar</packaging>
-    <version>1.3.3</version>
+    <version>1.3.4</version>
     <name>Cupboard</name>
     <url>http://mics.tw</url>
     <description>Let a PvP server as like as Rust fun, but still keep Minecraft original play style.</description>
@@ -14,7 +14,7 @@
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.mainclass>com.mics.spigotPlugin..cupboard.Cupboard</project.mainclass>
+        <project.mainclass>tw.mics.spigot.plugin.cupboard.Cupboard</project.mainclass>
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
         <mc-version>1.10.2</mc-version>
@@ -29,10 +29,14 @@
         <defaultGoal>package</defaultGoal>
         <testSourceDirectory>${testDir}</testSourceDirectory>
         <sourceDirectory>${srcDir}</sourceDirectory>
-
         <resources>
             <resource>
+        		<filtering>true</filtering>
                 <directory>${basedir}/src/main/resources/</directory>
+                <includes>
+                	<include>plugin.yml</include>
+                	<include>locales/*</include>
+              	</includes>
             </resource>
         </resources>
     </build>
