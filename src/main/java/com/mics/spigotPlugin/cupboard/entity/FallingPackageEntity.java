@@ -15,8 +15,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.util.Vector;
-
 import com.mics.spigotPlugin.cupboard.Cupboard;
 
 
@@ -53,18 +51,14 @@ public class FallingPackageEntity extends PackageEntity {
 		tick();
 	}
 
-	@SuppressWarnings("deprecation")
 	protected void tick(){
 		if(world.getBlockAt(blocky.getLocation().clone().add(0, -1, 0)).getType() == Material.AIR){
 			counter++;
 			world.spawnParticle(Particle.SMOKE_NORMAL, blocky.getLocation(), 50, 0.1, 0.1, 0.1, 0.1);
 			
 			if (blocky.isDead()){
-				Location oldLoc = blocky.getLocation();
-				Vector oldVelocity = blocky.getVelocity();
-				
-				blocky = world.spawnFallingBlock(oldLoc, material, (byte) 0);
-				blocky.setVelocity(oldVelocity);
+				this.remove();
+				return;
 			}
 			
 			summonUpdateFireworks();

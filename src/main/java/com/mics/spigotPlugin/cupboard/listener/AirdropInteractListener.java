@@ -11,6 +11,7 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -28,6 +29,7 @@ public class AirdropInteractListener extends MyListener {
 		super(instance);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event){
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)  || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
@@ -35,9 +37,16 @@ public class AirdropInteractListener extends MyListener {
 			if (event.getClickedBlock().hasMetadata("isPackage") && event.getClickedBlock().getMetadata("isPackage").get(0).asBoolean() == true){
 				
 				Block clickedBlock = event.getClickedBlock();
-				
+				Location clickedBlockLocation = clickedBlock.getLocation();
+				int ViewDist = plugin.getServer().getViewDistance() * 16;
 				clickedBlock.setType(Material.AIR);
 				clickedBlock.removeMetadata("isPackage", plugin);
+				for(Player p : plugin.getServer().getOnlinePlayers()){
+					if(p.getLocation().distance(clickedBlockLocation) < ViewDist){
+						plugin.log("%d", plugin.getServer().getViewDistance());
+						p.sendBlockChange(clickedBlockLocation, Material.AIR, (byte)0);
+					}
+				}
 				
 				summonBreakFirework(clickedBlock.getLocation());
 				
