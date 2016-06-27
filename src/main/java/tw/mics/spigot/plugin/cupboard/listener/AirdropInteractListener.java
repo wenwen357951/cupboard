@@ -43,7 +43,6 @@ public class AirdropInteractListener extends MyListener {
 				clickedBlock.removeMetadata("isPackage", plugin);
 				for(Player p : plugin.getServer().getOnlinePlayers()){
 					if(p.getLocation().distance(clickedBlockLocation) < ViewDist){
-						plugin.log("%d", plugin.getServer().getViewDistance());
 						p.sendBlockChange(clickedBlockLocation, Material.AIR, (byte)0);
 					}
 				}

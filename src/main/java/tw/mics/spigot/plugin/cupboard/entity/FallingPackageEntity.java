@@ -123,7 +123,6 @@ public class FallingPackageEntity extends PackageEntity {
 	private Location applyOffset(Location loc, int bounds){
 		
 		if ( bounds < 1 ){
-			Cupboard.getInstance().logDebug("WTF");
 			return loc;
 		}
 		
