@@ -65,7 +65,6 @@ public enum Locales {
 
     //AIRDROP
     AIRDROP_DROPED("airdrop.droped", "空投物資已經投放"),
-    AIRDROP_CANCEL("airdrop.cancel", "因為玩家少於 %d 人，空投物資已經取消。"),
     AIRDROP_WILL_DROP("airdrop.will_drop", "空投物資即將在 %d 分鐘後投放在 x:%d z:%d 附近"),
     
     //BED

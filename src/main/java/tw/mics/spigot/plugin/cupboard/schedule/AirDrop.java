@@ -41,13 +41,9 @@ public class AirDrop {
 				plugin.logDebug("Airdrop will not drop, becouse player is less than min player");
 			}
 		} else if(drop_time_count <= 0){
-			if( playerMoreThanMinPlayer() ){
-                plugin.log("Airdrop dropped around x:%d z:%d (+- %d)", airdrop_location.getBlockX(), airdrop_location.getBlockZ(), Config.AIR_DROP_OFFSET.getInt());
-				broadcast(Locales.AIRDROP_DROPED.getString());
-				airdrop(airdrop_location);
-			} else {
-				broadcast( String.format(Locales.AIRDROP_CANCEL.getString(), Config.AIR_MIN_PLAYER.getInt()));
-			}
+            plugin.log("Airdrop dropped around x:%d z:%d (+- %d)", airdrop_location.getBlockX(), airdrop_location.getBlockZ(), Config.AIR_DROP_OFFSET.getInt());
+			broadcast(Locales.AIRDROP_DROPED.getString());
+			airdrop(airdrop_location);
 			drop_time_count = getNextDropRandomTime();
 		}
 	}
