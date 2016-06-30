@@ -64,7 +64,10 @@ public class CupboardUseProtectListener extends MyListener{
             Player p = event.getPlayer();
             if (
                     event.getAction() == Action.RIGHT_CLICK_BLOCK &&
-                    b.getType() == Material.CHEST
+                    (
+                        b.getType() == Material.CHEST ||
+                        b.getType() == Material.TRAPPED_CHEST
+                    )
             ){
                 if(data.checkIsLimit(b, p)){
                     if(this.plugin.isOP(p)) return;
