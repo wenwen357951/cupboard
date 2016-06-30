@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.block.Biome;
+import org.bukkit.entity.Player;
 
 import tw.mics.spigot.plugin.cupboard.config.Config;
 
@@ -59,6 +60,14 @@ public class SpawnLocationManager {
         return false;
     }
     
+    public static boolean checkPlayerSpawn(Location l, Player p){
+        if(l == null || p.getBedSpawnLocation() == null) return false;
+        Double dist = l.distance(p.getBedSpawnLocation());
+        if(dist <= 2.24)
+            return true;
+        return false;
+    }
+    
     private static Location findNewSpawnLocation(String string) {
         return findNewSpawnLocation(Bukkit.getServer().getWorld(string));
     }
@@ -84,6 +93,7 @@ public class SpawnLocationManager {
     private static int getRandom(int max){
         return new Random().nextInt(max + 1) - (max / 2);
     }
+    
     private static int getRandom(double max) {
         return getRandom((int)max);
     }

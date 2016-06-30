@@ -10,7 +10,9 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
+import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
+import tw.mics.spigot.plugin.cupboard.utils.SpawnLocationManager;
 
 public class CupboardUseProtectListener extends MyListener{
 	public CupboardsData data;
@@ -38,22 +40,62 @@ public class CupboardUseProtectListener extends MyListener{
 			}
       	
       }
+
+    //禁止玩家使用石製踏板
+      @EventHandler
+      public void onUseStonePlate(PlayerInteractEvent event){
+          Block b = event.getClickedBlock();
+          Player p = event.getPlayer();
+          if (
+                  event.getAction() == Action.PHYSICAL &&
+                  b.getType() == Material.STONE_PLATE
+          ){
+              if(data.checkIsLimit(b, p)){
+                  if(this.plugin.isOP(p)) return;
+                  event.setCancelled(true);
+              }
+          }
+      }
       
-      //禁止玩家使用石製踏板
+      //禁止未授權玩家使用箱子
         @EventHandler
-        public void onUseStonePlate(PlayerInteractEvent event){
-        	Block b = event.getClickedBlock();
-        	Player p = event.getPlayer();
-        	if (
-        			event.getAction() == Action.PHYSICAL &&
-        			b.getType() == Material.STONE_PLATE
-			){
-        		if(data.checkIsLimit(b, p)){
-        			if(this.plugin.isOP(p)) return;
-        			event.setCancelled(true);
-        		}
-        	}
+        public void onUseChest(PlayerInteractEvent event){
+            Block b = event.getClickedBlock();
+            Player p = event.getPlayer();
+            if (
+                    event.getAction() == Action.RIGHT_CLICK_BLOCK &&
+                    b.getType() == Material.CHEST
+            ){
+                if(data.checkIsLimit(b, p)){
+                    if(this.plugin.isOP(p)) return;
+                    p.sendMessage(Locales.NO_ACCESS.getString());
+                    event.setCancelled(true);
+                }
+            }
         }
+      
+      //禁止未授權玩家使用床，其他則記錄重生點
+      @EventHandler
+      public void onUseBed(PlayerInteractEvent event){
+          Block b = event.getClickedBlock();
+          Player p = event.getPlayer();
+          if (
+                  event.getAction() == Action.RIGHT_CLICK_BLOCK &&
+                  b.getType() == Material.BED_BLOCK
+          ){
+              if(data.checkIsLimit(b, p)){
+                  if(this.plugin.isOP(p)) return;
+                  p.sendMessage(Locales.NO_ACCESS.getString());
+                  event.setCancelled(true);
+              } else {
+                  if(!SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p)){
+                      p.setBedSpawnLocation(b.getLocation());
+                      p.sendMessage("重生點已紀錄。");
+                      event.setCancelled(true);
+                  }
+              }
+          }
+      }
 
     //禁止動物/怪物使用石製踏板 (玩家騎在動物上則增加玩家權限判斷
     @EventHandler

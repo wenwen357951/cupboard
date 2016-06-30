@@ -19,6 +19,7 @@ import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
+import tw.mics.spigot.plugin.cupboard.utils.SpawnLocationManager;
 
 public class CupboardBlockProtectListener extends MyListener {
 	private CupboardsData data;
@@ -45,6 +46,7 @@ public class CupboardBlockProtectListener extends MyListener {
         	}
         }
     }
+    
     //防止其他玩家放置方塊
     @EventHandler(priority = EventPriority.HIGH)
     public void onBlockPlace(BlockPlaceEvent e){
@@ -60,6 +62,14 @@ public class CupboardBlockProtectListener extends MyListener {
             	}
         		e.setCancelled(true);
     			p.sendMessage(Locales.NO_ACCESS.getString());
+        	} else {
+                if(
+                        b.getType().equals(Material.BED_BLOCK) &&
+                        !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p)
+                        ){
+                    p.setBedSpawnLocation(b.getLocation());
+                    p.sendMessage("重生點已紀錄。");
+                }
         	}
         } else {
         	if(data.checkIsLimit(b))
