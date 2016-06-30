@@ -68,7 +68,7 @@ public class CupboardBlockProtectListener extends MyListener {
                         !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p)
                         ){
                     p.setBedSpawnLocation(b.getLocation());
-                    p.sendMessage("重生點已紀錄。");
+                    p.sendMessage(Locales.BED_SPAWN_SET.getString());
                 }
         	}
         } else {

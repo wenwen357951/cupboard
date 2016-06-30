@@ -89,7 +89,7 @@ public class PlayerRespawnProtectListener extends MyListener {
                     event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.STATIONARY_LAVA
             ){
                 event.getPlayer().setBedSpawnLocation(null);
-                event.getPlayer().sendMessage("床被放置了岩漿，已自動恢復隨機重生。");
+                event.getPlayer().sendMessage(Locales.BED_HAVE_LAVA.getString());
             } else {
                 return;
             }
@@ -98,14 +98,14 @@ public class PlayerRespawnProtectListener extends MyListener {
 		//隨機重生
         if(Config.PP_PLAYER_RANDOM_SPAWN_ENABLE.getBoolean()){
             if(SpawnLocationManager.checkNewSpawnLocation()){
-                String msg = "世界的重生點已經更新。";
+                String msg = Locales.BED_WORLD_SPAWN_UPDATED.getString();
                 event.getPlayer().sendMessage(msg);
                 for( Player pl : plugin.getServer().getOnlinePlayers() ){
                     if(pl.getBedSpawnLocation() == null)
                         pl.sendMessage(msg);
                 }
             } else {
-                event.getPlayer().sendMessage(String.format("還有 %.0f 秒世界的重生點就會更新", SpawnLocationManager.getTimeLeft()));
+                event.getPlayer().sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
             }
             event.setRespawnLocation(SpawnLocationManager.getSpawnLocation());
         }

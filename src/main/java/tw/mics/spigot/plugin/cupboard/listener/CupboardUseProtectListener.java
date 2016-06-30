@@ -93,7 +93,7 @@ public class CupboardUseProtectListener extends MyListener{
               } else {
                   if(!SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p)){
                       p.setBedSpawnLocation(b.getLocation());
-                      p.sendMessage("重生點已紀錄。");
+                      p.sendMessage(Locales.BED_SPAWN_SET.getString());
                       event.setCancelled(true);
                   }
               }

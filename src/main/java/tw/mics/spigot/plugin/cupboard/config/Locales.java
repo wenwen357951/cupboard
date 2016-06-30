@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -61,11 +62,17 @@ public enum Locales {
 		"&73. Mobs can't trigger stone plate.",
 		"&74. Creeper can't destory block in protect area."
 	}),
-	
-	//AIRDROP
-	AIRDROP_DROPED("airdrop.droped", "空投物資已經投放"),
-	AIRDROP_CANCEL("airdrop.cancel", "因為玩家少於 %d 人，空投物資已經取消。"),
-	AIRDROP_WILL_DROP("airdrop.will_drop", "空投物資即將在 %d 分鐘後投放在 x:%d z:%d 附近");
+
+    //AIRDROP
+    AIRDROP_DROPED("airdrop.droped", "空投物資已經投放"),
+    AIRDROP_CANCEL("airdrop.cancel", "因為玩家少於 %d 人，空投物資已經取消。"),
+    AIRDROP_WILL_DROP("airdrop.will_drop", "空投物資即將在 %d 分鐘後投放在 x:%d z:%d 附近"),
+    
+    //BED
+    BED_SPAWN_SET("spawn.spawn-set", "重生點已紀錄。"),
+    BED_HAVE_LAVA("spawn.bed-have-lava", "床被放置了岩漿, 回到世界重生點。"),
+    BED_WORLD_SPAWN_UPDATED("spawn.world-spawn-updated", "世界的重生點已經更新。"),
+    BED_WORLD_SPAWN_UPDATE_TIME("spawn.world-spawn-update-time", "還有 %.0f 秒世界的重生點就會更新。");
 	
 	
 	private final Object value;
