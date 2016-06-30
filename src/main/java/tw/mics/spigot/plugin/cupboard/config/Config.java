@@ -3,6 +3,7 @@ package tw.mics.spigot.plugin.cupboard.config;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
@@ -28,6 +29,11 @@ public enum Config {
 	WP_PIGZOMBIE_DROP_NETHER_WART_PERCENT("world-protect.pigzombie-drop-nether-wart.percent", 0.3, "0~1, this mean when drop gold nugget, how many percent will turn it to nether wart."),
 	
 	PP_PLAYER_INVENTORY_RECOVERY_PERCENT("player-protect.player-inventory-recovery-percent", 0.5, "recovery player inventory if they death (0 to disable)"),
+	PP_PLAYER_RANDOM_SPAWN_ENABLE("player-protect.random-spawn.enable", true, ""),
+    PP_PLAYER_RANDOM_SPAWN_FIRSTJOIN("player-protect.random-spawn.first-join", false, ""),
+    PP_PLAYER_RANDOM_SPAWN_WORLD("player-protect.random-spawn.world", "world", ""),
+    PP_PLAYER_RANDOM_SPAWN_NEW_LOCATION_TIME("player-protect.random-spawn.NewRandomPointTimeSec", 180, ""),
+    PP_PLAYER_REMOVE_SPAWN_WITH_LAVA("player-protect.remove-bed-spawn-when-have-lava", true, ""),
 	
 	WB_ENABLE("world-border.enable", true, "enable world border system? (use this system please DO NOT modify time)"),
 	WB_INIT_RADIUS("world-border.init-radius", 1200, "it mean -x ~ x "),

@@ -1,6 +1,7 @@
 package tw.mics.spigot.plugin.cupboard;
 
 import java.util.ArrayList;
+
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -22,13 +23,15 @@ import tw.mics.spigot.plugin.cupboard.listener.CupboardExplosionProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardUseProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.GoldBlockListener;
 import tw.mics.spigot.plugin.cupboard.listener.MyListener;
-import tw.mics.spigot.plugin.cupboard.listener.PlayerProtectListener;
+import tw.mics.spigot.plugin.cupboard.listener.PlayerRespawnListener;
+import tw.mics.spigot.plugin.cupboard.listener.PlayerRespawnProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.SuicideListener;
 import tw.mics.spigot.plugin.cupboard.listener.TNTCraftListener;
 import tw.mics.spigot.plugin.cupboard.listener.TNTExplosionListener;
 import tw.mics.spigot.plugin.cupboard.listener.WorldProtectListener;
 import tw.mics.spigot.plugin.cupboard.schedule.AirDrop;
 import tw.mics.spigot.plugin.cupboard.schedule.WorldBorder;
+import tw.mics.spigot.plugin.cupboard.utils.SpawnLocationManager;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
@@ -60,6 +63,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         this.getCommand("airdrop").setExecutor(new AirdropCommand(this));
         
         registerObject();
+        SpawnLocationManager.init();
     }
 	private void registerObject(){
 		//register listener
@@ -69,9 +73,10 @@ public class Cupboard extends JavaPlugin implements Listener {
         registedObject.add(new CupboardUseProtectListener(this));
         registedObject.add(new GoldBlockListener(this));
         registedObject.add(new WorldProtectListener(this));
-        registedObject.add(new PlayerProtectListener(this));
+        registedObject.add(new PlayerRespawnListener(this));
         registedObject.add(new SuicideListener(this));
         registedObject.add(new AirdropInteractListener(this));
+        registedObject.add(new PlayerRespawnProtectListener(this));
         
         //rewrite TNT Receipts Listener
         if(Config.TNT_SP_ENABLE.getBoolean()){

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,10 +19,11 @@ import org.bukkit.inventory.ItemStack;
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
+import tw.mics.spigot.plugin.cupboard.utils.SpawnLocationManager;
 
-public class PlayerProtectListener extends MyListener {
+public class PlayerRespawnProtectListener extends MyListener {
 	private Map<String, List<ItemStack>> saveinv;
-	public PlayerProtectListener(Cupboard instance)
+	public PlayerRespawnProtectListener(Cupboard instance)
 	{
 		super(instance);
 		saveinv = new HashMap<String, List<ItemStack>>();
@@ -77,6 +79,36 @@ public class PlayerProtectListener extends MyListener {
 			p.setBedSpawnLocation(null);
 			p.sendMessage(Locales.SPAWN_OUTSIDE_BORDER.getString());
 		}
+		
+		//spawn lava check
+		if(event.isBedSpawn() && event.getPlayer().getBedSpawnLocation() != null){
+            if(
+                    event.getRespawnLocation().getBlock().getType() == Material.LAVA ||
+                    event.getRespawnLocation().getBlock().getType() == Material.STATIONARY_LAVA ||
+                    event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.LAVA ||
+                    event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.STATIONARY_LAVA
+            ){
+                event.getPlayer().setBedSpawnLocation(null);
+                event.getPlayer().sendMessage("床被放置了岩漿，已自動恢復隨機重生。");
+            } else {
+                return;
+            }
+        }
+		
+		//隨機重生
+        if(Config.PP_PLAYER_RANDOM_SPAWN_ENABLE.getBoolean()){
+            if(SpawnLocationManager.checkNewSpawnLocation()){
+                String msg = "世界的重生點已經更新。";
+                event.getPlayer().sendMessage(msg);
+                for( Player pl : plugin.getServer().getOnlinePlayers() ){
+                    if(pl.getBedSpawnLocation() == null)
+                        pl.sendMessage(msg);
+                }
+            } else {
+                event.getPlayer().sendMessage(String.format("還有 %.0f 秒世界的重生點就會更新", SpawnLocationManager.getTimeLeft()));
+            }
+            event.setRespawnLocation(SpawnLocationManager.getSpawnLocation());
+        }
 	}
 
 }
