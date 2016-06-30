@@ -19,6 +19,7 @@ public enum Config {
 	
 	WP_NETHER_DOOR_PROTECT_ENABLE("world-protect.nether-portal-protect.enable", true, "enable nether door protect (if this is false, below is non-use)"),
 	WP_NETHER_SREACH_RADIUS("world-protect.nether-portal-protect.sreach-redius", 16, "change nether portal sreach radius"),
+	WP_NETHER_SCALE("world-protect.nether-portal-protect.nether-scale", 8, "change nether portal scale"),
 	WP_NETHER_REMOVE_BLOCK("world-protect.nether-portal-protect.remove-block", true, "remove block when nether door is blocked"),
 	WP_ANTI_NETHER_DOOR_BLOCK("world-protect.nether-portal-protect.anti-nether-door-block", true, "let nether door can't block"),
 	WP_ANTI_NETHER_DOOR_ENTITY_TELEPORT("world-protect.nether-portal-protect.anti-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),

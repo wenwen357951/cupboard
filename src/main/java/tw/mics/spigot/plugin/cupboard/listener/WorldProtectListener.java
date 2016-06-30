@@ -42,6 +42,19 @@ public class WorldProtectListener extends MyListener {
 	public void onNetherPortal(PlayerPortalEvent e){
 		if(!Config.WP_NETHER_DOOR_PROTECT_ENABLE.getBoolean())return;
 		e.getPortalTravelAgent().setSearchRadius(Config.WP_NETHER_SREACH_RADIUS.getInt());
+		
+		if(Config.WP_NETHER_SCALE.getDouble()!=8){
+    		Location l = e.getFrom().clone();
+    		if(l.getWorld().getEnvironment() == Environment.NORMAL){
+    		    l.multiply(1.0/Config.WP_NETHER_SCALE.getDouble());
+    		} else if(l.getWorld().getEnvironment() == Environment.NETHER) {
+    		    l.multiply(Config.WP_NETHER_SCALE.getDouble());
+    		} else {
+    		    return;
+    		}
+    		l.setWorld(e.getTo().getWorld());
+    		e.setTo(e.getPortalTravelAgent().findOrCreate(Util.changeLocationInBorder(l)));
+		}
 	}
 	
 	@EventHandler

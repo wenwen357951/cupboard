@@ -33,5 +33,22 @@ public class Util {
 		l.setY(set_y);
 		return l.add(add_x, 0, add_z);
 	}
+	
+	public static Location changeLocationInBorder(Location l){
+	    Location loc = l.clone();
+	    double max = (int) l.getWorld().getWorldBorder().getSize()/2;
+	    loc.setX(check_border(loc.getX(), max));
+	    loc.setZ(check_border(loc.getZ(), max));
+	    return loc;
+	}
+	
+    private static double check_border(double i, double max) {
+        if (i > max) {
+            return max;
+        } else if (i < -max) {
+            return -max;
+        }
+        return i;
+    }
 }
 
