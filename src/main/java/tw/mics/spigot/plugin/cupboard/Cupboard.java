@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import tw.mics.spigot.plugin.cupboard.command.AirdropCommand;
 import tw.mics.spigot.plugin.cupboard.command.KillCommand;
 import tw.mics.spigot.plugin.cupboard.command.ReloadCommand;
+import tw.mics.spigot.plugin.cupboard.command.RspCommand;
 import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Drops;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
@@ -61,6 +62,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         this.getCommand("kill").setExecutor(new KillCommand(this));
         this.getCommand("cupboardreload").setExecutor(new ReloadCommand(this));
         this.getCommand("airdrop").setExecutor(new AirdropCommand(this));
+        this.getCommand("rsp").setExecutor(new RspCommand(this));
         
         registerObject();
         SpawnLocationManager.init();

@@ -18,6 +18,10 @@ commands:
     description: Reload cupboard config
     usage: /airdrop <x> <z>
     permission: cupboard.admin
+  rsp:
+    description: Teleport player to Random Spawn
+    usage: /rsp <player>
+    permission: rustbed.admin
     
 permissions:
   cupboard.admin:
