@@ -10,6 +10,7 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
+import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
 import tw.mics.spigot.plugin.cupboard.utils.SpawnLocationManager;
@@ -60,6 +61,7 @@ public class CupboardUseProtectListener extends MyListener{
       //禁止未授權玩家使用箱子
         @EventHandler
         public void onUseChest(PlayerInteractEvent event){
+            if(!Config.CUPBOARD_PROTECT_CHEST.getBoolean())return;
             Block b = event.getClickedBlock();
             Player p = event.getPlayer();
             if (
