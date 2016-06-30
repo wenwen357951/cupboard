@@ -42,9 +42,11 @@ public class AirdropInteractListener extends MyListener {
 				clickedBlock.setType(Material.AIR);
 				clickedBlock.removeMetadata("isPackage", plugin);
 				for(Player p : plugin.getServer().getOnlinePlayers()){
-					if(p.getLocation().distance(clickedBlockLocation) < ViewDist){
-						p.sendBlockChange(clickedBlockLocation, Material.AIR, (byte)0);
-					}
+				    if(p.getLocation().getWorld().equals(clickedBlock.getWorld())){
+    					if(p.getLocation().distance(clickedBlockLocation) < ViewDist){
+    						p.sendBlockChange(clickedBlockLocation, Material.AIR, (byte)0);
+    					}
+				    }
 				}
 				
 				summonBreakFirework(clickedBlock.getLocation());
