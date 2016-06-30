@@ -1,7 +1,6 @@
 package tw.mics.spigot.plugin.cupboard.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -9,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 
 import tw.mics.spigot.plugin.cupboard.config.Config;
@@ -18,27 +16,15 @@ public class SpawnLocationManager {
     public static Location last_spawnLocation;
     public static long last_spawnLocationTime = 0;
 
-    static List<Biome> biomeBlockList;
-    static List<Material> blockBlockList;
+    static HashSet<Material> blockBlockList;
     
     boolean ENABLE = true;
     int RESET_SEC = 180;
     
     public static void init(){
-        biomeBlockList = new ArrayList<Biome>();
-        biomeBlockList.add(Biome.OCEAN);
-        biomeBlockList.add(Biome.DEEP_OCEAN);
-        biomeBlockList.add(Biome.RIVER);
-        
-        blockBlockList = new ArrayList<Material>();
+        blockBlockList = new HashSet<Material>();
         blockBlockList.add(Material.STATIONARY_LAVA);
         blockBlockList.add(Material.LAVA);
-        blockBlockList.add(Material.STATIONARY_WATER);
-        blockBlockList.add(Material.WATER);
-        blockBlockList.add(Material.LEAVES);
-        blockBlockList.add(Material.LEAVES_2);
-        blockBlockList.add(Material.LOG);
-        blockBlockList.add(Material.LOG_2);
     }
     
     public static Double getTimeLeft(){
@@ -83,10 +69,10 @@ public class SpawnLocationManager {
         Location location;
         while(true){
             location = world.getHighestBlockAt( (int)(center_x + getRandom(max_distance)), (int)(center_z + getRandom(max_distance))).getLocation();
-            if(biomeBlockList.contains(location.getBlock().getBiome())) continue;
             if(blockBlockList.contains(location.getBlock().getType())) continue;
             break;
         }
+        location.add(0.5, 0, 0.5);
         return location;
     }
     
