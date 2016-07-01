@@ -30,7 +30,6 @@ public class FallingPackageEntity extends PackageEntity {
 	public FallingPackageEntity(Location loc, Material m, int offset){
 		super();
 		loc = Util.changeLocationInBorder(applyOffset(loc,offset));
-        Cupboard.getInstance().log("Airdrop dropped at x:%d z:%d", loc.getBlockX(), loc.getBlockZ());
 		summon(applyOffset(loc, offset), m);
 	}
 	
@@ -41,7 +40,9 @@ public class FallingPackageEntity extends PackageEntity {
 	
 	@SuppressWarnings("deprecation")
 	protected void summon(Location loc, Material m) {
-		
+	    
+        Cupboard.getInstance().log("Airdrop dropped at x:%d z:%d", loc.getBlockX(), loc.getBlockZ());
+        
 		startLoc = loc;
 		startLoc.getChunk().load();
 		
