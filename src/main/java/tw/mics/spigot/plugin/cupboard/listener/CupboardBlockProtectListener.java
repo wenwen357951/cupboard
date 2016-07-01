@@ -10,10 +10,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
@@ -75,6 +77,13 @@ public class CupboardBlockProtectListener extends MyListener {
         	if(data.checkIsLimit(b))
         		e.setCancelled(true);
         }
+        
+        //log posion uuid
+        if(!e.isCancelled()){
+            if(b.getType().equals(Material.PISTON_BASE) || b.getType().equals(Material.PISTON_STICKY_BASE)){
+                b.setMetadata("owner_uuid", new FixedMetadataValue(plugin, p.getUniqueId().toString()));
+            }
+        }
     }
     //防止玩家使用水桶
     @EventHandler(priority = EventPriority.HIGH)
@@ -134,13 +143,39 @@ public class CupboardBlockProtectListener extends MyListener {
     	}
     }
     
-    @EventHandler(priority = EventPriority.HIGH)
-    void onCupboardPiston(BlockPistonExtendEvent e){
-    	for(Block block : e.getBlocks()){
-    		if(block.getType().equals(Material.GOLD_BLOCK)){
-    			e.setCancelled(true);
-    		}
-    	}
+
+    @EventHandler
+    void onPistonExtend(BlockPistonExtendEvent e){
+        for(Block block : e.getBlocks()){
+            if(block.getType().equals(Material.GOLD_BLOCK)){
+                e.setCancelled(true);
+                return;
+            }
+            if(e.getBlock().hasMetadata("owner_uuid")){
+                String uuid = e.getBlock().getMetadata("owner_uuid").get(0).asString();
+                if(plugin.cupboards.checkIsLimitByUUIDString(block, uuid)){
+                    e.setCancelled(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    void onPistonRetract(BlockPistonRetractEvent e){
+        for(Block block : e.getBlocks()){
+            if(block.getType().equals(Material.GOLD_BLOCK)){
+                e.setCancelled(true);
+                return;
+            }
+            if(e.getBlock().hasMetadata("owner_uuid")){
+                String uuid = e.getBlock().getMetadata("owner_uuid").get(0).asString();
+                if(plugin.cupboards.checkIsLimitByUUIDString(block, uuid)){
+                    e.setCancelled(true);
+                    return;
+                }
+            }
+        }
     }
 
 }

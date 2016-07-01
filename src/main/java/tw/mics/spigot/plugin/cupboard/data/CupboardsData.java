@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -171,17 +172,30 @@ public class CupboardsData {
 		return checkIsLimit(b.getLocation(), p);
 		
 	}
-	public boolean checkIsLimit(Location l, Player p){
-		if(!location_limit_check_temp.containsKey(l)){
-			this.calcLocationLimit(l);
-		}
-		String str_l = Util.LocToString(l);
-		if(location_limit_check_temp.get(str_l) == null) return false;
-		if(p == null) return true;
-		//p.sendMessage("Size: " + location_limit_check_temp.size());
-		if(location_limit_check_temp.get(str_l).contains(p.getUniqueId().toString())) return false;
-		return true;
-	}
+    public boolean checkIsLimit(Location l, Player p){
+        if(!location_limit_check_temp.containsKey(l)){
+            this.calcLocationLimit(l);
+        }
+        String str_l = Util.LocToString(l);
+        if(location_limit_check_temp.get(str_l) == null) return false;
+        if(p == null) return true;
+        //p.sendMessage("Size: " + location_limit_check_temp.size());
+        if(location_limit_check_temp.get(str_l).contains(p.getUniqueId().toString())) return false;
+        return true;
+    }
+
+    public boolean checkIsLimitByUUIDString(Block b, String uuid){
+        return checkIsLimitByUUIDString(b.getLocation(), uuid);
+    }
+    public boolean checkIsLimitByUUIDString(Location l, String uuid){
+        if(!location_limit_check_temp.containsKey(l)){
+            this.calcLocationLimit(l);
+        }
+        String str_l = Util.LocToString(l);
+        if(location_limit_check_temp.get(str_l) == null) return false;
+        if(location_limit_check_temp.get(str_l).contains(uuid)) return false;
+        return true;
+    }
 	/*
 	public boolean checkIsLimitOffline(Block b, Player p){
 		Location l = b.getLocation();
@@ -237,30 +251,5 @@ public class CupboardsData {
 			return true;
 		}
 		return false;
-	}
-
-	public boolean checkIsLimit_old(Block b, Player p){
-		return checkIsLimit_old(b.getLocation(),p);
-	}
-	
-	public boolean checkIsLimit_old(Location l, Player p){
-		boolean flagIsLimit = false;
-		
-		List<Block> cups = this.findActiveCupboards(l, PROTECT_DIST);
-		for( Block cup : cups ){
-			if(cup.getType() != Material.GOLD_BLOCK){
-				cupboards.put(Util.LocToString(cup.getLocation()), null);
-				continue;
-				//此方塊不是黃金磚則刪除後換下一個
-			}
-			
-			List<String> AccessAbleUserUUIDList = (List<String>) cupboards.get(Util.LocToString(cup.getLocation()));
-			
-			if(!AccessAbleUserUUIDList.contains(p.getUniqueId().toString())) {
-				flagIsLimit = true;
-				break; //假如有找不到的 直接中斷跳出
-			}
-		}
-		return flagIsLimit;
 	}
 }
