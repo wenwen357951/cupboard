@@ -35,13 +35,15 @@ public class AirDrop {
 		if(drop_time_count == Config.AIR_NOTIFY_TIME.getInt()){
 			airdrop_location = Util.getRandomLocation(plugin.getServer().getWorld("world"));
 			if ( playerMoreThanMinPlayer() ) {
+	            plugin.log("Airdrop will drop around x:%d z:%d (+- %d) after %d min", 
+	                    airdrop_location.getBlockX(), airdrop_location.getBlockZ(), 
+	                    Config.AIR_DROP_OFFSET.getInt(), Config.AIR_NOTIFY_TIME.getInt());
 				airdropNotify();
 			} else {
 				drop_time_count = getNextDropRandomTime();
 				plugin.logDebug("Airdrop will not drop, becouse player is less than min player");
 			}
 		} else if(drop_time_count <= 0){
-            plugin.log("Airdrop dropped around x:%d z:%d (+- %d)", airdrop_location.getBlockX(), airdrop_location.getBlockZ(), Config.AIR_DROP_OFFSET.getInt());
 			broadcast(Locales.AIRDROP_DROPED.getString());
 			airdrop(airdrop_location);
 			drop_time_count = getNextDropRandomTime();
@@ -67,7 +69,6 @@ public class AirDrop {
 	//TODO this is have same one at Airdropcommand
 	private void airdrop(Location l){
 		Location drop_loc = l.clone();
-		
 		drop_loc.setY(l.getWorld().getMaxHeight());
 		new FallingPackageEntity(drop_loc, Material.NOTE_BLOCK, Config.AIR_DROP_OFFSET.getInt());
 	}

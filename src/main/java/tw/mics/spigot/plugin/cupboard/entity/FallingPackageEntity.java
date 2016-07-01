@@ -17,6 +17,7 @@ import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
+import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 
 public class FallingPackageEntity extends PackageEntity {
@@ -28,6 +29,8 @@ public class FallingPackageEntity extends PackageEntity {
 	
 	public FallingPackageEntity(Location loc, Material m, int offset){
 		super();
+		loc = Util.changeLocationInBorder(applyOffset(loc,offset));
+        Cupboard.getInstance().log("Airdrop dropped at x:%d z:%d", loc.getBlockX(), loc.getBlockZ());
 		summon(applyOffset(loc, offset), m);
 	}
 	
