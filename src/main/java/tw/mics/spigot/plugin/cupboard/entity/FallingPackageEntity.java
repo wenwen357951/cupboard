@@ -30,7 +30,7 @@ public class FallingPackageEntity extends PackageEntity {
 	public FallingPackageEntity(Location loc, Material m, int offset){
 		super();
 		loc = Util.changeLocationInBorder(applyOffset(loc,offset));
-		summon(applyOffset(loc, offset), m);
+		summon(loc, m);
 	}
 	
 	public FallingPackageEntity(Location loc, Material m){
