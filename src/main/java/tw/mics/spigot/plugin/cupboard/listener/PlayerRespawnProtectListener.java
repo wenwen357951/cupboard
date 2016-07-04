@@ -58,40 +58,37 @@ public class PlayerRespawnProtectListener extends MyListener {
 			saveinv.remove(p.getUniqueId().toString());
 		}
 		
-		//Spawn location check
-		if(event.isBedSpawn()){
-			if(this.plugin.cupboards.checkIsLimit(l, p)){
-				p.setBedSpawnLocation(null);
-				p.sendMessage(Locales.SPAWN_WITHOUT_ACCESS.getString());
-			}
-		}
-		WorldBorder border = l.getWorld().getWorldBorder();
-		int max_x = border.getCenter().add(border.getSize()/2, 0, 0).getBlockX();
-		int min_x = border.getCenter().add(-border.getSize()/2, 0, 0).getBlockX();
-		int max_z = border.getCenter().add(0, 0, border.getSize()/2).getBlockZ();
-		int min_z = border.getCenter().add(0, 0, -border.getSize()/2).getBlockZ();
-		if(
-				l.getBlockX() > max_x ||
-				l.getBlockX() < min_x ||
-				l.getBlockZ() > max_z ||
-				l.getBlockZ() < min_z
-			){
-			p.setBedSpawnLocation(null);
-			p.sendMessage(Locales.SPAWN_OUTSIDE_BORDER.getString());
-		}
-		
 		//spawn lava check
-		if(event.isBedSpawn() && event.getPlayer().getBedSpawnLocation() != null){
-            if(
-                    event.getRespawnLocation().getBlock().getType() == Material.LAVA ||
-                    event.getRespawnLocation().getBlock().getType() == Material.STATIONARY_LAVA ||
-                    event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.LAVA ||
-                    event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.STATIONARY_LAVA
+		if(event.isBedSpawn()){
+	        WorldBorder border = l.getWorld().getWorldBorder();
+	        int max_x = border.getCenter().add(border.getSize()/2, 0, 0).getBlockX();
+	        int min_x = border.getCenter().add(-border.getSize()/2, 0, 0).getBlockX();
+	        int max_z = border.getCenter().add(0, 0, border.getSize()/2).getBlockZ();
+	        int min_z = border.getCenter().add(0, 0, -border.getSize()/2).getBlockZ();
+	        if(
+	                l.getBlockX() > max_x ||
+	                l.getBlockX() < min_x ||
+	                l.getBlockZ() > max_z ||
+	                l.getBlockZ() < min_z
+            ){
+	            //Spawn border check
+                p.setBedSpawnLocation(null);
+                p.sendMessage(Locales.SPAWN_OUTSIDE_BORDER.getString());
+	        } else if(this.plugin.cupboards.checkIsLimit(l, p)){
+                //Spawn location check
+                p.setBedSpawnLocation(null);
+                p.sendMessage(Locales.SPAWN_WITHOUT_ACCESS.getString());
+            } else if(
+                //spawn lava check
+                event.getRespawnLocation().getBlock().getType() == Material.LAVA ||
+                event.getRespawnLocation().getBlock().getType() == Material.STATIONARY_LAVA ||
+                event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.LAVA ||
+                event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.STATIONARY_LAVA
             ){
                 event.getPlayer().setBedSpawnLocation(null);
                 event.getPlayer().sendMessage(Locales.BED_HAVE_LAVA.getString());
             } else {
-                return;
+                return; //重生點沒問題 直接在床重生
             }
         }
 		
