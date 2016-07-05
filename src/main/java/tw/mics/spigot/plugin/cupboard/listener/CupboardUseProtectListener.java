@@ -125,7 +125,7 @@ public class CupboardUseProtectListener extends MyListener{
     //關閉終界箱
     @EventHandler
     public void onUseEnderChest(PlayerInteractEvent event){
-        if(!Config.CUPBOARD_DISABLE_ENDER_CHEST.getBoolean())return;
+        if(!Config.WP_DISABLE_ENDER_CHEST.getBoolean())return;
         Block b = event.getClickedBlock();
         Player p = event.getPlayer();
         if (
