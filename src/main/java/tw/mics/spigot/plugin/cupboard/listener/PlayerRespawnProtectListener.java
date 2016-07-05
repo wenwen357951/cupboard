@@ -33,7 +33,7 @@ public class PlayerRespawnProtectListener extends MyListener {
     public void onPlayerDeath(PlayerDeathEvent event){
     	Player p = event.getEntity();
     	List<ItemStack> keepInv = new ArrayList<ItemStack>();
-    	if(Config.PP_PLAYER_INVENTORY_RECOVERY_PERCENT.getDouble() != 0){
+    	if(Config.PP_PLAYER_INVENTORY_RECOVERY_PERCENT.getDouble() != 0 && p.isOnline()){
 	    	for(ItemStack i: Arrays.asList(event.getEntity().getInventory().getContents())){
 	    		if(i == null) continue;
 	    		if(new Random().nextDouble() < Config.PP_PLAYER_INVENTORY_RECOVERY_PERCENT.getDouble() ){
