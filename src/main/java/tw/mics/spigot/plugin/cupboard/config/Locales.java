@@ -27,6 +27,7 @@ public enum Locales {
 	
 	//WORLD PROTECT
 	DO_NOT_BLOCK_NETHER_DOOR("world-protect.do-not-block-nether-door", "&7Please do not block nether door."),
+    DISABLE_ENDER_CHEST("world-protect.disable-ender-chest", "終界箱已經被關閉, 僅剩裝飾用途。"),
 	
 	//WORLD BORDER
 	BORDER_IS_CHANGED("world-border.border-is-changed", "&eWorld border is changed  &7( Every %.0f min deduct %d )\n&bNow Border: World %d Nether %d The End %d"),

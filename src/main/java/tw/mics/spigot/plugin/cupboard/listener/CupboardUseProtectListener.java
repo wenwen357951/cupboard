@@ -119,4 +119,30 @@ public class CupboardUseProtectListener extends MyListener{
         	}
     	}
     }
+    
+
+    
+    //關閉終界箱
+    @EventHandler
+    public void onUseEnderChest(PlayerInteractEvent event){
+        if(!Config.CUPBOARD_DISABLE_ENDER_CHEST.getBoolean())return;
+        Block b = event.getClickedBlock();
+        Player p = event.getPlayer();
+        if (
+                event.getAction() == Action.RIGHT_CLICK_BLOCK &&
+                (
+                    b.getType() == Material.ENDER_CHEST
+                )
+        ){
+            event.setCancelled(true);
+            p.sendMessage(Locales.DISABLE_ENDER_CHEST.getString());
+            //check if player have item in ender chest, return it.
+            p.getEnderChest().forEach((i)->{
+                if(i != null){
+                    p.getWorld().dropItem(p.getLocation(), i);
+                }
+            });
+            p.getEnderChest().clear();
+        }
+    }
 }
