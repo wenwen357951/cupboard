@@ -1,6 +1,7 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
 import java.util.Iterator;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -25,7 +26,7 @@ public class TNTCraftListener extends MyListener {
     @EventHandler
 	public void onCrafting(PrepareItemCraftEvent event){
 		CraftingInventory inv = event.getInventory();
-		if(inv.getResult().getType() == Material.TNT){
+		if(inv.getResult() != null && inv.getResult().getType() == Material.TNT){
 			if(!(
 					inv.getItem(1).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE) &&
 					inv.getItem(2).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE) &&
@@ -38,7 +39,7 @@ public class TNTCraftListener extends MyListener {
 				))
 			inv.setResult(null);
 		}
-		if(inv.getResult().getType() == Material.SULPHUR){
+		if(inv.getResult() != null && inv.getResult().getType() == Material.SULPHUR){
 			if((
 					inv.getItem(1).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE) ||
 					inv.getItem(3).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE) ||
