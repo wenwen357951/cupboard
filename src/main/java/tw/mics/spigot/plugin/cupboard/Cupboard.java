@@ -31,6 +31,7 @@ import tw.mics.spigot.plugin.cupboard.listener.TNTCraftListener;
 import tw.mics.spigot.plugin.cupboard.listener.TNTExplosionListener;
 import tw.mics.spigot.plugin.cupboard.listener.WorldProtectListener;
 import tw.mics.spigot.plugin.cupboard.schedule.AirDrop;
+import tw.mics.spigot.plugin.cupboard.schedule.Compass;
 import tw.mics.spigot.plugin.cupboard.schedule.WorldBorder;
 import tw.mics.spigot.plugin.cupboard.utils.SpawnLocationManager;
 
@@ -91,7 +92,11 @@ public class Cupboard extends JavaPlugin implements Listener {
         }
         
         if(Config.AIR_DROP_ENABLE.getBoolean()){
-        	registedObject.add(new AirDrop(this));
+            registedObject.add(new AirDrop(this));
+        }
+        
+        if(true){
+            registedObject.add(new Compass(this));
         }
 	}
 	
