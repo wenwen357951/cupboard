@@ -46,7 +46,7 @@ public class Compass {
                         } else {
                             p.setCompassTarget(nearest_player.getLocation());
                         }
-                        plugin.getServer().getLogger().info(String.format(" x:%.2f z:%.2f", p.getCompassTarget().getX(), p.getCompassTarget().getZ()));
+                        //plugin.getServer().getLogger().info(String.format(" x:%.2f z:%.2f", p.getCompassTarget().getX(), p.getCompassTarget().getZ()));
                     }
                 });
             }
