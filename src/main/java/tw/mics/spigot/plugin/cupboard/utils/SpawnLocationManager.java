@@ -25,6 +25,8 @@ public class SpawnLocationManager {
         blockBlockList = new HashSet<Material>();
         blockBlockList.add(Material.STATIONARY_LAVA);
         blockBlockList.add(Material.LAVA);
+        blockBlockList.add(Material.STATIONARY_WATER);
+        blockBlockList.add(Material.WATER);
     }
     
     public static Double getTimeLeft(){
@@ -69,7 +71,7 @@ public class SpawnLocationManager {
         Location location;
         while(true){
             location = world.getHighestBlockAt( (int)(center_x + getRandom(max_distance)), (int)(center_z + getRandom(max_distance))).getLocation();
-            if(blockBlockList.contains(location.getBlock().getType())) continue;
+            if(blockBlockList.contains(location.clone().add(0, -1, 0).getBlock().getType())) continue;
             break;
         }
         location.add(0.5, 0, 0.5);
