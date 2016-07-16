@@ -151,6 +151,10 @@ public class CupboardBlockProtectListener extends MyListener {
                 e.setCancelled(true);
                 return;
             }
+            if(Config.WP_TNT_NO_PISTON.getBoolean() && block.getType().equals(Material.TNT)){
+                e.setCancelled(true);
+                return;
+            }
             if(e.getBlock().hasMetadata("owner_uuid")){
                 String uuid = e.getBlock().getMetadata("owner_uuid").get(0).asString();
                 if(plugin.cupboards.checkIsLimitByUUIDString(block, uuid)){
@@ -165,6 +169,10 @@ public class CupboardBlockProtectListener extends MyListener {
     void onPistonRetract(BlockPistonRetractEvent e){
         for(Block block : e.getBlocks()){
             if(block.getType().equals(Material.GOLD_BLOCK)){
+                e.setCancelled(true);
+                return;
+            }
+            if(Config.WP_TNT_NO_PISTON.getBoolean() && block.getType().equals(Material.TNT)){
                 e.setCancelled(true);
                 return;
             }
