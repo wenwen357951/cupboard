@@ -43,7 +43,7 @@ public class WorldProtectListener extends MyListener {
 		if(!Config.WP_NETHER_DOOR_PROTECT_ENABLE.getBoolean())return;
 		e.getPortalTravelAgent().setSearchRadius(Config.WP_NETHER_SREACH_RADIUS.getInt());
 		
-		if(Config.WP_NETHER_SCALE.getDouble()!=8){
+		if(Config.WP_NETHER_SCALE_ENABLE.getBoolean()){
     		Location l = e.getFrom().clone();
     		if(l.getWorld().getEnvironment() == Environment.NORMAL){
     		    l.multiply(1.0/Config.WP_NETHER_SCALE.getDouble());
