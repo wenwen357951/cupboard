@@ -44,7 +44,7 @@ public class Compass {
                         if(nearest_player == null){
                             p.setCompassTarget(p.getLocation().add(getRandom(100), 0, getRandom(100)));
                         } else {
-                            p.setCompassTarget(nearest_player.getLocation().add(getRandom(25), 0, getRandom(25)));
+                            p.setCompassTarget(nearest_player.getLocation().add(getRandom(50), 0, getRandom(50)));
                         }
                         //plugin.getServer().getLogger().info(String.format(" x:%.2f z:%.2f", p.getCompassTarget().getX(), p.getCompassTarget().getZ()));
                     }
