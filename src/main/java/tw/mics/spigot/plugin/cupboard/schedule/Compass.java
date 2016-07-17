@@ -42,9 +42,9 @@ public class Compass {
                             }
                         }
                         if(nearest_player == null){
-                            p.setCompassTarget(p.getLocation().add(getRandom(), 0, getRandom()));
+                            p.setCompassTarget(p.getLocation().add(getRandom(100), 0, getRandom(100)));
                         } else {
-                            p.setCompassTarget(nearest_player.getLocation());
+                            p.setCompassTarget(nearest_player.getLocation().add(getRandom(25), 0, getRandom(25)));
                         }
                         //plugin.getServer().getLogger().info(String.format(" x:%.2f z:%.2f", p.getCompassTarget().getX(), p.getCompassTarget().getZ()));
                     }
@@ -54,8 +54,8 @@ public class Compass {
         schedule_id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, runnable, 0, 100);
         this.plugin.logDebug("Compass check timer task added");
     }
-    private double getRandom(){
+    private double getRandom(int size){
         Random random = new Random();
-        return random.nextInt(200) - 100;
+        return random.nextInt(size*2) - size;
     }
 }
