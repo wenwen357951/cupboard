@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.util.Vector;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
@@ -41,7 +42,14 @@ public class CupboardBlockProtectListener extends MyListener {
         		if(this.plugin.isOP(p))return;
         		e.setCancelled(true);
     			p.sendMessage(Locales.NO_ACCESS.getString());
-        	}
+        	} else if(Config.TNT_SP_ENABLE.getBoolean() && b.getType().equals(Material.TNT)){
+                b.setType(Material.AIR);
+                TNTPrimed tnt = b.getWorld().spawn(b.getLocation().add(0.5,0,0.5), TNTPrimed.class);
+                tnt.setGravity(false);
+                tnt.setVelocity(new Vector(0, 0, 0));
+                tnt.setFuseTicks(200);
+                e.setCancelled(true);
+            }
         } else {
         	if(data.checkIsLimit(b)){
         		e.setCancelled(true);
@@ -55,13 +63,16 @@ public class CupboardBlockProtectListener extends MyListener {
     	Player p = e.getPlayer();
     	Block b = e.getBlock();
         if( p != null){
+            if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT)){
+                e.getBlockPlaced().setType(e.getBlockReplacedState().getType());
+                TNTPrimed tnt = b.getWorld().spawn(e.getBlockPlaced().getLocation().add(0.5,0,0.5), TNTPrimed.class);
+                tnt.setGravity(false);
+                tnt.setVelocity(new Vector(0, 0, 0));
+                tnt.setFuseTicks(200);
+                return;
+            }
         	if(data.checkIsLimit(b, p)){
             	if(this.plugin.isOP(p))return;
-            	if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT)){
-            		e.getBlockPlaced().setType(e.getBlockReplacedState().getType());
-            		b.getWorld().spawn(e.getBlockPlaced().getLocation().add(0.5,0,0.5), TNTPrimed.class);
-            		return;
-            	}
         		e.setCancelled(true);
     			p.sendMessage(Locales.NO_ACCESS.getString());
         	} else {
