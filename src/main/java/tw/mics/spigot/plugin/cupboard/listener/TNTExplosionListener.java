@@ -1,6 +1,8 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -42,6 +44,16 @@ public class TNTExplosionListener extends MyListener {
 						   }
 					   }
 		 	 	   }
+		   double distance_limit = Config.TNT_EXPLOSION_DISTANCE_LIMIT.getDouble();
+		   if(distance_limit != -1){
+		       Iterator<Block> itr = event.blockList().iterator();
+		       while(itr.hasNext()){
+		           Block b = itr.next();
+		           if(tnt_location.distance(b.getLocation()) > distance_limit){
+		               itr.remove();
+		           }
+		       }
+		   }
     	
     }
     

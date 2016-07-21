@@ -56,7 +56,8 @@ public enum Config {
 	AIR_DROP_ITEM_AMOUNT("air-drop.item-amount", 5, "how many items will droped?"),
 	
 	TNT_SP_ENABLE("tnt.enable", true, "let TNT can desotry obsidian, water, lava, TNT Can put in protect area and TNT hard to craft."),
-	TNT_EXPLOSION_RADIUS("tnt.radius", 10, "TNT power radius"),
+    TNT_EXPLOSION_RADIUS("tnt.radius", 10, "TNT power radius"),
+    TNT_EXPLOSION_DISTANCE_LIMIT("tnt.distance-limit", 4, "TNT explosion max break block distance (set -1 to disable)"),
 	TNT_BREAK_RADIUS("tnt.break-radius", 3, "destory obsidian/water/lava check radius"),
 	TNT_OBSIDIAN_BREAK_PROBABILITY("tnt.obsidian.break-probability", 0.5, "turn obsidian block probability (after explosion)"),
 	TNT_OBSIDIAN_BREAK_TO("tnt.obsidian.break-to", "COBBLESTONE", "turn obsidian to which block"),
