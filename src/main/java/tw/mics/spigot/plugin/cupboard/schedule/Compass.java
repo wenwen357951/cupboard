@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
+import tw.mics.spigot.plugin.cupboard.config.Config;
 
 public class Compass {
     Cupboard plugin;
@@ -44,14 +45,15 @@ public class Compass {
                         if(nearest_player == null){
                             p.setCompassTarget(p.getLocation().add(getRandom(100), 0, getRandom(100)));
                         } else {
-                            p.setCompassTarget(nearest_player.getLocation().add(getRandom(50), 0, getRandom(50)));
+                            int dev = Config.COMPASS_DEVIATION.getInt();
+                            p.setCompassTarget(nearest_player.getLocation().add(dev, 0, getRandom(dev)));
                         }
                         //plugin.getServer().getLogger().info(String.format(" x:%.2f z:%.2f", p.getCompassTarget().getX(), p.getCompassTarget().getZ()));
                     }
                 });
             }
         };
-        schedule_id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, runnable, 0, 100);
+        schedule_id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, runnable, 0, Config.COMPASS_UPDATE_TIME.getInt());
         this.plugin.logDebug("Compass check timer task added");
     }
     private double getRandom(int size){

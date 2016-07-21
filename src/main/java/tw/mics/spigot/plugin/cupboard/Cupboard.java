@@ -95,7 +95,7 @@ public class Cupboard extends JavaPlugin implements Listener {
             registedObject.add(new AirDrop(this));
         }
         
-        if(true){
+        if(Config.COMPASS_ENABLE.getBoolean()){
             registedObject.add(new Compass(this));
         }
 	}
