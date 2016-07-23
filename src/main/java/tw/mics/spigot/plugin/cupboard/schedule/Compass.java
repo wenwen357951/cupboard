@@ -2,6 +2,7 @@ package tw.mics.spigot.plugin.cupboard.schedule;
 
 import java.util.Random;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -34,6 +35,8 @@ public class Compass {
                         double nearest_dist = 60000000;
                         for(Player t:plugin.getServer().getOnlinePlayers()){
                             if(p==t)continue;
+                            if(t.getGameMode() != GameMode.SURVIVAL)continue;
+                            if(t.isOp())continue;
                             if(p.getWorld() == t.getWorld()){
                                 double dist = p.getLocation().distance(t.getLocation());
                                 if(dist < nearest_dist){

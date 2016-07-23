@@ -1,5 +1,6 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -42,7 +43,7 @@ public class CupboardBlockProtectListener extends MyListener {
         		if(this.plugin.isOP(p))return;
         		e.setCancelled(true);
     			p.sendMessage(Locales.NO_ACCESS.getString());
-        	} else if(Config.TNT_SP_ENABLE.getBoolean() && b.getType().equals(Material.TNT)){
+        	} else if(Config.TNT_SP_ENABLE.getBoolean() && b.getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
                 b.setType(Material.AIR);
                 TNTPrimed tnt = b.getWorld().spawn(b.getLocation().add(0.5,0,0.5), TNTPrimed.class);
                 setUpTNT(tnt);
@@ -68,7 +69,7 @@ public class CupboardBlockProtectListener extends MyListener {
     	Player p = e.getPlayer();
     	Block b = e.getBlock();
         if( p != null){
-            if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT)){
+            if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
                 e.getBlockPlaced().setType(e.getBlockReplacedState().getType());
                 TNTPrimed tnt = b.getWorld().spawn(e.getBlockPlaced().getLocation().add(0.5,0,0.5), TNTPrimed.class);
                 setUpTNT(tnt);
