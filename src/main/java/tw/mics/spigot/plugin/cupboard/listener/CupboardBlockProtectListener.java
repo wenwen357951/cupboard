@@ -45,9 +45,7 @@ public class CupboardBlockProtectListener extends MyListener {
         	} else if(Config.TNT_SP_ENABLE.getBoolean() && b.getType().equals(Material.TNT)){
                 b.setType(Material.AIR);
                 TNTPrimed tnt = b.getWorld().spawn(b.getLocation().add(0.5,0,0.5), TNTPrimed.class);
-                tnt.setGravity(false);
-                tnt.setVelocity(new Vector(0, 0, 0));
-                tnt.setFuseTicks(200);
+                setUpTNT(tnt);
                 e.setCancelled(true);
             }
         } else {
@@ -55,6 +53,13 @@ public class CupboardBlockProtectListener extends MyListener {
         		e.setCancelled(true);
         	}
         }
+    }
+    
+    private void setUpTNT(TNTPrimed tnt){
+        tnt.setGravity(false);
+        tnt.setGlowing(true);
+        tnt.setVelocity(new Vector(0, 0, 0));
+        tnt.setFuseTicks(200);
     }
     
     //防止其他玩家放置方塊
@@ -66,9 +71,7 @@ public class CupboardBlockProtectListener extends MyListener {
             if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT)){
                 e.getBlockPlaced().setType(e.getBlockReplacedState().getType());
                 TNTPrimed tnt = b.getWorld().spawn(e.getBlockPlaced().getLocation().add(0.5,0,0.5), TNTPrimed.class);
-                tnt.setGravity(false);
-                tnt.setVelocity(new Vector(0, 0, 0));
-                tnt.setFuseTicks(200);
+                setUpTNT(tnt);
                 return;
             }
         	if(data.checkIsLimit(b, p)){
