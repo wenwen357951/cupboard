@@ -19,6 +19,8 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -47,7 +49,20 @@ public class CupboardBlockProtectListener extends MyListener {
         tnt.setFuseTicks(200);
     }
     
+    
+    private Material[] doors = {
+            Material.ACACIA_DOOR,
+            Material.BIRCH_DOOR,
+            Material.DARK_OAK_DOOR,
+            Material.JUNGLE_DOOR,
+            Material.SPRUCE_DOOR_ITEM,
+            Material.TRAP_DOOR,
+            Material.WOOD_DOOR,
+            Material.WOODEN_DOOR,
+            Material.IRON_DOOR_BLOCK,
+    };
     //防止其他玩家破壞方塊
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e){
         Player p = e.getPlayer();
@@ -57,6 +72,17 @@ public class CupboardBlockProtectListener extends MyListener {
                 if(this.plugin.isOP(p))return;
                 e.setCancelled(true);
                 p.sendMessage(Locales.NO_ACCESS.getString());
+                //DOOR
+                if(Arrays.asList(doors).contains(b.getType())){
+                    Location resend_location = b.getLocation().add(0, 1, 0);
+                    p.sendBlockChange(resend_location, resend_location.getBlock().getType(), resend_location.getBlock().getData());
+                }
+                
+                //SIGN
+                if(b.getType() == Material.SIGN){
+                    Location resend_location = b.getLocation();
+                    p.sendBlockChange(resend_location, resend_location.getBlock().getType(), resend_location.getBlock().getData());
+                }
             } else if(Config.TNT_SP_ENABLE.getBoolean() && b.getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
                 b.setType(Material.AIR);
                 setUpTNT(b.getLocation().add(0.5,0,0.5));
@@ -89,6 +115,32 @@ public class CupboardBlockProtectListener extends MyListener {
             ){
                 p.setBedSpawnLocation(b.getLocation());
                 p.sendMessage(Locales.BED_SPAWN_SET.getString());
+            }
+        }
+    }
+    
+  //防止玩家使用水桶
+    @EventHandler
+    public void onBucketEmpty(PlayerBucketEmptyEvent e){
+        Player p = e.getPlayer();
+        Block b = e.getBlockClicked().getLocation()
+                .add(e.getBlockFace().getModX(),e.getBlockFace().getModY(),e.getBlockFace().getModZ())
+                .getBlock();
+        if( p != null){
+            if(data.checkIsLimit(b, p)){
+                e.setCancelled(true);
+                p.updateInventory();
+            }       
+        }
+    }
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBucketFill(PlayerBucketFillEvent e){
+        Player p = e.getPlayer();
+        Block b = e.getBlockClicked();
+        if( p != null){
+            if(data.checkIsLimit(b, p)){
+                e.setCancelled(true);
+                p.updateInventory();
             }
         }
     }
