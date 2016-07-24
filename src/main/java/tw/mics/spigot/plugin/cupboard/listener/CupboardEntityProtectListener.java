@@ -60,6 +60,7 @@ public class CupboardEntityProtectListener extends MyListener {
     //防止未授權玩家和物件互動
     @EventHandler
     public void onPlayerInteract(PlayerInteractEntityEvent e){
+        if(e.getRightClicked().getType().isAlive()) return; //不阻止活著的生物
         Location bl = e.getRightClicked().getLocation().getBlock().getLocation();
         Player p = e.getPlayer();
         if(data.checkIsLimit(bl, p)){
@@ -72,6 +73,7 @@ public class CupboardEntityProtectListener extends MyListener {
     //防止未授權玩家和物件互動
     @EventHandler
     public void onPlayerInteract(PlayerInteractAtEntityEvent e){
+        if(e.getRightClicked().getType().isAlive()) return; //不阻止活著的生物
         Location bl = e.getRightClicked().getLocation().getBlock().getLocation();
         Player p = e.getPlayer();
         if(data.checkIsLimit(bl, p)){
