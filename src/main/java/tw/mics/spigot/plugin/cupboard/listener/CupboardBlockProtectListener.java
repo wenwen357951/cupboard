@@ -18,6 +18,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
@@ -85,13 +86,15 @@ public class CupboardBlockProtectListener extends MyListener {
         }
     }
     
+
+    
     //禁止玩家與限制區域互動
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event){
         Block b = event.getClickedBlock();
         Player p = event.getPlayer();
         if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if(b.getType() == Material.GOLD_BLOCK) return;              //金磚給金磚專區判斷
+        if(!(b.getState() instanceof InventoryHolder)) return;
         
         if(data.checkIsLimit(b, p)){
             if(this.plugin.isOP(p)) return;
