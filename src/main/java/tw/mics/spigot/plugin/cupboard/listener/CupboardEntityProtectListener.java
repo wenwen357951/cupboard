@@ -1,6 +1,6 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,28 +19,29 @@ import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
 
 public class CupboardEntityProtectListener extends MyListener {
-	private ArrayList<Material> protect_vehicle;
+	final static private Material[] protect_vehicle = {
+	    Material.ARMOR_STAND,
+        Material.BOAT,
+        Material.BOAT_ACACIA,
+        Material.BOAT_BIRCH,
+        Material.BOAT_DARK_OAK,
+        Material.BOAT_JUNGLE,
+        Material.BOAT_SPRUCE,
+        Material.MINECART ,
+        Material.COMMAND_MINECART,
+        Material.EXPLOSIVE_MINECART,
+        Material.HOPPER_MINECART,
+        Material.POWERED_MINECART,
+        Material.STORAGE_MINECART,
+	};
 	private CupboardsData data;
 
 	public CupboardEntityProtectListener(Cupboard instance)
 	{
 		super(instance);
 		
-		setUpProtectEntity();
 	    this.data = this.plugin.cupboards;
 	}
-	
-    private void setUpProtectEntity(){
-    	protect_vehicle = new ArrayList<Material>();
-    	protect_vehicle.add(Material.ARMOR_STAND);
-    	protect_vehicle.add(Material.BOAT);
-    	protect_vehicle.add(Material.MINECART );
-    	protect_vehicle.add(Material.COMMAND_MINECART );
-    	protect_vehicle.add(Material.EXPLOSIVE_MINECART );
-    	protect_vehicle.add(Material.HOPPER_MINECART );
-    	protect_vehicle.add(Material.POWERED_MINECART );
-    	protect_vehicle.add(Material.STORAGE_MINECART );
-    }
     
     //保護物品展示框
     @EventHandler
@@ -116,7 +117,7 @@ public class CupboardEntityProtectListener extends MyListener {
     	if (
 			e.getAction() == Action.RIGHT_CLICK_BLOCK &&
 			e.getItem() != null &&
-			protect_vehicle.contains(e.getItem().getType())
+			Arrays.asList(protect_vehicle).contains(e.getItem().getType())
 		){
     	Player p = e.getPlayer();
 	    	if(this.plugin.cupboards.checkIsLimit(e.getClickedBlock(), p)){
