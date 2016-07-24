@@ -17,7 +17,7 @@ public enum Config {
 	ANTI_TNT_EXPLOSION("cupboard.anti-tnt-explosion", false, "is cupboard protect explosion from TNT?"),
 	ANTI_OTHERS_EXPLOSION("cupboard.anti-creeper-explosion", true, "is cupboard protect explosion from CREEPER?"),
 	OP_BYPASS("cupboard.is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),
-    CUPBOARD_PROTECT_CHEST("cupboard.protect_chest", false, ""),
+    CUPBOARD_PROTECT_CHEST("cupboard.protect_chest", false, "Removed"),
 	
 	WP_NETHER_DOOR_PROTECT_ENABLE("world-protect.nether-portal-protect.enable", true, "enable nether door protect (if this is false, below is non-use)"),
 	WP_NETHER_SREACH_RADIUS("world-protect.nether-portal-protect.sreach-redius", 16, "change nether portal sreach radius"),
@@ -26,7 +26,7 @@ public enum Config {
 	WP_NETHER_REMOVE_BLOCK("world-protect.nether-portal-protect.remove-block", true, "remove block when nether door is blocked"),
 	WP_ANTI_NETHER_DOOR_BLOCK("world-protect.nether-portal-protect.anti-nether-door-block", true, "let nether door can't block"),
 	WP_ANTI_NETHER_DOOR_ENTITY_TELEPORT("world-protect.nether-portal-protect.anti-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),
-	WP_DISABLE_ENDER_CHEST("world-protect.disable-ender-chest", true, "disable ender chest"),
+	WP_DISABLE_ENDER_CHEST("world-protect.disable-ender-chest", true, "removed"),
     WP_TNT_NO_PISTON("world-protect.tnt-no-piston", true, "let tnt cant moved by piston"),
 	
 	WP_PIGZOMBIE_DROP_NETHER_WART("world-protect.pigzombie-drop-nether-wart.enable", true, "let pig zombie drop nether-wart in nether"),
@@ -122,6 +122,13 @@ public enum Config {
 		cfg = YamlConfiguration.loadConfiguration(f);
 
         for (Config c : values()) {
+            if(c.getDescription().toLowerCase().equals("removed")){
+                if(cfg.contains(c.getPath())){
+                    save_flag = true;
+                    cfg.set(c.getPath(), null);
+                }
+                continue;
+            }
         	header += c.getPath() + ": " + c.getDescription() + System.lineSeparator();
             if (!cfg.contains(c.getPath())) {
             	save_flag = true;

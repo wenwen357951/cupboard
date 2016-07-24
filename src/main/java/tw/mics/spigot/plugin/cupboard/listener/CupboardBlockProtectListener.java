@@ -4,18 +4,20 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
@@ -32,101 +34,102 @@ public class CupboardBlockProtectListener extends MyListener {
 	    super(instance);
 	    this.data = this.plugin.cupboards;
 	}
-    
-	//防止其他玩家破壞方塊
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onBlockBreak(BlockBreakEvent e){
-    	Player p = e.getPlayer();
-    	Block b = e.getBlock();
-        if( p != null){
-        	if(data.checkIsLimit(b, p)){
-        		if(this.plugin.isOP(p))return;
-        		e.setCancelled(true);
-    			p.sendMessage(Locales.NO_ACCESS.getString());
-        	} else if(Config.TNT_SP_ENABLE.getBoolean() && b.getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
-                b.setType(Material.AIR);
-                TNTPrimed tnt = b.getWorld().spawn(b.getLocation().add(0.5,0,0.5), TNTPrimed.class);
-                setUpTNT(tnt);
-                e.setCancelled(true);
-            }
-        } else {
-        	if(data.checkIsLimit(b)){
-        		e.setCancelled(true);
-        	}
-        }
-    }
-    
-    private void setUpTNT(TNTPrimed tnt){
+	
+
+    private void setUpTNT(Location l){
+        TNTPrimed tnt = l.getWorld().spawn(l, TNTPrimed.class);
         tnt.setGravity(false);
         tnt.setGlowing(true);
         tnt.setVelocity(new Vector(0, 0, 0));
         tnt.setFuseTicks(200);
     }
     
-    //防止其他玩家放置方塊
+    //防止其他玩家破壞方塊
     @EventHandler(priority = EventPriority.HIGH)
-    public void onBlockPlace(BlockPlaceEvent e){
-    	Player p = e.getPlayer();
-    	Block b = e.getBlock();
+    public void onBlockBreak(BlockBreakEvent e){
+        Player p = e.getPlayer();
+        Block b = e.getBlock();
         if( p != null){
-            if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
-                e.getBlockPlaced().setType(e.getBlockReplacedState().getType());
-                TNTPrimed tnt = b.getWorld().spawn(e.getBlockPlaced().getLocation().add(0.5,0,0.5), TNTPrimed.class);
-                setUpTNT(tnt);
-                return;
+            if(data.checkIsLimit(b, p)){
+                if(this.plugin.isOP(p))return;
+                e.setCancelled(true);
+                p.sendMessage(Locales.NO_ACCESS.getString());
+            } else if(Config.TNT_SP_ENABLE.getBoolean() && b.getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
+                b.setType(Material.AIR);
+                setUpTNT(b.getLocation().add(0.5,0,0.5));
+                e.setCancelled(true);
             }
-        	if(data.checkIsLimit(b, p)){
-            	if(this.plugin.isOP(p))return;
-        		e.setCancelled(true);
-    			p.sendMessage(Locales.NO_ACCESS.getString());
-        	} else {
-                if(
-                        b.getType().equals(Material.BED_BLOCK) &&
-                        !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p)
-                        ){
-                    p.setBedSpawnLocation(b.getLocation());
-                    p.sendMessage(Locales.BED_SPAWN_SET.getString());
-                }
-        	}
         } else {
-        	if(data.checkIsLimit(b))
-        		e.setCancelled(true);
-        }
-        
-        //log posion uuid
-        if(!e.isCancelled()){
-            if(b.getType().equals(Material.PISTON_BASE) || b.getType().equals(Material.PISTON_STICKY_BASE)){
-                b.setMetadata("owner_uuid", new FixedMetadataValue(plugin, p.getUniqueId().toString()));
+            if(data.checkIsLimit(b)){
+                e.setCancelled(true);
             }
-        }
-    }
-    //防止玩家使用水桶
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onBucketEmpty(PlayerBucketEmptyEvent e){
-    	Player p = e.getPlayer();
-    	Block b = e.getBlockClicked().getLocation()
-    			.add(e.getBlockFace().getModX(),e.getBlockFace().getModY(),e.getBlockFace().getModZ())
-    			.getBlock();
-        if( p != null){
-        	if(data.checkIsLimit(b, p)){
-        		e.setCancelled(true);
-        		p.updateInventory();
-        	}
-        }
-    }
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onBucketFill(PlayerBucketFillEvent e){
-    	Player p = e.getPlayer();
-    	Block b = e.getBlockClicked();
-        if( p != null){
-        	if(data.checkIsLimit(b, p)){
-        		e.setCancelled(true);
-        		p.updateInventory();
-        	}
         }
     }
     
- // 防止方塊被燒壞
+    //防止其他玩家放置方塊
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBlockPlace(BlockPlaceEvent e){
+        Player p = e.getPlayer();
+        Block b = e.getBlock();
+        if( p != null){
+            if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
+                e.getBlockPlaced().setType(e.getBlockReplacedState().getType());
+                setUpTNT(b.getLocation().add(0.5,0,0.5));
+                return;
+            }
+            if(!e.isCancelled()){
+                if(b.getType().equals(Material.PISTON_BASE) || b.getType().equals(Material.PISTON_STICKY_BASE)){
+                    b.setMetadata("owner_uuid", new FixedMetadataValue(plugin, p.getUniqueId().toString()));
+                }
+            }
+        }
+    }
+    
+    //禁止玩家與限制區域互動
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event){
+        Block b = event.getClickedBlock();
+        Player p = event.getPlayer();
+        if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if(b.getType() == Material.GOLD_BLOCK) return;              //金磚給金磚專區判斷
+        
+        if(data.checkIsLimit(b, p)){
+            if(this.plugin.isOP(p)) return;
+            p.sendMessage(Locales.NO_ACCESS.getString());
+            if( b.getType() == Material.WATER || b.getType() == Material.LAVA)p.updateInventory();
+            event.setCancelled(true);
+            return;
+        }
+            
+        //禁止未授權玩家使用床，其他則記錄重生點
+        if(    
+            !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p) &&
+            b.getType() == Material.BED_BLOCK
+        ){
+            p.setBedSpawnLocation(b.getLocation());
+            p.sendMessage(Locales.BED_SPAWN_SET.getString());
+            event.setCancelled(true);
+            return;
+        }
+    }
+    
+    //禁止物件和限制方塊互動
+    @EventHandler
+    public void onEntryUseStonePlate(EntityInteractEvent event){
+    Block b = event.getBlock();
+        Entity e = event.getEntity();
+        if (e.getPassenger() instanceof Player){
+            Player p = (Player) e.getPassenger();
+            if(data.checkIsLimit(b, p)){
+                if(this.plugin.isOP(p)) return;
+                event.setCancelled(true);
+            }
+        } else {
+            if(data.checkIsLimit(b)) event.setCancelled(true);
+        }
+    }
+    
+    // 防止火焰
     @EventHandler
     void onBlockBurnDamage(BlockBurnEvent e){
     	Block b = e.getBlock();
@@ -150,6 +153,7 @@ public class CupboardBlockProtectListener extends MyListener {
     	}
     }
 
+    
     @EventHandler
     void onFireSpread(BlockSpreadEvent e){
     	if(e.getSource().getType() != Material.FIRE) return;
@@ -159,6 +163,8 @@ public class CupboardBlockProtectListener extends MyListener {
     }
     
 
+    
+    //防止活塞
     @EventHandler
     void onPistonExtend(BlockPistonExtendEvent e){
         for(Block block : e.getBlocks()){
@@ -199,6 +205,5 @@ public class CupboardBlockProtectListener extends MyListener {
                 }
             }
         }
-    }
-
+    }    
 }
