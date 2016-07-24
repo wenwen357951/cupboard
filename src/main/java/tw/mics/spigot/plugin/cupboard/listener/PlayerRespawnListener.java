@@ -107,11 +107,14 @@ public class PlayerRespawnListener extends MyListener {
                 p.setBedSpawnLocation(null);
                 p.sendMessage(Locales.SPAWN_WITHOUT_ACCESS.getString());
             } else if(
-                //spawn lava check
-                event.getRespawnLocation().getBlock().getType() == Material.LAVA ||
-                event.getRespawnLocation().getBlock().getType() == Material.STATIONARY_LAVA ||
-                event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.LAVA ||
-                event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.STATIONARY_LAVA
+                    //spawn lava check
+                    Config.PP_PLAYER_REMOVE_SPAWN_WITH_LAVA.getBoolean() &&
+                    (
+                        event.getRespawnLocation().getBlock().getType() == Material.LAVA ||
+                        event.getRespawnLocation().getBlock().getType() == Material.STATIONARY_LAVA ||
+                        event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.LAVA ||
+                        event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.STATIONARY_LAVA
+                    )
             ){
                 event.getPlayer().setBedSpawnLocation(null);
                 event.getPlayer().sendMessage(Locales.BED_HAVE_LAVA.getString());
