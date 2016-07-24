@@ -215,8 +215,8 @@ public class CupboardBlockProtectListener extends MyListener {
     
     //禁止物件和限制區域互動
     @EventHandler
-    public void onEntryUseStonePlate(EntityInteractEvent event){
-    Block b = event.getBlock();
+    public void onEntryInteract(EntityInteractEvent event){
+        Block b = event.getBlock();
         Entity e = event.getEntity();
         Player p = null;
         
