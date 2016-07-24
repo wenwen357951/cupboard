@@ -3,18 +3,16 @@ package tw.mics.spigot.plugin.cupboard.listener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
-import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
@@ -24,7 +22,6 @@ import org.bukkit.inventory.ItemStack;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
-import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class WorldProtectListener extends MyListener {
@@ -54,6 +51,19 @@ public class WorldProtectListener extends MyListener {
     		}
     		l.setWorld(e.getTo().getWorld());
     		e.setTo(e.getPortalTravelAgent().findOrCreate(Util.changeLocationInBorder(l)));
+		}
+		
+		if(Config.WP_ANTI_NETHER_DOOR_BLOCK.getBoolean()){
+    		final Player p = e.getPlayer();
+    		final Location l = e.getFrom().clone();
+    		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                @Override
+                public void run() {
+                    if(p.getLocation().add(0,1,0).getBlock().getType() == Material.PORTAL){
+                        p.teleport(l);
+                    }
+                }
+    		}, 300);
 		}
 	}
 	
@@ -164,30 +174,5 @@ public class WorldProtectListener extends MyListener {
     public void onEntityPortal(EntityPortalEvent e){
 		if(!Config.WP_NETHER_DOOR_PROTECT_ENABLE.getBoolean())return;
 		if(Config.WP_ANTI_NETHER_DOOR_ENTITY_TELEPORT.getBoolean())e.setCancelled(true);
-    }
-    
-    //防止玩家擋住地獄門
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onBlockNetherDoor(BlockPlaceEvent e){
-		if(!Config.WP_NETHER_DOOR_PROTECT_ENABLE.getBoolean())return;
-    	if(!Config.WP_ANTI_NETHER_DOOR_BLOCK.getBoolean())return;
-    	Player p = e.getPlayer();
-    	Block b = e.getBlock();
-    	if(
-    			b.getLocation().add(1,0,0).getBlock().getType() == Material.PORTAL ||
-    			b.getLocation().add(-1,0,0).getBlock().getType() == Material.PORTAL ||
-    			b.getLocation().add(0,0,1).getBlock().getType() == Material.PORTAL ||
-    			b.getLocation().add(0,0,-1).getBlock().getType() == Material.PORTAL
-    			){
-	        if( p != null && b.getType().isSolid()){
-	        	if(b.getType() == Material.WOOD_PLATE) return;
-	        	if(b.getType() == Material.STONE_PLATE) return;
-	        	if(b.getType() == Material.IRON_PLATE) return;
-	        	if(b.getType() == Material.GOLD_PLATE) return;
-        		p.sendMessage(Locales.DO_NOT_BLOCK_NETHER_DOOR.getString());
-        		e.setCancelled(true);
-	    	}
-    	}
-        
     }
 }

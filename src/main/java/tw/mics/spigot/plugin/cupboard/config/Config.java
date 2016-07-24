@@ -23,7 +23,7 @@ public enum Config {
     WP_NETHER_SCALE_ENABLE("world-protect.nether-portal-protect.nether-scale-enable", true, "enable nether portal scale"),
 	WP_NETHER_SCALE("world-protect.nether-portal-protect.nether-scale", 8, "change nether portal scale"),
 	WP_NETHER_REMOVE_BLOCK("world-protect.nether-portal-protect.remove-block", true, "remove block when nether door is blocked"),
-	WP_ANTI_NETHER_DOOR_BLOCK("world-protect.nether-portal-protect.anti-nether-door-block", true, "let nether door can't block"),
+	WP_ANTI_NETHER_DOOR_BLOCK("world-protect.nether-portal-protect.anti-nether-door-block", true, "teleport back if you cant move out portal after 15 sec"),
 	WP_ANTI_NETHER_DOOR_ENTITY_TELEPORT("world-protect.nether-portal-protect.anti-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),
 	
     WP_TNT_NO_PISTON("world-protect.tnt-no-piston", true, "let tnt cant moved by piston"),
