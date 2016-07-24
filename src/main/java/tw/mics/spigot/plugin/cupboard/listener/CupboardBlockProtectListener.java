@@ -1,5 +1,7 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
+import java.util.Arrays;
+
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,6 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
@@ -76,16 +79,40 @@ public class CupboardBlockProtectListener extends MyListener {
                 e.getBlockPlaced().setType(e.getBlockReplacedState().getType());
                 setUpTNT(b.getLocation().add(0.5,0,0.5));
                 return;
-            }
-            if(!e.isCancelled()){
-                if(b.getType().equals(Material.PISTON_BASE) || b.getType().equals(Material.PISTON_STICKY_BASE)){
-                    b.setMetadata("owner_uuid", new FixedMetadataValue(plugin, p.getUniqueId().toString()));
-                }
+            } else if(data.checkIsLimit(b, p)){
+                if(this.plugin.isOP(p))return;
+                p.sendMessage(Locales.NO_ACCESS.getString());
+                e.setCancelled(true);
+            } else if(
+                    b.getType().equals(Material.BED_BLOCK) &&
+                    !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p)
+            ){
+                p.setBedSpawnLocation(b.getLocation());
+                p.sendMessage(Locales.BED_SPAWN_SET.getString());
             }
         }
     }
     
-
+    private Material[] limitInteractBlocks = {
+            Material.ACACIA_DOOR,
+            Material.BIRCH_DOOR,
+            Material.DARK_OAK_DOOR,
+            Material.JUNGLE_DOOR,
+            Material.SPRUCE_DOOR_ITEM,
+            Material.TRAP_DOOR,
+            Material.WOOD_DOOR,
+            Material.WOODEN_DOOR,
+            Material.FENCE_GATE,
+            Material.ACACIA_FENCE_GATE,
+            Material.BIRCH_FENCE_GATE,
+            Material.DARK_OAK_FENCE_GATE,
+            Material.JUNGLE_FENCE_GATE,
+            Material.SPRUCE_FENCE_GATE,
+            Material.LEVER,
+            Material.STONE_BUTTON,
+            Material.WOOD_BUTTON,
+            Material.BED_BLOCK,
+    };
     
     //禁止玩家與限制區域互動
     @EventHandler
@@ -93,7 +120,10 @@ public class CupboardBlockProtectListener extends MyListener {
         Block b = event.getClickedBlock();
         Player p = event.getPlayer();
         if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if(!(b.getState() instanceof InventoryHolder)) return;
+        if(!(
+                (b.getState() instanceof InventoryHolder) ||
+                (Arrays.asList(limitInteractBlocks).contains(b.getType()))
+        )) return;
         
         if(data.checkIsLimit(b, p)){
             if(this.plugin.isOP(p)) return;
@@ -115,7 +145,7 @@ public class CupboardBlockProtectListener extends MyListener {
         }
     }
     
-    //禁止物件和限制方塊互動
+    //禁止物件和限制區域互動
     @EventHandler
     public void onEntryUseStonePlate(EntityInteractEvent event){
     Block b = event.getBlock();
@@ -207,5 +237,18 @@ public class CupboardBlockProtectListener extends MyListener {
                 }
             }
         }
-    }    
+    } 
+    
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPistonPlace(BlockPlaceEvent e){
+        Player p = e.getPlayer();
+        Block b = e.getBlock();
+        if( p != null){
+            if(!e.isCancelled()){
+                if(b.getType().equals(Material.PISTON_BASE) || b.getType().equals(Material.PISTON_STICKY_BASE)){
+                    b.setMetadata("owner_uuid", new FixedMetadataValue(plugin, p.getUniqueId().toString()));
+                }
+            }
+        }
+    }
 }
