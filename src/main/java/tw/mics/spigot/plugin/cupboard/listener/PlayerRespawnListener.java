@@ -11,11 +11,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World.Environment;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -130,6 +133,29 @@ public class PlayerRespawnListener extends MyListener {
                 event.getPlayer().sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
             }
         }
-		
 	}
+	
+	//終界門
+	@EventHandler
+    public void onPortalTeleport(PlayerTeleportEvent event){
+        if(!Config.PP_PLAYER_RANDOM_SPAWN_ENABLE.getBoolean()) return;
+        if(event.getPlayer().getBedSpawnLocation() != null) return;
+        if( event.getCause() == TeleportCause.END_PORTAL && event.getTo().getWorld().getEnvironment() == Environment.NORMAL ){
+            if(SpawnLocationManager.checkNewSpawnLocation()){
+                String msg = Locales.BED_WORLD_SPAWN_UPDATED.getString();
+                for( Player pl : plugin.getServer().getOnlinePlayers() ){
+                    if(pl.getBedSpawnLocation() == null)
+                        pl.sendMessage(msg);
+                }
+            } else {
+                event.getPlayer().sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
+            }
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                @Override
+                public void run() {
+                    event.getPlayer().teleport(SpawnLocationManager.getSpawnLocation());
+                }
+            });
+        }
+    }
 }
