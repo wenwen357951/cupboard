@@ -55,7 +55,7 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.BIRCH_DOOR,
             Material.DARK_OAK_DOOR,
             Material.JUNGLE_DOOR,
-            Material.SPRUCE_DOOR_ITEM,
+            Material.SPRUCE_DOOR,
             Material.TRAP_DOOR,
             Material.WOOD_DOOR,
             Material.WOODEN_DOOR,
@@ -150,7 +150,7 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.BIRCH_DOOR,
             Material.DARK_OAK_DOOR,
             Material.JUNGLE_DOOR,
-            Material.SPRUCE_DOOR_ITEM,
+            Material.SPRUCE_DOOR,
             Material.TRAP_DOOR,
             Material.WOOD_DOOR,
             Material.WOODEN_DOOR,
@@ -172,6 +172,7 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.DIODE_BLOCK_ON,
             Material.REDSTONE,
             Material.BED_BLOCK,
+            Material.ENDER_CHEST,
     };
     
     //禁止玩家與限制區域互動
