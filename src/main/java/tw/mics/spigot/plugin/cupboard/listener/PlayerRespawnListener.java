@@ -7,18 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTargetEvent.TargetReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
@@ -26,12 +26,11 @@ import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.utils.SpawnLocationManager;
 
 public class PlayerRespawnListener extends MyListener {
-	List<Player> mob_ignore_player;
 	private Map<String, List<ItemStack>> saveinv;
+	
     public PlayerRespawnListener(Cupboard instance)
     {
         super(instance);
-        mob_ignore_player = new ArrayList<Player>();
         saveinv = new HashMap<String, List<ItemStack>>();
     }
 	
@@ -60,14 +59,19 @@ public class PlayerRespawnListener extends MyListener {
         Location l = event.getRespawnLocation();
         
 
-        //怪物無視
-        mob_ignore_player.add(p);
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+        //保護 5 30秒
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
             @Override
             public void run() {
-                mob_ignore_player.remove(p);
+                p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 3));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 600, 3));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 600, 3));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 0));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 600, 3));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1));
+                p.getWorld().playEffect(p.getLocation(), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
             }
-        }, 200); //TODO change protect timer CONFIG
+        });
         
         //物品恢復
         if(saveinv.containsKey(p.getUniqueId().toString())){
@@ -128,46 +132,4 @@ public class PlayerRespawnListener extends MyListener {
         }
 		
 	}
-
-	
-	//怪物無視事件
-	@EventHandler
-	public void onPlayerHitPlayer(EntityDamageByEntityEvent event){
-		if(this.mob_ignore_player.size() == 0) return;
-		if(
-			event.getEntity() instanceof Player
-		){
-			Player entity = (Player) event.getEntity();
-			if(this.mob_ignore_player.contains(entity)){
-				event.setCancelled(true);
-			}
-		}
-	}	
-	
-	@EventHandler
-	public void onPlayerHitPlayer(EntityDamageEvent event){
-		if(this.mob_ignore_player.size() == 0) return;
-		if(
-			event.getEntity() instanceof Player
-		){
-			Player entity = (Player) event.getEntity();
-			if(this.mob_ignore_player.contains(entity)){
-				event.setCancelled(true);
-			}
-		}
-	}
-	
-	@EventHandler
-	 public void onMobTargetPlayer(EntityTargetEvent event){
-		 if(
-				 event.getTarget() instanceof Player &&
-				 event.getReason() == TargetReason.CLOSEST_PLAYER
-			 ){
-			 Player p = (Player) event.getTarget();
-			 if(this.mob_ignore_player == null) return;
-			 if(this.mob_ignore_player.contains(p)){
-				 event.setCancelled(true);
-			 }
-		 }
-	 }
 }
