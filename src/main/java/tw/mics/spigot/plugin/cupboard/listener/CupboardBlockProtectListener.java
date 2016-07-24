@@ -8,7 +8,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
@@ -46,7 +45,7 @@ public class CupboardBlockProtectListener extends MyListener {
     }
     
     //防止其他玩家破壞方塊
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onBlockBreak(BlockBreakEvent e){
         Player p = e.getPlayer();
         Block b = e.getBlock();
@@ -68,7 +67,7 @@ public class CupboardBlockProtectListener extends MyListener {
     }
     
     //防止其他玩家放置方塊
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onBlockPlace(BlockPlaceEvent e){
         Player p = e.getPlayer();
         Block b = e.getBlock();
