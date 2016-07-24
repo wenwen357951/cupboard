@@ -2,6 +2,7 @@ package tw.mics.spigot.plugin.cupboard.listener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -31,6 +32,7 @@ public class PlayerRespawnListener extends MyListener {
     {
         super(instance);
         mob_ignore_player = new ArrayList<Player>();
+        saveinv = new HashMap<String, List<ItemStack>>();
     }
 	
 	//死亡儲存物品
@@ -107,6 +109,7 @@ public class PlayerRespawnListener extends MyListener {
             } else {
                 return; //重生點沒問題 直接在床重生
             }
+            event.setRespawnLocation(l.getWorld().getSpawnLocation());
         }
         
         //隨機重生
@@ -118,10 +121,10 @@ public class PlayerRespawnListener extends MyListener {
                     if(pl.getBedSpawnLocation() == null)
                         pl.sendMessage(msg);
                 }
+                event.setRespawnLocation(SpawnLocationManager.getSpawnLocation());
             } else {
                 event.getPlayer().sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
             }
-            event.setRespawnLocation(SpawnLocationManager.getSpawnLocation());
         }
 		
 	}

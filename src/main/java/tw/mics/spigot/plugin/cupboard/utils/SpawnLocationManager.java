@@ -74,7 +74,8 @@ public class SpawnLocationManager {
             if(blockBlockList.contains(location.clone().add(0, -1, 0).getBlock().getType())) continue;
             break;
         }
-        location.add(0.5, 0, 0.5);
+        //location.add(0.5, 0, 0.5);
+        world.setSpawnLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         return location;
     }
     
