@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
+import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class WorldProtectListener extends MyListener {
@@ -61,9 +62,10 @@ public class WorldProtectListener extends MyListener {
                 public void run() {
                     if(p.getLocation().add(0,1,0).getBlock().getType() == Material.PORTAL){
                         p.teleport(l);
+                        p.sendMessage(Locales.NETHER_PORTEL_TELEPORT_BACK.getString());
                     }
                 }
-    		}, 300);
+    		}, 400);
 		}
 	}
 	

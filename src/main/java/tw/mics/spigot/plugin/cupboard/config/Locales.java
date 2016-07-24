@@ -26,11 +26,10 @@ public enum Locales {
 	SPAWN_WITHOUT_ACCESS("gold-block.spawn-without-access", "&cYour bed is in non-access area, you are spawn in world spawn."),
 	
 	//WORLD PROTECT
-	DO_NOT_BLOCK_NETHER_DOOR("world-protect.do-not-block-nether-door", "&7Please do not block nether door."),
-    DISABLE_ENDER_CHEST("world-protect.disable-ender-chest", "終界箱已經被關閉, 僅剩裝飾用途。"),
+	//DO_NOT_BLOCK_NETHER_DOOR("world-protect.do-not-block-nether-door", "&7Please do not block nether door."),
+	NETHER_PORTEL_TELEPORT_BACK("world-protect.nether-portel-teleport-back", "&7已將您傳送回原本位置防止卡門。"),
 	
 	//WORLD BORDER
-	BORDER_IS_CHANGED("world-border.border-is-changed", "&eWorld border is changed  &7( Every %.0f min deduct %d )\n&bNow Border: World %d Nether %d The End %d"),
 	SPAWN_OUTSIDE_BORDER("world-border.spawn-outside-border", "&cYour bed is outside world border, you are spawn in world spawn."),
 	
 	//TELEPORT
