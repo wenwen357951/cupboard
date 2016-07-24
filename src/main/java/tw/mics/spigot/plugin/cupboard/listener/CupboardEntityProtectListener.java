@@ -41,17 +41,6 @@ public class CupboardEntityProtectListener extends MyListener {
     	protect_vehicle.add(Material.POWERED_MINECART );
     	protect_vehicle.add(Material.STORAGE_MINECART );
     }
-    //防止未授權玩家和物件互動
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEntityEvent e){
-        Location bl = e.getRightClicked().getLocation().getBlock().getLocation();
-        Player p = e.getPlayer();
-        if(data.checkIsLimit(bl, p)){
-            if(this.plugin.isOP(p)) return;
-            e.setCancelled(true);
-            e.getPlayer().updateInventory();
-        }
-    }
     
     //保護物品展示框
     @EventHandler
@@ -65,6 +54,18 @@ public class CupboardEntityProtectListener extends MyListener {
                 e.setCancelled(true);
                 p.updateInventory();
             }
+        }
+    }
+    
+    //防止未授權玩家和物件互動
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEntityEvent e){
+        Location bl = e.getRightClicked().getLocation().getBlock().getLocation();
+        Player p = e.getPlayer();
+        if(data.checkIsLimit(bl, p)){
+            if(this.plugin.isOP(p)) return;
+            e.setCancelled(true);
+            e.getPlayer().updateInventory();
         }
     }
     
