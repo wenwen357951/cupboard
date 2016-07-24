@@ -111,6 +111,14 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.LEVER,
             Material.STONE_BUTTON,
             Material.WOOD_BUTTON,
+            Material.REDSTONE_COMPARATOR_OFF,
+            Material.REDSTONE_COMPARATOR_ON,
+            Material.DIODE_BLOCK_OFF,
+            Material.DIODE_BLOCK_ON,
+            Material.DAYLIGHT_DETECTOR,
+            Material.DAYLIGHT_DETECTOR_INVERTED,
+            Material.DIODE_BLOCK_ON,
+            Material.REDSTONE,
             Material.BED_BLOCK,
     };
     
@@ -119,29 +127,36 @@ public class CupboardBlockProtectListener extends MyListener {
     public void onPlayerInteract(PlayerInteractEvent event){
         Block b = event.getClickedBlock();
         Player p = event.getPlayer();
-        if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if(!(
-                (b.getState() instanceof InventoryHolder) ||
-                (Arrays.asList(limitInteractBlocks).contains(b.getType()))
-        )) return;
-        
-        if(data.checkIsLimit(b, p)){
-            if(this.plugin.isOP(p)) return;
-            p.sendMessage(Locales.NO_ACCESS.getString());
-            if( b.getType() == Material.WATER || b.getType() == Material.LAVA)p.updateInventory();
-            event.setCancelled(true);
-            return;
-        }
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+            if(!(
+                    (b.getState() instanceof InventoryHolder) ||
+                    (Arrays.asList(limitInteractBlocks).contains(b.getType()))
+            )) return;
             
-        //禁止未授權玩家使用床，其他則記錄重生點
-        if(    
-            !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p) &&
-            b.getType() == Material.BED_BLOCK
-        ){
-            p.setBedSpawnLocation(b.getLocation());
-            p.sendMessage(Locales.BED_SPAWN_SET.getString());
-            event.setCancelled(true);
-            return;
+            if(data.checkIsLimit(b, p)){
+                if(this.plugin.isOP(p)) return;
+                p.sendMessage(Locales.NO_ACCESS.getString());
+                if( b.getType() == Material.WATER || b.getType() == Material.LAVA)p.updateInventory();
+                event.setCancelled(true);
+                return;
+            }
+                
+            //禁止未授權玩家使用床，其他則記錄重生點
+            if(    
+                !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p) &&
+                b.getType() == Material.BED_BLOCK
+            ){
+                p.setBedSpawnLocation(b.getLocation());
+                p.sendMessage(Locales.BED_SPAWN_SET.getString());
+                event.setCancelled(true);
+                return;
+            }
+        } else if(event.getAction() == Action.PHYSICAL){
+            if(data.checkIsLimit(b, p)){
+                if(this.plugin.isOP(p, false)) return;
+                event.setCancelled(true);
+                return;
+            }
         }
     }
     

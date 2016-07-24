@@ -143,12 +143,16 @@ public class Cupboard extends JavaPlugin implements Listener {
     }
     
     public boolean isOP(Player p){
-    	if(!Config.OP_BYPASS.getBoolean())return false;
-    	if(p.isOp() && p.getGameMode() == GameMode.CREATIVE){
-    		p.sendMessage(Locales.OP_BYPASS.getString());
-    		return true;
-    	}
-		return false;
+    	return isOP(p, true);
+    }
+    
+    public boolean isOP(Player p, boolean notice){
+        if(!Config.OP_BYPASS.getBoolean())return false;
+        if(p.isOp() && p.getGameMode() == GameMode.CREATIVE){
+            if(notice)p.sendMessage(Locales.OP_BYPASS.getString());
+            return true;
+        }
+        return false;
     }
 
 	public void logDebug(String str, Object... args)
