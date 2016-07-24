@@ -11,6 +11,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
@@ -39,6 +41,44 @@ public class CupboardEntityProtectListener extends MyListener {
     	protect_vehicle.add(Material.POWERED_MINECART );
     	protect_vehicle.add(Material.STORAGE_MINECART );
     }
+    //防止未授權玩家和物件互動
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEntityEvent e){
+        Location bl = e.getRightClicked().getLocation().getBlock().getLocation();
+        Player p = e.getPlayer();
+        if(data.checkIsLimit(bl, p)){
+            if(this.plugin.isOP(p)) return;
+            e.setCancelled(true);
+            e.getPlayer().updateInventory();
+        }
+    }
+    
+    //保護物品展示框
+    @EventHandler
+    public void onPlayerHitEntity(EntityDamageByEntityEvent e){
+        if(e.getEntityType() != EntityType.ITEM_FRAME) return;
+        if(e.getDamager() instanceof Player){
+            Location bl = e.getEntity().getLocation().getBlock().getLocation();
+            Player p = (Player) e.getDamager();
+            if(data.checkIsLimit(bl, p)){
+                if(this.plugin.isOP(p)) return;
+                e.setCancelled(true);
+                p.updateInventory();
+            }
+        }
+    }
+    
+    //防止未授權玩家和物件互動
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractAtEntityEvent e){
+        Location bl = e.getRightClicked().getLocation().getBlock().getLocation();
+        Player p = e.getPlayer();
+        if(data.checkIsLimit(bl, p)){
+            if(this.plugin.isOP(p)) return;
+            e.setCancelled(true);
+            e.getPlayer().updateInventory();
+        }
+    }
 
 
     //防止Hanging類物品被未授權玩家放置
@@ -56,7 +96,6 @@ public class CupboardEntityProtectListener extends MyListener {
     //防止Hanging類物品被未授權玩家移除
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent e) {
-    	//NEEDFIX -- TNT LIGHT BY ALLOW USER WILL DESTORY HANGING ITEM
 		Location bl = e.getEntity().getLocation().getBlock().getLocation();
     	if (e.getRemover() instanceof Player){
     		Player p = (Player) e.getRemover();
