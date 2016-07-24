@@ -50,7 +50,7 @@ public class CupboardBlockProtectListener extends MyListener {
     }
     
     
-    private Material[] doors = {
+    private final static Material[] doors = {
             Material.ACACIA_DOOR,
             Material.BIRCH_DOOR,
             Material.DARK_OAK_DOOR,
@@ -145,7 +145,7 @@ public class CupboardBlockProtectListener extends MyListener {
         }
     }
     
-    private Material[] limitInteractBlocks = {
+    private final static Material[] limitInteractBlocks = {
             Material.ACACIA_DOOR,
             Material.BIRCH_DOOR,
             Material.DARK_OAK_DOOR,
