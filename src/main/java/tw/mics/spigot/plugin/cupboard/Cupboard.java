@@ -31,7 +31,6 @@ import tw.mics.spigot.plugin.cupboard.listener.TNTExplosionListener;
 import tw.mics.spigot.plugin.cupboard.listener.WorldProtectListener;
 import tw.mics.spigot.plugin.cupboard.schedule.AirDrop;
 import tw.mics.spigot.plugin.cupboard.schedule.Compass;
-import tw.mics.spigot.plugin.cupboard.schedule.WorldBorder;
 import tw.mics.spigot.plugin.cupboard.utils.SpawnLocationManager;
 
 
@@ -84,10 +83,6 @@ public class Cupboard extends JavaPlugin implements Listener {
             registedObject.add(new TNTExplosionListener(this));
         	registedObject.add(new TNTCraftListener(this));
         }
-
-        if(Config.WB_ENABLE.getBoolean()){
-        	registedObject.add(new WorldBorder(this));
-        }
         
         if(Config.AIR_DROP_ENABLE.getBoolean()){
             registedObject.add(new AirDrop(this));
@@ -106,8 +101,6 @@ public class Cupboard extends JavaPlugin implements Listener {
 		for(Object l : registedObject){
 			if(l instanceof MyListener){
 				((MyListener)l).unregisterListener();
-			} else if(l instanceof WorldBorder){
-				((WorldBorder)l).removeRunnable();
 			} else {
 				this.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				this.log("[ERROR] Object " + l.getClass().getName() + " Can't unreigster");

@@ -17,7 +17,6 @@ public enum Config {
 	ANTI_TNT_EXPLOSION("cupboard.anti-tnt-explosion", false, "is cupboard protect explosion from TNT?"),
 	ANTI_OTHERS_EXPLOSION("cupboard.anti-creeper-explosion", true, "is cupboard protect explosion from CREEPER?"),
 	OP_BYPASS("cupboard.is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),
-    CUPBOARD_PROTECT_CHEST("cupboard.protect_chest", false, "Removed"),
 	
 	WP_NETHER_DOOR_PROTECT_ENABLE("world-protect.nether-portal-protect.enable", true, "enable nether door protect (if this is false, below is non-use)"),
 	WP_NETHER_SREACH_RADIUS("world-protect.nether-portal-protect.sreach-redius", 16, "change nether portal sreach radius"),
@@ -26,7 +25,7 @@ public enum Config {
 	WP_NETHER_REMOVE_BLOCK("world-protect.nether-portal-protect.remove-block", true, "remove block when nether door is blocked"),
 	WP_ANTI_NETHER_DOOR_BLOCK("world-protect.nether-portal-protect.anti-nether-door-block", true, "let nether door can't block"),
 	WP_ANTI_NETHER_DOOR_ENTITY_TELEPORT("world-protect.nether-portal-protect.anti-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),
-	WP_DISABLE_ENDER_CHEST("world-protect.disable-ender-chest", true, "removed"),
+	
     WP_TNT_NO_PISTON("world-protect.tnt-no-piston", true, "let tnt cant moved by piston"),
 	
 	WP_PIGZOMBIE_DROP_NETHER_WART("world-protect.pigzombie-drop-nether-wart.enable", true, "let pig zombie drop nether-wart in nether"),
@@ -38,15 +37,7 @@ public enum Config {
     PP_PLAYER_RANDOM_SPAWN_WORLD("player-protect.random-spawn.world", "world", ""),
     PP_PLAYER_RANDOM_SPAWN_NEW_LOCATION_TIME("player-protect.random-spawn.NewRandomPointTimeSec", 180, ""),
     PP_PLAYER_REMOVE_SPAWN_WITH_LAVA("player-protect.remove-bed-spawn-when-have-lava", true, ""),
-	
-	WB_ENABLE("world-border.enable", true, "enable world border system? (use this system please DO NOT modify time)"),
-	WB_INIT_RADIUS("world-border.init-radius", 1200, "it mean -x ~ x "),
-	WB_MIN_RADIUS("world-border.min-radius", 500, "it mean min -x ~ x "),
-	WB_DEDUCT_AMOUNT("world-border.deduct-amount", 1, "how many border to deduct every period"),
-	WB_DEDUCT_TIME("world-border.deduct-time", 3600, "deduct period (sec)"),
-	WB_NETHER_SCALE("world-border.nether-scale", 4, "nether border scale"),
-	WB_ENDER_SCALE("world-border.ender-scale", 4, "ender border scale"),
-
+    
 	AIR_DROP_ENABLE("air-drop.enable", true, "enable airdrop?"),
 	AIR_DROP_MIN_TIME("air-drop.min-time", 40, "airdrop min period time (min)"),
 	AIR_DROP_MAX_TIME("air-drop.max-time", 80, "airdrop max period time (min)"),
@@ -67,6 +58,16 @@ public enum Config {
     COMPASS_ENABLE("compass.enable", true, "enable compass point to player"),
     COMPASS_DEVIATION("compass.deviation", 100, "point to player deviation"),
     COMPASS_UPDATE_TIME("compass.update-time", 100, "in tick"),
+    
+    REMOVED_CUPBOARD_PROTECT_CHEST("cupboard.protect_chest", false, "Removed"),
+    REMOVED_WP_DISABLE_ENDER_CHEST("world-protect.disable-ender-chest", true, "removed"),
+    REMOVED_WB_ENABLE("world-border.enable", true, "removed"),
+    REMOVED_WB_INIT_RADIUS("world-border.init-radius", 1200, "removed"),
+    REMOVED_WB_MIN_RADIUS("world-border.min-radius", 500, "removed"),
+    REMOVED_WB_DEDUCT_AMOUNT("world-border.deduct-amount", 1, "removed"),
+    REMOVED_WB_DEDUCT_TIME("world-border.deduct-time", 3600, "removed"),
+    REMOVED_WB_NETHER_SCALE("world-border.nether-scale", 4, "removed"),
+    REMOVED_WB_ENDER_SCALE("world-border.ender-scale", 4, "removed"),
     
 	LOCALE("locale", "en-EN", "language file name");
 	
