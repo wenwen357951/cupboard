@@ -62,19 +62,21 @@ public class PlayerRespawnListener extends MyListener {
         Location l = event.getRespawnLocation();
         
 
-        //保護 5 30秒
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-            @Override
-            public void run() {
-                p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 3));
-                p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 600, 3));
-                p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 600, 3));
-                p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 0));
-                p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 600, 3));
-                p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1));
-                p.getWorld().playEffect(p.getLocation(), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
-            }
-        });
+        //重生保護
+        if(Config.PP_PLAYER_SPAWN_PROTECT.getBoolean()){
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                @Override
+                public void run() {
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 3));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 600, 3));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 600, 3));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 0));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 600, 3));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1));
+                    p.getWorld().playEffect(p.getLocation(), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
+                }
+            });
+        }
         
         //物品恢復
         if(saveinv.containsKey(p.getUniqueId().toString())){

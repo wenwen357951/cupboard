@@ -37,6 +37,7 @@ public enum Config {
     PP_PLAYER_RANDOM_SPAWN_WORLD("player-protect.random-spawn.world", "world", ""),
     PP_PLAYER_RANDOM_SPAWN_NEW_LOCATION_TIME("player-protect.random-spawn.NewRandomPointTimeSec", 180, ""),
     PP_PLAYER_REMOVE_SPAWN_WITH_LAVA("player-protect.remove-bed-spawn-when-have-lava", true, ""),
+    PP_PLAYER_SPAWN_PROTECT("player-protect.player-spawn-protect", true, ""),
     
 	AIR_DROP_ENABLE("air-drop.enable", true, "enable airdrop?"),
 	AIR_DROP_MIN_TIME("air-drop.min-time", 40, "airdrop min period time (min)"),
