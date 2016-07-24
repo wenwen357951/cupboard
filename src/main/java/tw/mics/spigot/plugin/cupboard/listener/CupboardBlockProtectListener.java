@@ -165,8 +165,14 @@ public class CupboardBlockProtectListener extends MyListener {
     public void onEntryUseStonePlate(EntityInteractEvent event){
     Block b = event.getBlock();
         Entity e = event.getEntity();
-        if (e.getPassenger() instanceof Player){
-            Player p = (Player) e.getPassenger();
+        Player p = null;
+        
+        //Maybe can add others
+        if(e.getPassenger() instanceof Player){
+            p = (Player) e.getPassenger();
+        }
+        
+        if (p != null){
             if(data.checkIsLimit(b, p)){
                 if(this.plugin.isOP(p)) return;
                 event.setCancelled(true);
