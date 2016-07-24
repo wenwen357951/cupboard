@@ -1,6 +1,7 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.bukkit.Location;
@@ -22,6 +23,12 @@ public class TNTExplosionListener extends MyListener {
 		super(instance);
 	    new ArrayList<String>();
 	}
+	
+	final Material[] high_blast_resistance_block = {
+	        Material.ANVIL,
+	        Material.ENCHANTMENT_TABLE,
+	        Material.ENDER_CHEST,
+	};
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onExplode(EntityExplodeEvent event){
@@ -41,6 +48,11 @@ public class TNTExplosionListener extends MyListener {
 							   if(Config.TNT_OBSIDIAN_BREAK_PROBABILITY.getDouble()>=Math.random()){
 								   exploded_block.setType(Material.getMaterial(Config.TNT_OBSIDIAN_BREAK_TO.getString()));
 							   }
+						   }
+						   if(Arrays.asList(high_blast_resistance_block).contains(exploded_block.getType())){
+						       if(Config.TNT_OTHERS_HIGH_BLAST_RESISTANCE_BREAK_PROBABILITY.getDouble()>=Math.random()){
+                                   exploded_block.setType(Material.AIR);
+                               }
 						   }
 					   }
 		 	 	   }
