@@ -30,6 +30,7 @@ public class TNTExplosionListener extends MyListener {
 	        Material.ENDER_CHEST,
 	};
 
+	//爆炸後
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onExplode(EntityExplodeEvent event){
     	if(!event.getEntity().getType().equals(EntityType.PRIMED_TNT)) return;
@@ -69,6 +70,7 @@ public class TNTExplosionListener extends MyListener {
     	
     }
     
+    //爆炸前
     @EventHandler
     public void onTNTPrime(ExplosionPrimeEvent e){
     	//is a primed TNT?
