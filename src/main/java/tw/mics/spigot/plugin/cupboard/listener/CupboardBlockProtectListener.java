@@ -175,7 +175,6 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.ENDER_CHEST,
     };
     
-    //禁止玩家與限制區域互動
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event){
         Block b = event.getClickedBlock();
@@ -185,7 +184,8 @@ public class CupboardBlockProtectListener extends MyListener {
                     (b.getState() instanceof InventoryHolder) ||
                     (Arrays.asList(limitInteractBlocks).contains(b.getType()))
             )) return;
-            
+
+            //禁止玩家與限制區域互動
             if(data.checkIsLimit(b, p)){
                 if(this.plugin.isOP(p)) return;
                 p.sendMessage(Locales.NO_ACCESS.getString());
@@ -196,8 +196,8 @@ public class CupboardBlockProtectListener extends MyListener {
                 
             //禁止未授權玩家使用床，其他則記錄重生點
             if(    
-                !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p) &&
-                b.getType() == Material.BED_BLOCK
+                b.getType() == Material.BED_BLOCK &&
+                !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p) 
             ){
                 p.setBedSpawnLocation(b.getLocation());
                 p.sendMessage(Locales.BED_SPAWN_SET.getString());

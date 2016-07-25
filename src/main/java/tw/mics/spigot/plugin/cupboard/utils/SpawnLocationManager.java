@@ -50,6 +50,7 @@ public class SpawnLocationManager {
     
     public static boolean checkPlayerSpawn(Location l, Player p){
         if(l == null || p.getBedSpawnLocation() == null) return false;
+        if(l.getWorld() != p.getBedSpawnLocation().getWorld()) return false;
         Double dist = l.distance(p.getBedSpawnLocation());
         if(dist <= 2.24)
             return true;
