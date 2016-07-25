@@ -71,6 +71,7 @@ public class PlayerRespawnListener extends MyListener {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 600, 3));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 0));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 600, 3));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1));
                 }
             });
         }
