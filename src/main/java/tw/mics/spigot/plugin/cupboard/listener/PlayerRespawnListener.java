@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
@@ -72,8 +71,6 @@ public class PlayerRespawnListener extends MyListener {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 600, 3));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 0));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 600, 3));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1));
-                    p.getWorld().playEffect(p.getLocation(), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
                 }
             });
         }
