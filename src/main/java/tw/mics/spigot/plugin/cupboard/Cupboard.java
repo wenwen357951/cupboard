@@ -30,7 +30,6 @@ import tw.mics.spigot.plugin.cupboard.listener.TNTExplosionListener;
 import tw.mics.spigot.plugin.cupboard.listener.WorldProtectListener;
 import tw.mics.spigot.plugin.cupboard.schedule.AirDrop;
 import tw.mics.spigot.plugin.cupboard.schedule.Compass;
-import tw.mics.spigot.plugin.cupboard.utils.SpawnLocationManager;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
@@ -63,7 +62,6 @@ public class Cupboard extends JavaPlugin implements Listener {
         this.getCommand("rsp").setExecutor(new RspCommand(this));
         
         registerObject();
-        SpawnLocationManager.init();
     }
 	private void registerObject(){
 		//register listener

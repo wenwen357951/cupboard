@@ -1,6 +1,6 @@
 package tw.mics.spigot.plugin.cupboard.utils;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 
 import tw.mics.spigot.plugin.cupboard.config.Config;
@@ -16,18 +17,22 @@ public class SpawnLocationManager {
     public static Location last_spawnLocation;
     public static long last_spawnLocationTime = 0;
 
-    static HashSet<Material> blockBlockList;
+    static Material[] blockBlockList = {
+            Material.STATIONARY_LAVA,
+            Material.LAVA,
+            Material.STATIONARY_WATER,
+            Material.WATER,
+    };
+    
+    static Biome[] blockBiomeList = {
+            Biome.OCEAN,
+            Biome.DEEP_OCEAN,
+            Biome.FROZEN_OCEAN,
+    };
     
     boolean ENABLE = true;
     int RESET_SEC = 180;
     
-    public static void init(){
-        blockBlockList = new HashSet<Material>();
-        blockBlockList.add(Material.STATIONARY_LAVA);
-        blockBlockList.add(Material.LAVA);
-        blockBlockList.add(Material.STATIONARY_WATER);
-        blockBlockList.add(Material.WATER);
-    }
     
     public static Double getTimeLeft(){
         long time_diff = last_spawnLocationTime + Config.PP_PLAYER_RANDOM_SPAWN_NEW_LOCATION_TIME.getInt() * 1000 - System.currentTimeMillis();
@@ -72,7 +77,8 @@ public class SpawnLocationManager {
         Location location;
         while(true){ //TODO not good, have to fix it
             location = world.getHighestBlockAt( (int)(center_x + getRandom(max_distance)), (int)(center_z + getRandom(max_distance))).getLocation();
-            if(blockBlockList.contains(location.clone().add(0, -1, 0).getBlock().getType())) continue;
+            if(Arrays.asList(blockBiomeList).contains(location.getBlock().getBiome())) continue;
+            if(Arrays.asList(blockBlockList).contains(location.getBlock().getType())) continue;
             break;
         }
         location.add(0.5, 0, 0.5);
