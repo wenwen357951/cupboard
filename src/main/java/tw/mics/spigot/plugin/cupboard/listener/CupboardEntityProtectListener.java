@@ -14,6 +14,7 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
@@ -41,6 +42,20 @@ public class CupboardEntityProtectListener extends MyListener {
 		super(instance);
 		
 	    this.data = this.plugin.cupboards;
+	}
+	
+	//保護船隻 / 礦車
+	@EventHandler
+	public void onVehicleDestroy(VehicleDamageEvent event) {
+        if(event.getAttacker() instanceof Player){
+    	    Location bl = event.getVehicle().getLocation().getBlock().getLocation();
+            Player p = (Player) event.getAttacker();
+            if(data.checkIsLimit(bl, p)){
+                if(this.plugin.isOP(p)) return;
+                event.setCancelled(true);
+                p.updateInventory();
+            }
+        }
 	}
     
     //保護物品展示框
