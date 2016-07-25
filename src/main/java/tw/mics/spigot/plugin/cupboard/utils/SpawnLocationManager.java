@@ -69,7 +69,7 @@ public class SpawnLocationManager {
         if(max_distance > wb.getSize()) max_distance = wb.getSize();
         
         Location location;
-        while(true){
+        while(true){ //TODO not good, have to fix it
             location = world.getHighestBlockAt( (int)(center_x + getRandom(max_distance)), (int)(center_z + getRandom(max_distance))).getLocation();
             if(blockBlockList.contains(location.clone().add(0, -1, 0).getBlock().getType())) continue;
             break;

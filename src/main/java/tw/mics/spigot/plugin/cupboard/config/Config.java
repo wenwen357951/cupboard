@@ -63,13 +63,7 @@ public enum Config {
     
     REMOVED_CUPBOARD_PROTECT_CHEST("cupboard.protect_chest", false, "Removed"),
     REMOVED_WP_DISABLE_ENDER_CHEST("world-protect.disable-ender-chest", true, "removed"),
-    REMOVED_WB_ENABLE("world-border.enable", true, "removed"),
-    REMOVED_WB_INIT_RADIUS("world-border.init-radius", 1200, "removed"),
-    REMOVED_WB_MIN_RADIUS("world-border.min-radius", 500, "removed"),
-    REMOVED_WB_DEDUCT_AMOUNT("world-border.deduct-amount", 1, "removed"),
-    REMOVED_WB_DEDUCT_TIME("world-border.deduct-time", 3600, "removed"),
-    REMOVED_WB_NETHER_SCALE("world-border.nether-scale", 4, "removed"),
-    REMOVED_WB_ENDER_SCALE("world-border.ender-scale", 4, "removed"),
+    REMOVED_WB("world-border", null, "removed"),
     
 	LOCALE("locale", "en-EN", "language file name");
 	
