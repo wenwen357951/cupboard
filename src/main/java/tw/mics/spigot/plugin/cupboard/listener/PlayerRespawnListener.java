@@ -133,10 +133,10 @@ public class PlayerRespawnListener extends MyListener {
                     if(pl.getBedSpawnLocation() == null)
                         pl.sendMessage(msg);
                 }
-                event.setRespawnLocation(SpawnLocationManager.getSpawnLocation());
             } else {
                 event.getPlayer().sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
             }
+            event.setRespawnLocation(SpawnLocationManager.getSpawnLocation());
         }
 	}
 	

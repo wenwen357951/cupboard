@@ -43,7 +43,10 @@ public class WorldProtectListener extends MyListener {
 		
 		if(Config.WP_NETHER_SCALE_ENABLE.getBoolean()){
     		Location l = e.getFrom().clone();
-    		if(l.getWorld().getEnvironment() == Environment.NORMAL){
+    		if(
+		        l.getWorld().getEnvironment() == Environment.NORMAL && 
+		        e.getTo().getWorld().getEnvironment() == Environment.NETHER
+	        ){
     		    l.multiply(1.0/Config.WP_NETHER_SCALE.getDouble());
     		} else if(l.getWorld().getEnvironment() == Environment.NETHER) {
     		    l.multiply(Config.WP_NETHER_SCALE.getDouble());
