@@ -1,6 +1,7 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -268,50 +269,34 @@ public class CupboardBlockProtectListener extends MyListener {
     	}
     }
     
-
-    
     //防止活塞
     @EventHandler
     void onPistonExtend(BlockPistonExtendEvent e){
-        for(Block block : e.getBlocks()){
-            if(block.getType().equals(Material.GOLD_BLOCK)){
-                e.setCancelled(true);
-                return;
-            }
-            if(Config.WP_TNT_NO_PISTON.getBoolean() && block.getType().equals(Material.TNT)){
-                e.setCancelled(true);
-                return;
-            }
-            if(e.getBlock().hasMetadata("owner_uuid")){
-                String uuid = e.getBlock().getMetadata("owner_uuid").get(0).asString();
-                if(plugin.cupboards.checkIsLimitByUUIDString(block, uuid)){
-                    e.setCancelled(true);
-                    return;
-                }
-            }
-        }
+        e.setCancelled(checkPiston(e.getBlocks()));
     }
 
     @EventHandler
     void onPistonRetract(BlockPistonRetractEvent e){
-        for(Block block : e.getBlocks()){
+        e.setCancelled(checkPiston(e.getBlocks()));
+        
+    } 
+    private boolean checkPiston(List<Block> blocks){
+        for(Block block : blocks){
             if(block.getType().equals(Material.GOLD_BLOCK)){
-                e.setCancelled(true);
-                return;
+                return true;
             }
             if(Config.WP_TNT_NO_PISTON.getBoolean() && block.getType().equals(Material.TNT)){
-                e.setCancelled(true);
-                return;
+                return true;
             }
-            if(e.getBlock().hasMetadata("owner_uuid")){
-                String uuid = e.getBlock().getMetadata("owner_uuid").get(0).asString();
+            if(block.hasMetadata("owner_uuid")){
+                String uuid = block.getMetadata("owner_uuid").get(0).asString();
                 if(plugin.cupboards.checkIsLimitByUUIDString(block, uuid)){
-                    e.setCancelled(true);
-                    return;
+                    return true;
                 }
             }
         }
-    } 
+        return false;
+    }
     
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPistonPlace(BlockPlaceEvent e){
