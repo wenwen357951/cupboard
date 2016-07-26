@@ -279,13 +279,24 @@ public class CupboardBlockProtectListener extends MyListener {
     void onPistonRetract(BlockPistonRetractEvent e){
         e.setCancelled(checkPiston(e.getBlocks()));
         
-    } 
+    }
+    
+    private Material[] rails = {
+            Material.RAILS,
+            Material.ACTIVATOR_RAIL,
+            Material.DETECTOR_RAIL,
+            Material.POWERED_RAIL,
+    };
+    
     private boolean checkPiston(List<Block> blocks){
         for(Block block : blocks){
             if(block.getType().equals(Material.GOLD_BLOCK)){
                 return true;
             }
             if(Config.WP_TNT_NO_PISTON.getBoolean() && block.getType().equals(Material.TNT)){
+                return true;
+            }
+            if(Config.WP_RAILS_NO_PISTON.getBoolean() && Arrays.asList(rails).contains(block.getType())){
                 return true;
             }
             if(block.hasMetadata("owner_uuid")){
