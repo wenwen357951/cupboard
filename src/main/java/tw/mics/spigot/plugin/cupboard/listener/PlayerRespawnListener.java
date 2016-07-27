@@ -52,14 +52,51 @@ public class PlayerRespawnListener extends MyListener {
             saveinv.put(p.getUniqueId().toString(), keepInv);
         }
     }
-
     
-    //玩家重生
+    //床安全確認
+    private boolean isPlayerBedSave(Player p){
+        Location l = p.getBedSpawnLocation();
+        WorldBorder border = l.getWorld().getWorldBorder();
+        int max_x = border.getCenter().add(border.getSize()/2, 0, 0).getBlockX();
+        int min_x = border.getCenter().add(-border.getSize()/2, 0, 0).getBlockX();
+        int max_z = border.getCenter().add(0, 0, border.getSize()/2).getBlockZ();
+        int min_z = border.getCenter().add(0, 0, -border.getSize()/2).getBlockZ();
+        if(
+                l.getBlockX() > max_x ||
+                l.getBlockX() < min_x ||
+                l.getBlockZ() > max_z ||
+                l.getBlockZ() < min_z
+        ){
+            //Spawn border check
+            p.setBedSpawnLocation(null);
+            p.sendMessage(Locales.SPAWN_OUTSIDE_BORDER.getString());
+            return false;
+        } else if(this.plugin.cupboards.checkIsLimit(l, p)){
+            //Spawn location check
+            p.setBedSpawnLocation(null);
+            p.sendMessage(Locales.SPAWN_WITHOUT_ACCESS.getString());
+            return false;
+        } else if(
+                //spawn lava check
+                Config.PP_PLAYER_REMOVE_SPAWN_WITH_LAVA.getBoolean() &&
+                (
+                    l.getBlock().getType() == Material.LAVA ||
+                    l.getBlock().getType() == Material.STATIONARY_LAVA ||
+                    l.clone().add(0,1,0).getBlock().getType() == Material.LAVA ||
+                    l.clone().add(0,1,0).getBlock().getType() == Material.STATIONARY_LAVA
+                )
+        ){
+            p.setBedSpawnLocation(null);
+            p.sendMessage(Locales.BED_HAVE_LAVA.getString());
+            return false;
+        } else {
+            return true; //重生點沒問題 直接在床重生
+        }
+    }
+    
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event){
 		Player p = event.getPlayer();
-        Location l = event.getRespawnLocation();
-        
 
         //重生保護
         if(Config.PP_PLAYER_SPAWN_PROTECT.getBoolean()){
@@ -85,41 +122,8 @@ public class PlayerRespawnListener extends MyListener {
         }
         
         //床復活岩漿確認
-        if(event.isBedSpawn()){
-            WorldBorder border = l.getWorld().getWorldBorder();
-            int max_x = border.getCenter().add(border.getSize()/2, 0, 0).getBlockX();
-            int min_x = border.getCenter().add(-border.getSize()/2, 0, 0).getBlockX();
-            int max_z = border.getCenter().add(0, 0, border.getSize()/2).getBlockZ();
-            int min_z = border.getCenter().add(0, 0, -border.getSize()/2).getBlockZ();
-            if(
-                    l.getBlockX() > max_x ||
-                    l.getBlockX() < min_x ||
-                    l.getBlockZ() > max_z ||
-                    l.getBlockZ() < min_z
-            ){
-                //Spawn border check
-                p.setBedSpawnLocation(null);
-                p.sendMessage(Locales.SPAWN_OUTSIDE_BORDER.getString());
-            } else if(this.plugin.cupboards.checkIsLimit(l, p)){
-                //Spawn location check
-                p.setBedSpawnLocation(null);
-                p.sendMessage(Locales.SPAWN_WITHOUT_ACCESS.getString());
-            } else if(
-                    //spawn lava check
-                    Config.PP_PLAYER_REMOVE_SPAWN_WITH_LAVA.getBoolean() &&
-                    (
-                        event.getRespawnLocation().getBlock().getType() == Material.LAVA ||
-                        event.getRespawnLocation().getBlock().getType() == Material.STATIONARY_LAVA ||
-                        event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.LAVA ||
-                        event.getRespawnLocation().clone().add(0,1,0).getBlock().getType() == Material.STATIONARY_LAVA
-                    )
-            ){
-                event.getPlayer().setBedSpawnLocation(null);
-                event.getPlayer().sendMessage(Locales.BED_HAVE_LAVA.getString());
-            } else {
-                return; //重生點沒問題 直接在床重生
-            }
-            event.setRespawnLocation(l.getWorld().getSpawnLocation());
+        if(event.isBedSpawn() && isPlayerBedSave(p)){
+            return; //有床且床安全
         }
         
         //隨機重生
@@ -142,8 +146,14 @@ public class PlayerRespawnListener extends MyListener {
 	@EventHandler
     public void onPortalTeleport(PlayerTeleportEvent event){
         if(!Config.PP_PLAYER_RANDOM_SPAWN_ENABLE.getBoolean()) return;
-        if(event.getPlayer().getBedSpawnLocation() != null) return;
         if( event.getCause() == TeleportCause.END_PORTAL && event.getTo().getWorld().getEnvironment() == Environment.NORMAL ){
+            
+            //床安全性確認
+            if(event.getPlayer().getBedSpawnLocation() != null && isPlayerBedSave(event.getPlayer())){
+                return; //有床且床安全
+            }
+            
+            //隨機重生
             if(SpawnLocationManager.checkNewSpawnLocation()){
                 String msg = Locales.BED_WORLD_SPAWN_UPDATED.getString();
                 for( Player pl : plugin.getServer().getOnlinePlayers() ){
