@@ -26,8 +26,9 @@ public enum Config {
 	WP_ANTI_NETHER_DOOR_BLOCK("world-protect.nether-portal-protect.anti-nether-door-block", true, "teleport back if you cant move out portal after 15 sec"),
 	WP_ANTI_NETHER_DOOR_ENTITY_TELEPORT("world-protect.nether-portal-protect.anti-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),
 	
-	WP_TNT_NO_PISTON("world-protect.tnt-no-piston", true, "let tnt cant moved by piston"),
-	WP_RAILS_NO_PISTON("world-protect.tnt-no-piston", true, "let tnt cant moved by piston"),
+	WP_TNT_NO_PISTON("world-protect.no-piston.tnt", true, "let tnt cant moved by piston"),
+    WP_RAILS_NO_PISTON("world-protect.no-piston.rails", true, "let tnt cant moved by piston"),
+    WP_ORES_NO_PISTON("world-protect.no-piston.ores", true, "let tnt cant moved by piston"),
 	
 	WP_PIGZOMBIE_DROP_NETHER_WART("world-protect.pigzombie-drop-nether-wart.enable", true, "let pig zombie drop nether-wart in nether"),
 	WP_PIGZOMBIE_DROP_NETHER_WART_PERCENT("world-protect.pigzombie-drop-nether-wart.percent", 0.3, "0~1, this mean when drop gold nugget, how many percent will turn it to nether wart."),
@@ -62,6 +63,7 @@ public enum Config {
     COMPASS_DEVIATION("compass.deviation", 100, "point to player deviation"),
     COMPASS_UPDATE_TIME("compass.update-time", 100, "in tick"),
     
+    REMOVED_WP_TNT_NO_PISTON("world-protect.tnt-no-piston", true, "let tnt cant moved by piston"),
     REMOVED_CUPBOARD_PROTECT_CHEST("cupboard.protect_chest", false, "Removed"),
     REMOVED_WP_DISABLE_ENDER_CHEST("world-protect.disable-ender-chest", true, "removed"),
     REMOVED_WB("world-border", null, "removed"),

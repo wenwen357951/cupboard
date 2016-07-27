@@ -288,6 +288,22 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.POWERED_RAIL,
     };
     
+    private Material[] ores = {
+            Material.COAL_ORE,
+            Material.COAL_BLOCK,
+            Material.IRON_ORE,
+            Material.IRON_BLOCK,
+            Material.GOLD_ORE,
+            Material.DIAMOND_ORE,
+            Material.DIAMOND_BLOCK,
+            Material.EMERALD_ORE,
+            Material.EMERALD_BLOCK,
+            Material.LAPIS_ORE,
+            Material.LAPIS_BLOCK,
+            Material.REDSTONE_ORE,
+            Material.GLOWING_REDSTONE_ORE,
+    };
+    
     private boolean checkPiston(List<Block> blocks){
         for(Block block : blocks){
             if(block.getType().equals(Material.GOLD_BLOCK)){
@@ -297,6 +313,9 @@ public class CupboardBlockProtectListener extends MyListener {
                 return true;
             }
             if(Config.WP_RAILS_NO_PISTON.getBoolean() && Arrays.asList(rails).contains(block.getType())){
+                return true;
+            }
+            if(Config.WP_ORES_NO_PISTON.getBoolean() && Arrays.asList(ores).contains(block.getType())){
                 return true;
             }
             if(block.hasMetadata("owner_uuid")){
