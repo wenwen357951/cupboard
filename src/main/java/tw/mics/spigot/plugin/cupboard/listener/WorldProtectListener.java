@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -33,12 +34,12 @@ import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class WorldProtectListener extends MyListener {
 	private List<String> cant_flow_lava;
-	private List<String> cant_flow_liquid;
+	private List<Chunk> cant_flow_liquid;
 
 	public WorldProtectListener(Cupboard instance)
 	{
 		super(instance);
-		cant_flow_liquid = new ArrayList<String>();
+		cant_flow_liquid = new ArrayList<Chunk>();
 	    cant_flow_lava = new ArrayList<String>();
 	}
 	
@@ -220,7 +221,7 @@ public class WorldProtectListener extends MyListener {
         counter.count += 1;
         if(counter.count > 10){
             if((System.currentTimeMillis() - counter.time) < 60000){
-                cant_flow_liquid.add(Util.LocToString(b.getLocation()));
+                cant_flow_liquid.add(b.getChunk());
                 if(counter.count == 11)
                     e.getPlayer().sendMessage(Locales.WP_LIQUID_LIMIT.getString());
             } else {
@@ -235,12 +236,12 @@ public class WorldProtectListener extends MyListener {
     public void onLiquidFlow(BlockFromToEvent e){
         if(!Config.WP_ANTI_LIQUID_FAST_PUT.getBoolean())return;
         Location l = e.getBlock().getLocation();
-        if(this.cant_flow_liquid.contains(Util.LocToString(l))){
+        if(this.cant_flow_liquid.contains(l.getChunk())){
             e.setCancelled(true);
             Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable(){
                 @Override
                 public void run() {
-                    cant_flow_liquid.remove(l);
+                    cant_flow_liquid.remove(l.getChunk());
                 }
             });
         }
