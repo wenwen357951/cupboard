@@ -27,7 +27,8 @@ public enum Locales {
 	
 	//WORLD PROTECT
 	//DO_NOT_BLOCK_NETHER_DOOR("world-protect.do-not-block-nether-door", "&7Please do not block nether door."),
-	NETHER_PORTEL_TELEPORT_BACK("world-protect.nether-portel-teleport-back", "&7已將您傳送回原本位置防止卡門。"),
+	WP_NETHER_PORTEL_TELEPORT_BACK("world-protect.nether-portel-teleport-back", "&7已將您傳送回原本位置防止卡門。"),
+	WP_LIQUID_LIMIT("world-protect.liquid-limit", "&c因為使用水桶頻繁, 現在將抑制流動, 一分鐘未使用水桶就可以恢復。"),
 	
 	//WORLD BORDER
 	SPAWN_OUTSIDE_BORDER("world-border.spawn-outside-border", "&cYour bed is outside world border, you are spawn in world spawn."),

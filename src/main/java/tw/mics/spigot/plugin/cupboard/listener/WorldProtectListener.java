@@ -1,6 +1,7 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -8,13 +9,18 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -26,12 +32,14 @@ import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class WorldProtectListener extends MyListener {
+	private List<String> cant_flow_lava;
 	private List<String> cant_flow_liquid;
 
 	public WorldProtectListener(Cupboard instance)
 	{
 		super(instance);
-	    cant_flow_liquid = new ArrayList<String>();
+		cant_flow_liquid = new ArrayList<String>();
+	    cant_flow_lava = new ArrayList<String>();
 	}
 	
 	//更改地獄門搜尋半徑
@@ -65,7 +73,7 @@ public class WorldProtectListener extends MyListener {
                 public void run() {
                     if(p.getLocation().add(0,1,0).getBlock().getType() == Material.PORTAL){
                         p.teleport(l);
-                        p.sendMessage(Locales.NETHER_PORTEL_TELEPORT_BACK.getString());
+                        p.sendMessage(Locales.WP_NETHER_PORTEL_TELEPORT_BACK.getString());
                     }
                 }
     		}, 400);
@@ -90,7 +98,7 @@ public class WorldProtectListener extends MyListener {
     @EventHandler
     public void onLavaFlow(BlockFromToEvent e){
 		if(!Config.WP_NETHER_REMOVE_BLOCK.getBoolean())return;
-    	if(this.cant_flow_liquid.contains(Util.LocToString(e.getToBlock().getLocation()))){
+    	if(this.cant_flow_lava.contains(Util.LocToString(e.getToBlock().getLocation()))){
     		e.setCancelled(true);
     	}
     }
@@ -133,10 +141,10 @@ public class WorldProtectListener extends MyListener {
 			} else {
 				l.getBlock().setType(Material.AIR);
 			}
-			cant_flow_liquid.add(Util.LocToString(tmp_l));
+			cant_flow_lava.add(Util.LocToString(tmp_l));
 			this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable(){
 				public void run() {
-					cant_flow_liquid.remove(Util.LocToString(tmp_l));
+					cant_flow_lava.remove(Util.LocToString(tmp_l));
 				}
 	    	}, 100);
 			//this.plugin.log("Lava %s is clean", Util.LocToString(l));
@@ -179,5 +187,78 @@ public class WorldProtectListener extends MyListener {
     public void onEntityPortal(EntityPortalEvent e){
 		if(!Config.WP_NETHER_DOOR_PROTECT_ENABLE.getBoolean())return;
 		if(Config.WP_ANTI_NETHER_DOOR_ENTITY_TELEPORT.getBoolean())e.setCancelled(true);
+    }
+    
+    //防止玩家過快放置水流
+    //TODO clear data after time
+    private HashMap<String, LiquidCounter> player_liquid_counter = new HashMap<String, LiquidCounter>();
+    
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBucketEmpty(PlayerBucketEmptyEvent e){
+        if(!Config.WP_ANTI_LIQUID_FAST_PUT.getBoolean())return;
+        Block b = e.getBlockClicked().getLocation()
+                .add(e.getBlockFace().getModX(),e.getBlockFace().getModY(),e.getBlockFace().getModZ())
+                .getBlock();
+        onBucket(e, b);
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBucketFill(PlayerBucketFillEvent e){
+        if(!Config.WP_ANTI_LIQUID_FAST_PUT.getBoolean())return;
+        Block b = e.getBlockClicked();
+        onBucket(e, b);
+    }
+    
+    private void onBucket(PlayerBucketEvent e, Block b){
+        if(e.isCancelled()) return;
+        String puuid = e.getPlayer().getUniqueId().toString();
+        LiquidCounter counter = player_liquid_counter.get(puuid);
+        if(counter == null){
+            counter = new LiquidCounter();
+            player_liquid_counter.put(puuid, counter);
+        }
+        counter.count += 1;
+        if(counter.count > 10){
+            if((System.currentTimeMillis() - counter.time) < 60000){
+                cant_flow_liquid.add(Util.LocToString(b.getLocation()));
+                if(counter.count == 11)
+                    e.getPlayer().sendMessage(Locales.WP_LIQUID_LIMIT.getString());
+            } else {
+                counter.reset();
+            }
+        }
+        counter.update_time();
+    }
+    
+    //暫時防止液體流動
+    @EventHandler
+    public void onLiquidFlow(BlockFromToEvent e){
+        if(!Config.WP_ANTI_LIQUID_FAST_PUT.getBoolean())return;
+        Location l = e.getBlock().getLocation();
+        if(this.cant_flow_liquid.contains(Util.LocToString(l))){
+            e.setCancelled(true);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable(){
+                @Override
+                public void run() {
+                    cant_flow_liquid.remove(l);
+                }
+            });
+        }
+    }
+    
+    class LiquidCounter{
+        public int count;
+        public long time;
+        public LiquidCounter(){
+            count = 0;
+            time = System.currentTimeMillis();
+        }
+        public void reset() {
+            count = 0;
+            time = System.currentTimeMillis();
+        }
+        public void update_time(){
+            time = System.currentTimeMillis();
+        }
     }
 }
