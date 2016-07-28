@@ -220,15 +220,19 @@ public class WorldProtectListener extends MyListener {
         }
         counter.count += 1;
         if(counter.count > 10){
+            counter.update_time();
             if((System.currentTimeMillis() - counter.time) < 60000){
                 cant_flow_liquid.add(b.getChunk());
                 if(counter.count == 11)
                     e.getPlayer().sendMessage(Locales.WP_LIQUID_LIMIT.getString());
             } else {
                 counter.reset();
+                counter.count += 1;
             }
+        } else if((System.currentTimeMillis() - counter.time) > 30000){
+            counter.reset();
+            counter.count += 1;
         }
-        counter.update_time();
     }
     
     //暫時防止液體流動
@@ -243,7 +247,7 @@ public class WorldProtectListener extends MyListener {
                 public void run() {
                     cant_flow_liquid.remove(l.getChunk());
                 }
-            });
+            }, 60);
         }
     }
     
