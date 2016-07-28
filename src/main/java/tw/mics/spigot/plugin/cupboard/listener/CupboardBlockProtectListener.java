@@ -134,7 +134,7 @@ public class CupboardBlockProtectListener extends MyListener {
             }       
         }
     }
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onBucketFill(PlayerBucketFillEvent e){
         Player p = e.getPlayer();
         Block b = e.getBlockClicked();
