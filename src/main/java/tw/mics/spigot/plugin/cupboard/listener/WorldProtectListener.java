@@ -220,8 +220,8 @@ public class WorldProtectListener extends MyListener {
         }
         counter.count += 1;
         if(counter.count > 10){
-            counter.update_time();
             if((System.currentTimeMillis() - counter.time) < 60000){
+                counter.update_time();
                 cant_flow_liquid.add(b.getChunk());
                 if(counter.count == 11)
                     e.getPlayer().sendMessage(Locales.WP_LIQUID_LIMIT.getString());
