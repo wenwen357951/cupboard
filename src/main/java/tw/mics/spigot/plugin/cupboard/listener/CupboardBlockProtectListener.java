@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -112,6 +113,7 @@ public class CupboardBlockProtectListener extends MyListener {
                 e.setCancelled(true);
             } else if(
                     b.getType().equals(Material.BED_BLOCK) &&
+                    b.getWorld().getEnvironment() == Environment.NORMAL &&
                     !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p)
             ){
                 p.setBedSpawnLocation(b.getLocation());
@@ -198,6 +200,7 @@ public class CupboardBlockProtectListener extends MyListener {
             //禁止未授權玩家使用床，其他則記錄重生點
             if(    
                 b.getType() == Material.BED_BLOCK &&
+                b.getWorld().getEnvironment() == Environment.NORMAL &&
                 !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p) 
             ){
                 p.setBedSpawnLocation(b.getLocation());
