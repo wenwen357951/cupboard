@@ -21,6 +21,7 @@ public class GoldBlockListener extends MyListener {
 	{
 	    super(instance);
 	}
+	
 	//移除金磚
     @EventHandler(priority = EventPriority.MONITOR)
     public void onGoldBlockBreak(BlockBreakEvent event){
@@ -47,7 +48,7 @@ public class GoldBlockListener extends MyListener {
     	}
     }
     
-  //右鍵金磚 授權/取消授權
+    //右鍵金磚 授權/取消授權
     @EventHandler
     public void onRightClick(PlayerInteractEvent event){
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;                    		// off hand packet, ignore.

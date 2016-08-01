@@ -72,7 +72,7 @@ public class CupboardsData {
 	public boolean putCupboard(Block b, Player p){
     	Location pubBlockLocation = b.getLocation();
     	String pubBlockLocation_str = Util.LocToString(pubBlockLocation);
-    	if(this.checkCupboardLimit(b))return false;
+    	if(this.checkCupboardLimit(b, p))return false;
     	List<String> AccessAbleUserUUIDList = new ArrayList<String>();
     	AccessAbleUserUUIDList.add(p.getUniqueId().toString());
     	cupboards.put(pubBlockLocation_str, AccessAbleUserUUIDList);
@@ -151,16 +151,27 @@ public class CupboardsData {
 		}
 		return activeCups;
 	}
-	public boolean checkCupboardLimit(Block b){
+	public boolean checkCupboardLimit(Block b, Player p){
 		List<Block> cups = this.findActiveCupboards(b.getLocation(), CUPBOARD_DIST);
+        HashSet <String> accessAbleUserUUIDList = new HashSet<String>();
+        boolean first = true;
 		for( Block cup : cups ){
 			if(cup.getType() != Material.GOLD_BLOCK){
 				cupboards.put(Util.LocToString(cup.getLocation()), null);
 				continue; //此方塊不是黃金磚則刪除後換下一個
 			}
-			return true;
+            if(first){
+                accessAbleUserUUIDList.addAll(cupboards.get(Util.LocToString(cup.getLocation())));
+                first = false;
+			} else {
+			    accessAbleUserUUIDList.retainAll(cupboards.get(Util.LocToString(cup.getLocation())));
+			}
 		}
-		return false;
+		if(cups.isEmpty()) return false;
+		if(accessAbleUserUUIDList.contains(p.getUniqueId().toString())){
+		    return false;
+		}
+        return true;
 	}
 	public boolean checkIsLimit(Block b){
 		return checkIsLimit(b.getLocation(), null);
@@ -200,6 +211,7 @@ public class CupboardsData {
 	//算出這格有誰保護~~~
 	private void calcLocationLimit(Location l){
 		String str_l = Util.LocToString(l);
+		Boolean first = true;
 		List<Block> cups = this.findActiveCupboards(l, PROTECT_DIST);
 		HashSet <String> accessAbleUserUUIDList = new HashSet<String>();
 		if(cups.isEmpty()){
@@ -210,7 +222,12 @@ public class CupboardsData {
 					cupboards.remove(Util.LocToString(cup.getLocation())); //此方塊不是黃金磚則刪除後換下一個
 					continue;
 				}
-				accessAbleUserUUIDList.addAll(cupboards.get(Util.LocToString(cup.getLocation())));
+	            if(first){
+	                accessAbleUserUUIDList.addAll(cupboards.get(Util.LocToString(cup.getLocation())));
+	                first = false;
+	            } else {
+	                accessAbleUserUUIDList.retainAll(cupboards.get(Util.LocToString(cup.getLocation())));
+	            }
 			}
 			location_limit_check_temp.put(str_l, accessAbleUserUUIDList);
 		}
