@@ -176,6 +176,7 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.REDSTONE,
             Material.BED_BLOCK,
             Material.ENDER_CHEST,
+            Material.ANVIL,
     };
     
     @EventHandler
