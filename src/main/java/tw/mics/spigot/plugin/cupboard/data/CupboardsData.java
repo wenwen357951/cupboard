@@ -196,27 +196,6 @@ public class CupboardsData {
         if(location_limit_check_temp.get(str_l).contains(uuid)) return false;
         return true;
     }
-	/*
-	public boolean checkIsLimitOffline(Block b, Player p){
-		Location l = b.getLocation();
-		boolean perm_flag = false;			//anyone has perm?
-		boolean online_flag = false;		//anyone online?
-		if(!location_limit_check_temp.containsKey(l)){
-			this.calcLocationLimit(l);
-		}
-		String str_l = Util.LocToString(l);
-		if(location_limit_check_temp.get(str_l) == null) return false; //沒限制幹嘛查
-		if(p != null && location_limit_check_temp.get(str_l).contains(p.getUniqueId().toString())) return false; //看看是不是有權限的玩家開啟的
-		for(String auth_player_uuid_str: location_limit_check_temp.get(str_l)){
-			OfflinePlayer auth_player = this.plugin.getServer().getOfflinePlayer(UUID.fromString(auth_player_uuid_str));
-			if(auth_player.isOnline())online_flag = true;
-			//if(this.plugin.perms.playerHas(null, auth_player, "cupboard.vip"))perm_flag = true;
-		}
-		if(online_flag) return false;
-		if(perm_flag) return true;
-		return false;
-	}
-	*/
 	
 	//算出這格有誰保護~~~
 	private void calcLocationLimit(Location l){
@@ -239,17 +218,5 @@ public class CupboardsData {
 	
 	public void cleanTempCheck(){
 		this.location_limit_check_temp.clear();
-	}
-
-	public boolean checkIsLimit_old(Block b){
-		List<Block> cups = this.findActiveCupboards(b.getLocation(), PROTECT_DIST);
-		for( Block cup : cups ){
-			if(cup.getType() != Material.GOLD_BLOCK){
-				cupboards.put(Util.LocToString(cup.getLocation()), null);
-				continue; //此方塊不是黃金磚則刪除後換下一個
-			}
-			return true;
-		}
-		return false;
 	}
 }
