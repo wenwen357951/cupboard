@@ -98,10 +98,33 @@ public class WorldProtectListener extends MyListener {
 	//暫時防止岩漿流動
     @EventHandler
     public void onLavaFlow(BlockFromToEvent e){
-		if(!Config.WP_NETHER_REMOVE_BLOCK.getBoolean())return;
-    	if(this.cant_flow_lava.contains(Util.LocToString(e.getToBlock().getLocation()))){
-    		e.setCancelled(true);
-    	}
+        if(!(
+                e.getBlock().getType() == Material.STATIONARY_LAVA ||
+                e.getBlock().getType() == Material.LAVA
+        )) return;
+        
+        final int lava_high_limit = Config.WP_LAVA_FLOW_HIGH_LIMIT.getInt();
+        
+        if(lava_high_limit != -1){
+            boolean flag_deny = true;
+            Location l = e.getToBlock().getLocation();
+            for(int i = 0; i < lava_high_limit; i++){
+                l.add(0, -1, 0);
+                if(l.getBlock().getType().isSolid()){
+                    flag_deny = false;
+                    break;
+                }
+            }
+            if(flag_deny){
+                e.setCancelled(true);
+            }
+        }
+        
+        if(Config.WP_NETHER_REMOVE_BLOCK.getBoolean()){
+		    if(this.cant_flow_lava.contains(Util.LocToString(e.getToBlock().getLocation()))){
+		        e.setCancelled(true);
+		    }
+		}
     }
 	
 	private void aroundLavaCleaner(Location location, int count, boolean place_floor){

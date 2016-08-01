@@ -26,6 +26,7 @@ public enum Config {
 	WP_ANTI_NETHER_DOOR_BLOCK("world-protect.nether-portal-protect.anti-nether-door-block", true, "teleport back if you cant move out portal after 15 sec"),
 	WP_ANTI_NETHER_DOOR_ENTITY_TELEPORT("world-protect.nether-portal-protect.anti-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),
 	WP_ANTI_LIQUID_FAST_PUT("world-protect.antilag.liquid-limit", true, "limit water put (too fast will block water flow)"),
+	WP_LAVA_FLOW_HIGH_LIMIT("world-protect.lava-flow-limit", 2, "-1 to disable, 0 to limit all lava flow"),
 	
 	WP_TNT_NO_PISTON("world-protect.no-piston.tnt", true, "let tnt cant moved by piston"),
     WP_RAILS_NO_PISTON("world-protect.no-piston.rails", true, "let tnt cant moved by piston"),
