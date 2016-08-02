@@ -88,7 +88,7 @@ public class PlayerRespawnListener extends MyListener {
             p.sendMessage(Locales.BED_HAVE_LAVA.getString());
             return false;
         } else {
-            return true; //重生點沒問題 直接在床重生
+            return true; //床附近沒問題
         }
     }
     
@@ -104,13 +104,13 @@ public class PlayerRespawnListener extends MyListener {
             saveinv.remove(p.getUniqueId().toString());
         }
         
+        //套用保護
+        SpawnLocationManager.applyPlayerProtect(p);
+        
         //床復活岩漿確認
         if(event.isBedSpawn() && isPlayerBedSave(p)){
             return; //有床且床安全
         }
-        
-        //套用保護
-        SpawnLocationManager.applyPlayerProtect(p);
         
         //隨機重生
         if(Config.PP_PLAYER_RANDOM_SPAWN_ENABLE.getBoolean()){
@@ -128,14 +128,14 @@ public class PlayerRespawnListener extends MyListener {
     public void onPortalTeleport(PlayerTeleportEvent event){
         if(!Config.PP_PLAYER_RANDOM_SPAWN_ENABLE.getBoolean()) return;
         if( event.getCause() == TeleportCause.END_PORTAL && event.getTo().getWorld().getEnvironment() == Environment.NORMAL ){
+
+            //套用保護
+            SpawnLocationManager.applyPlayerProtect(event.getPlayer());
             
             //床安全性確認
             if(event.getPlayer().getBedSpawnLocation() != null && isPlayerBedSave(event.getPlayer())){
                 return; //有床且床安全
             }
-            
-            //套用保護
-            SpawnLocationManager.applyPlayerProtect(event.getPlayer());
             
             //隨機重生
             if(SpawnLocationManager.useNewSpawn()){

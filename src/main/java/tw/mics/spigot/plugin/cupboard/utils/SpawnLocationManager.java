@@ -106,7 +106,7 @@ public class SpawnLocationManager {
             center_x = wb.getCenter().getX();
             center_z = wb.getCenter().getZ();
             id = Cupboard.getInstance().getServer().getScheduler().scheduleSyncRepeatingTask(Cupboard.getInstance(),
-                    this, 0, 0);
+                    this, 1, 1);
         }
         
         boolean findNext(){
