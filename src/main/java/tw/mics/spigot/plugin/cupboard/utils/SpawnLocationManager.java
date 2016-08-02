@@ -3,6 +3,7 @@ package tw.mics.spigot.plugin.cupboard.utils;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -22,12 +23,17 @@ public class SpawnLocationManager {
     
     public static void applyPlayerProtect(Player p){
         if(Config.PP_PLAYER_SPAWN_PROTECT.getBoolean()){
-            p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 3));
-            p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 600, 3));
-            p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 600, 3));
-            p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 0));
-            p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 600, 3));
-            p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1));
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Cupboard.getInstance(), new Runnable(){
+                @Override
+                public void run() {
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 3));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 600, 3));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 600, 3));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 0));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 600, 3));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1));
+                }
+            });
         }
     }
     
