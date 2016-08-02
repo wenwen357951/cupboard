@@ -19,8 +19,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
@@ -97,21 +95,6 @@ public class PlayerRespawnListener extends MyListener {
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event){
 		Player p = event.getPlayer();
-
-        //重生保護
-        if(Config.PP_PLAYER_SPAWN_PROTECT.getBoolean()){
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-                @Override
-                public void run() {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 3));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 600, 3));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 600, 3));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 0));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 600, 3));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1));
-                }
-            });
-        }
         
         //物品恢復
         if(saveinv.containsKey(p.getUniqueId().toString())){
@@ -126,19 +109,17 @@ public class PlayerRespawnListener extends MyListener {
             return; //有床且床安全
         }
         
+        //套用保護
+        SpawnLocationManager.applyPlayerProtect(p);
+        
         //隨機重生
         if(Config.PP_PLAYER_RANDOM_SPAWN_ENABLE.getBoolean()){
-            if(SpawnLocationManager.checkNewSpawnLocation()){
-                String msg = Locales.BED_WORLD_SPAWN_UPDATED.getString();
-                event.getPlayer().sendMessage(msg);
-                for( Player pl : plugin.getServer().getOnlinePlayers() ){
-                    if(pl.getBedSpawnLocation() == null)
-                        pl.sendMessage(msg);
-                }
+            if(SpawnLocationManager.useNewSpawn()){
+                SpawnLocationManager.teleportPlayerToNewSpawn(event.getPlayer());
             } else {
-                event.getPlayer().sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
+                p.sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
+                event.setRespawnLocation(SpawnLocationManager.getSpawnLocation());
             }
-            event.setRespawnLocation(SpawnLocationManager.getSpawnLocation());
         }
 	}
 	
@@ -153,22 +134,22 @@ public class PlayerRespawnListener extends MyListener {
                 return; //有床且床安全
             }
             
+            //套用保護
+            SpawnLocationManager.applyPlayerProtect(event.getPlayer());
+            
             //隨機重生
-            if(SpawnLocationManager.checkNewSpawnLocation()){
-                String msg = Locales.BED_WORLD_SPAWN_UPDATED.getString();
-                for( Player pl : plugin.getServer().getOnlinePlayers() ){
-                    if(pl.getBedSpawnLocation() == null)
-                        pl.sendMessage(msg);
-                }
+            if(SpawnLocationManager.useNewSpawn()){
+                SpawnLocationManager.teleportPlayerToNewSpawn(event.getPlayer());
             } else {
-                event.getPlayer().sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
+                event.setTo(SpawnLocationManager.getSpawnLocation());
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                    @Override
+                    public void run() {
+                        event.getPlayer().sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
+                        event.getPlayer().teleport(SpawnLocationManager.getSpawnLocation());
+                    }
+                });
             }
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-                @Override
-                public void run() {
-                    event.getPlayer().teleport(SpawnLocationManager.getSpawnLocation());
-                }
-            });
         }
     }
 }
