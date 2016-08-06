@@ -213,6 +213,7 @@ public class CupboardBlockProtectListener extends MyListener {
             }
         } else if(event.getAction() == Action.PHYSICAL){
             if(data.checkIsLimit(b, p)){
+                if(b.getType() == Material.TRIPWIRE || b.getType() == Material.TRIPWIRE_HOOK) return;
                 if(this.plugin.isOP(p, false)) return;
                 event.setCancelled(true);
                 return;
@@ -226,6 +227,8 @@ public class CupboardBlockProtectListener extends MyListener {
         Block b = event.getBlock();
         Entity e = event.getEntity();
         Player p = null;
+        
+        if(b.getType() == Material.TRIPWIRE || b.getType() == Material.TRIPWIRE_HOOK) return;
         
         //Maybe can add others
         if(e.getPassenger() instanceof Player){
