@@ -56,6 +56,10 @@ public class Cupboard extends JavaPlugin implements Listener {
         cupboards = new CupboardsData(getDataFolder(),this);
         this.logDebug("Loaded Cupboards data!");
 
+        this.logDebug("Cleaning Cupboards data!");
+        int remove_count = cupboards.cleanNotExistCupboard();
+        this.log("Cleaned %d not exist cupboards!", remove_count);
+
         this.getCommand("kill").setExecutor(new KillCommand(this));
         this.getCommand("cupboardreload").setExecutor(new ReloadCommand(this));
         this.getCommand("airdrop").setExecutor(new AirdropCommand(this));

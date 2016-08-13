@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -236,4 +237,17 @@ public class CupboardsData {
 	public void cleanTempCheck(){
 		this.location_limit_check_temp.clear();
 	}
+
+    public int cleanNotExistCupboard() {
+        int remove_count = 0;
+        Iterator<String> itr = cupboards.keySet().iterator();
+        while(itr.hasNext()){
+            if(Util.StringToLoc(itr.next()).getBlock().getType() != Material.GOLD_BLOCK){
+                itr.remove();
+                remove_count++;
+            }
+        }
+        if(remove_count > 0) this.save();
+        return remove_count;
+    }
 }

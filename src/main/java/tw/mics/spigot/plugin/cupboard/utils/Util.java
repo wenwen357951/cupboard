@@ -1,7 +1,9 @@
 package tw.mics.spigot.plugin.cupboard.utils;
 
 import java.util.Random;
+import java.util.StringTokenizer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -18,6 +20,16 @@ public class Util {
 				l.getBlockY(),
 				l.getBlockZ());
 		return str;
+	}
+	
+	public static Location StringToLoc(String str){
+	    StringTokenizer st = new StringTokenizer(str, ",");
+        World world = Bukkit.getWorld((st.nextToken()));
+        int x = Integer.parseInt(st.nextToken());
+        int y = Integer.parseInt(st.nextToken());
+        int z = Integer.parseInt(st.nextToken());
+        Location loc = new Location(world,x,y,z);
+        return loc;
 	}
 	
 	public static String replaceColors(String message) {
