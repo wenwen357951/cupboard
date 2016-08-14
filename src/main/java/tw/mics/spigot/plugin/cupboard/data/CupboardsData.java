@@ -263,6 +263,9 @@ public class CupboardsData {
     }
 
     public int cleanNotExistCupboard() {
+        //TODO clear not exist player data.
+        //TODO clear empty gold block.
+        
         List<Integer> remove_cid_list = new ArrayList<Integer>();
         try {
             Statement stmt = db_conn.createStatement();
