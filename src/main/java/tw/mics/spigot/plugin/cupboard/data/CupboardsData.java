@@ -198,7 +198,6 @@ public class CupboardsData {
 	
 	public boolean checkIsLimit(Block b, Player p){
 		return !checkAccess(b, p);
-		
 	}
 	
     public boolean checkIsLimit(Location l, Player p){
