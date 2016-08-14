@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -60,7 +61,7 @@ public class CupboardsData {
           stmt.close();
           db_conn.setAutoCommit(false);
           
-        } catch ( Exception e ) {
+        } catch ( SQLException | ClassNotFoundException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -94,7 +95,7 @@ public class CupboardsData {
             pstmt.close();
             
             db_conn.commit();
-        } catch ( Exception e ) {
+        } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -121,7 +122,7 @@ public class CupboardsData {
             }
             rs.close();
             db_conn.commit();
-        } catch ( Exception e ) {
+        } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -131,36 +132,60 @@ public class CupboardsData {
     }
     
 	public Boolean toggleBoardAccess(Player p, Block b){
-        Boolean flag = null;
+        Boolean access_flag = null;
+        Boolean return_flag = null;
 	    try {
+	        
+	        //確認是否有該金磚權限
             Statement stmt = db_conn.createStatement();
             String sql = String.format( 
                     "SELECT CUPBOARDS.CID, PLAYER_OWN_CUPBOARDS.UUID FROM CUPBOARDS "
                     + "LEFT JOIN PLAYER_OWN_CUPBOARDS "
-                    + "ON CUPBOARDS.CID = PLAYER_OWN_CUPBOARDS.CID"
-                    + "WHERE LOC=%s"
-                    , p.getUniqueId().toString()
+                    + "ON CUPBOARDS.CID = PLAYER_OWN_CUPBOARDS.CID "
+                    + "WHERE LOC=\"%s\""
                     , Util.LocToString(b.getLocation())
             );
             ResultSet rs = stmt.executeQuery(sql);
+            Integer cid = null;
             if(rs.next()){
-                int cid = rs.getInt(1);
+                access_flag = false;
+                cid = rs.getInt(1);
                 do{
                     String uuid = rs.getString(2);
-                    if(uuid.equals(p.getUniqueId().toString())){
-                        flag = false;
+                    if(uuid != null && uuid.equals(p.getUniqueId().toString())){
+                        access_flag = true;
+                        break;
                     }
                 }while(rs.next());
-                flag = true;
             }
-            rs.close();
+            
+
+            //執行切換動作
+            if(access_flag != null){
+                if(access_flag){
+                    sql = String.format("DELETE FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\" AND CID=%d;", 
+                            p.getUniqueId().toString(), cid);
+                    stmt.execute(sql);
+                    return_flag = false;
+                } else {
+                    sql = String.format("INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) " +
+                            "VALUES (\"%s\", %d);", 
+                            p.getUniqueId().toString(), cid);
+                    stmt.execute(sql);
+                    return_flag = true;
+                }
+            }
+
             db_conn.commit();
-        } catch ( Exception e ) {
+            stmt.close();
+            rs.close();
+        } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            if(Config.DEBUG.getBoolean())e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         } 
-	    return flag;
+        return return_flag;
 	}
 	
 	public boolean checkIsLimit(Block b){
@@ -196,7 +221,7 @@ public class CupboardsData {
     public void close() {
         try {
             db_conn.close();
-        } catch ( Exception e ) {
+        } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -237,14 +262,14 @@ public class CupboardsData {
         if(rs.next()){
             flag_access = false;
             do{
-                if(rs.getString(2).equals(uuid)){
+                if(rs.getString(2) != null && rs.getString(2).equals(uuid)){
                     flag_access = true;
                 }
             }while(rs.next());
         }
         rs.close();
         stmt.close();
-        } catch ( Exception e ) {
+        } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
