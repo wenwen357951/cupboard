@@ -94,10 +94,16 @@ public class Cupboard extends JavaPlugin implements Listener {
 	}
 	
 	public void reload(){
-		this.logDebug("");
-		this.logDebug("============================================");
-		this.logDebug("Unregister Object");
-		this.logDebug("============================================");
+        this.logDebug("");
+        this.logDebug("============================================");
+        this.logDebug("Disconnect Database");
+        this.logDebug("============================================");
+        this.logDebug("");
+        cupboards.close();
+        
+        this.logDebug("============================================");
+        this.logDebug("Unregister Object");
+        this.logDebug("============================================");
 		for(Object l : registedObject){
 			if(l instanceof MyListener){
 				((MyListener)l).unregisterListener();

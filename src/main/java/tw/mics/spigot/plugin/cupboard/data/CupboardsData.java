@@ -4,7 +4,9 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
@@ -48,7 +50,7 @@ public class CupboardsData {
           stmt.executeUpdate(sql);
 
           sql = "CREATE TABLE IF NOT EXISTS PLAYER_OWN_CUPBOARDS " +
-                  "(UUID TEXT PRIMARY KEY NOT NULL," +
+                  "(UUID TEXT NOT NULL," +
                   " CID  INTEGER NOT NULL)";
           stmt.executeUpdate(sql);
           
@@ -67,28 +69,29 @@ public class CupboardsData {
 	}
 
 	public boolean putCupboard(Block b, Player p){
+	    if(!checkAccess(b, p, CUPBOARD_DIST)) return false;
         try {
-            
             //insert cupboard
             String sql = "INSERT INTO CUPBOARDS (WORLD, X, Y, Z, LOC) " +
                     "VALUES (?,?,?,?,?);"; 
-            PreparedStatement stmt = db_conn.prepareStatement(sql);
-            stmt.setString(1, b.getWorld().getName());
-            stmt.setInt(2,b.getX());
-            stmt.setInt(3,b.getY());
-            stmt.setInt(4,b.getZ());
-            stmt.setString(5, Util.LocToString(b.getLocation()));
-            stmt.execute();
+            PreparedStatement pstmt = db_conn.prepareStatement(sql);
+            pstmt.setString(1, b.getWorld().getName());
+            pstmt.setInt(2,b.getX());
+            pstmt.setInt(3,b.getY());
+            pstmt.setInt(4,b.getZ());
+            pstmt.setString(5, Util.LocToString(b.getLocation()));
+            pstmt.execute();
             
-            int cid = stmt.getGeneratedKeys().getInt(1);
-            stmt.close();
+            int cid = pstmt.getGeneratedKeys().getInt(1);
+            pstmt.close();
 
             sql = "INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) " +
                     "VALUES (?,?);";
-            stmt = db_conn.prepareStatement(sql);
-            stmt.setString(1, p.getUniqueId().toString());
-            stmt.setInt(2, cid);
-            stmt.execute();
+            pstmt = db_conn.prepareStatement(sql);
+            pstmt.setString(1, p.getUniqueId().toString());
+            pstmt.setInt(2, cid);
+            pstmt.execute();
+            pstmt.close();
             
             db_conn.commit();
         } catch ( Exception e ) {
@@ -100,20 +103,64 @@ public class CupboardsData {
     }
 	
     public boolean removeCupboard(Block b){
-        //TODO check exist if yes remove and return true
-        // if no, return false
-        return false;
-    }
-    public boolean checkCupboardExist(Block b){
-        //TODO check exist if yes return true
-        // if no, return false
-        return false;
+        boolean flag = false;
+        
+        try {
+            Statement stmt = db_conn.createStatement();
+            String sql = String.format("SELECT CUPBOARDS.CID FROM CUPBOARDS WHERE LOC = \"%s\"", Util.LocToString(b.getLocation()));
+            ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                int cid = rs.getInt(1);
+                sql = String.format("DELETE FROM CUPBOARDS WHERE CID = %d;", cid);
+                stmt.execute(sql);
+                sql = String.format("DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID = %d;", cid);
+                stmt.execute(sql);
+                flag = true;
+            } else {
+                flag = false;
+            }
+            rs.close();
+            db_conn.commit();
+        } catch ( Exception e ) {
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        } 
+        
+        return flag;
     }
     
-	public boolean toggleBoardAccess(Player p, Block b){
-        //TODO toggle cupboard access, if grant access, return true
-	    // else return false
-	    return false;
+	public Boolean toggleBoardAccess(Player p, Block b){
+        Boolean flag = null;
+	    try {
+            Statement stmt = db_conn.createStatement();
+            String sql = String.format( 
+                    "SELECT CUPBOARDS.CID, PLAYER_OWN_CUPBOARDS.UUID FROM CUPBOARDS "
+                    + "LEFT JOIN PLAYER_OWN_CUPBOARDS "
+                    + "ON CUPBOARDS.CID = PLAYER_OWN_CUPBOARDS.CID"
+                    + "WHERE LOC=%s"
+                    , p.getUniqueId().toString()
+                    , Util.LocToString(b.getLocation())
+            );
+            ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                int cid = rs.getInt(1);
+                do{
+                    String uuid = rs.getString(2);
+                    if(uuid.equals(p.getUniqueId().toString())){
+                        flag = false;
+                    }
+                }while(rs.next());
+                flag = true;
+            }
+            rs.close();
+            db_conn.commit();
+        } catch ( Exception e ) {
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        } 
+	    return flag;
 	}
 	
 	public boolean checkIsLimit(Block b){
@@ -144,5 +191,67 @@ public class CupboardsData {
     public int cleanNotExistCupboard() {
         int remove_count = 0;
         return remove_count;
+    }
+    
+    public void close() {
+        try {
+            db_conn.close();
+        } catch ( Exception e ) {
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean checkAccess(Block b, Player p){
+        return checkAccess(b.getWorld().getName(), b.getX(), b.getY(), b.getZ(), p.getUniqueId().toString(), PROTECT_DIST);
+    }
+    
+    private boolean checkAccess(Block b, Player p, int radius){
+        return checkAccess(b.getWorld().getName(), b.getX(), b.getY(), b.getZ(), p.getUniqueId().toString(), radius);
+    }
+    
+    @SuppressWarnings("unused")
+    private boolean checkAccess(Location l, Player p){
+        return checkAccess(l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ(), p.getUniqueId().toString(), PROTECT_DIST);
+    }
+    
+    private boolean checkAccess(String world, int x, int y, int z, String uuid,int radius){
+        boolean flag_access = true;
+        try {
+        Statement stmt = db_conn.createStatement();
+        String sql = "SELECT CUPBOARDS.CID, PLAYER_OWN_CUPBOARDS.UUID FROM CUPBOARDS "
+                + "LEFT JOIN PLAYER_OWN_CUPBOARDS "
+                + "ON CUPBOARDS.CID = PLAYER_OWN_CUPBOARDS.CID "
+                + String.format(
+                        "WHERE X <= %d AND X >= %d "
+                      + "AND Y <= %d AND Y >= %d "
+                      + "AND Z <= %d AND Z >= %d "
+                      + "AND WORLD = \"%s\""
+                      , x + radius, x - radius
+                      , y + radius, y - radius
+                      , z + radius, z - radius
+                      , world);
+        ResultSet rs = stmt.executeQuery(sql);
+        if(rs.next()){
+            flag_access = false;
+            do{
+                if(rs.getString(2).equals(uuid)){
+                    flag_access = true;
+                }
+            }while(rs.next());
+        }
+        rs.close();
+        stmt.close();
+        } catch ( Exception e ) {
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
+            flag_access = false;
+        }
+        if(flag_access) return true;
+        return false;
     }
 }

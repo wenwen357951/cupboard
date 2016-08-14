@@ -28,8 +28,9 @@ public class GoldBlockListener extends MyListener {
     	if(event.isCancelled())return;
     	if(event.getBlock().getType() == Material.GOLD_BLOCK){
     		Player p = event.getPlayer();
-    		plugin.cupboards.removeCupboard(event.getBlock());
-    		Util.msgToPlayer(p, Locales.GOLD_REMOVE.getString());
+    		if(plugin.cupboards.removeCupboard(event.getBlock())){
+    		    Util.msgToPlayer(p, Locales.GOLD_REMOVE.getString());
+    		}
     	}
     }
     
@@ -91,9 +92,10 @@ public class GoldBlockListener extends MyListener {
 			return;
 		}
 		String str;
-		if(!plugin.cupboards.checkCupboardExist(event.getClickedBlock())){
+        Boolean flag = plugin.cupboards.toggleBoardAccess(p, event.getClickedBlock());
+		if(flag == null){
 			str=Locales.GOLD_DATA_NOT_FOUND.getString();
-		} else if(plugin.cupboards.toggleBoardAccess(p, event.getClickedBlock())){
+		} else if(flag){
 			str=Locales.GOLD_GRANT_ACCESS.getString();
 		} else {
 			str=Locales.GOLD_REVOKE_ACCESS.getString();
