@@ -115,7 +115,7 @@ public class CupboardEntityProtectListener extends MyListener {
     //防止Hanging類物品被未授權玩家移除
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent e) {
-		Location bl = e.getEntity().getLocation().getBlock().getLocation();
+		Location bl = e.getEntity().getLocation();
     	if (e.getRemover() instanceof Player){
     		Player p = (Player) e.getRemover();
     		if(this.plugin.cupboards.checkIsLimit(bl, p)){
@@ -149,7 +149,7 @@ public class CupboardEntityProtectListener extends MyListener {
     	if (e.getEntity().getType() != EntityType.ARMOR_STAND) return;
     	if (e.getDamager() instanceof Player){
     		Player p = (Player) e.getDamager();
-        	if (this.plugin.cupboards.checkIsLimit(e.getEntity().getLocation().getBlock(), p)){
+        	if (this.plugin.cupboards.checkIsLimit(e.getEntity().getLocation(), p)){
         		if(this.plugin.isOP(p))return;
         		e.setCancelled(true);
         	}
