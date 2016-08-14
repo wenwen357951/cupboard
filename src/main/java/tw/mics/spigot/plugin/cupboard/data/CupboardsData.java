@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -67,7 +69,7 @@ public class CupboardsData {
                   " X       INTEGER  NOT NULL," +
                   " Y       INTEGER  NOT NULL," +
                   " Z       INTEGER  NOT NULL," +
-                  " LOC     TEXT     NOT NULL)";
+                  " LOC     TEXT     UNIQUE NOT NULL)";
           stmt.executeUpdate(sql);
 
           sql = "CREATE TABLE IF NOT EXISTS PLAYER_OWN_CUPBOARDS " +
@@ -261,9 +263,38 @@ public class CupboardsData {
     }
 
     public int cleanNotExistCupboard() {
-        //TODO
-        int remove_count = 0;
-        return remove_count;
+        List<Integer> remove_cid_list = new ArrayList<Integer>();
+        try {
+            Statement stmt = db_conn.createStatement();
+            String sql = "SELECT CID, LOC FROM CUPBOARDS;";
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                if(Util.StringToLoc(rs.getString(2)).getBlock().getType() != Material.GOLD_BLOCK){
+                    remove_cid_list.add(rs.getInt(1));
+                }
+            }
+            stmt.close();
+            
+            String sql_remove_cupboards = "DELETE FROM CUPBOARDS WHERE CID = ?";
+            String sql_remove_player_owner = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID = ?";
+            PreparedStatement pstmt_cupboards = db_conn.prepareStatement(sql_remove_cupboards);
+            PreparedStatement pstmt_player_owner = db_conn.prepareStatement(sql_remove_player_owner);
+            for(Integer cid : remove_cid_list){
+                pstmt_cupboards.setInt(1, cid);
+                pstmt_player_owner.setInt(1, cid);
+                pstmt_cupboards.addBatch();
+                pstmt_player_owner.addBatch();
+            }
+            pstmt_cupboards.executeBatch();
+            pstmt_player_owner.executeBatch();
+            pstmt_cupboards.close();
+            pstmt_player_owner.close();
+            
+            db_conn.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return remove_cid_list.size();
     }
     
     public void close() {
