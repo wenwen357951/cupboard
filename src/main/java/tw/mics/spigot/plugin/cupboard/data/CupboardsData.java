@@ -259,32 +259,24 @@ public class CupboardsData {
     private boolean checkAccess(String world, int x, int y, int z, String uuid,int radius){
         boolean flag_access = true;
         try {
-        Statement stmt = db_conn.createStatement();
-        String sql = "SELECT CUPBOARDS.CID, PLAYER_OWN_CUPBOARDS.UUID FROM CUPBOARDS "
-                + "LEFT JOIN PLAYER_OWN_CUPBOARDS "
-                + "ON CUPBOARDS.CID = PLAYER_OWN_CUPBOARDS.CID "
-                + String.format(
-                        "WHERE X <= %d AND X >= %d "
-                      + "AND Y <= %d AND Y >= %d "
-                      + "AND Z <= %d AND Z >= %d "
-                      + "AND WORLD = \"%s\""
-                      , x + radius, x - radius
-                      , y + radius, y - radius
-                      , z + radius, z - radius
-                      , world);
-        ResultSet rs = stmt.executeQuery(sql);
-        if(rs.next()){
-            flag_access = false;
-            if(uuid != null){ //有玩家id才確認權限
-                do{
-                    if(rs.getString(2) != null && rs.getString(2).equals(uuid)){
-                        flag_access = true;
-                    }
-                }while(rs.next());
+            Statement stmt = db_conn.createStatement();
+            String sql = "SELECT CUPBOARDS.CID FROM CUPBOARDS "
+                    + String.format(
+                            "WHERE X <= %d AND X >= %d "
+                          + "AND Y <= %d AND Y >= %d "
+                          + "AND Z <= %d AND Z >= %d "
+                          + "AND WORLD = \"%s\" "
+                          , x + radius, x - radius
+                          , y + radius, y - radius
+                          , z + radius, z - radius
+                          , world);
+            if(uuid != null) sql += String.format("AND CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
+            ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                flag_access = false;
             }
-        }
-        rs.close();
-        stmt.close();
+            rs.close();
+            stmt.close();
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
