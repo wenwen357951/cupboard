@@ -10,7 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -34,10 +36,20 @@ public class CupboardsData {
     
 	final int maxEntries = 10000;
 	
+	private Map<String, Boolean> check_access_cache;
+	
 	private Cupboard plugin;
 	public CupboardsData(File dataFolder, Cupboard p){
 		this.plugin = p;
 		dbfile = new File(dataFolder, "database.db");
+		check_access_cache = new LinkedHashMap<String, Boolean>(maxEntries*10/7, 0.7f, true) {
+            private static final long serialVersionUID = 1L;
+            
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<String, Boolean> eldest) {
+                return size() > maxEntries;
+            }
+        };
         this.initDatabase();
         this.convertOldData(dataFolder);
     }
@@ -134,6 +146,8 @@ public class CupboardsData {
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
+        
+        check_access_cache.clear();
     	return true;
     }
 	
@@ -161,7 +175,7 @@ public class CupboardsData {
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         } 
-        
+        check_access_cache.clear();
         return flag;
     }
     
@@ -218,6 +232,7 @@ public class CupboardsData {
             if(Config.DEBUG.getBoolean())e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         } 
+	    check_access_cache.clear();
         return return_flag;
 	}
 	
@@ -291,31 +306,37 @@ public class CupboardsData {
     
     private boolean checkAccess(String world, int x, int y, int z, String uuid,int radius){
         boolean flag_access = true;
-        try {
-            Statement stmt = db_conn.createStatement();
-            String sql = "SELECT CUPBOARDS.CID FROM CUPBOARDS "
-                    + String.format(
-                            "WHERE X <= %d AND X >= %d "
-                          + "AND Y <= %d AND Y >= %d "
-                          + "AND Z <= %d AND Z >= %d "
-                          + "AND WORLD = \"%s\" "
-                          , x + radius, x - radius
-                          , y + radius, y - radius
-                          , z + radius, z - radius
-                          , world);
-            if(uuid != null) sql += String.format("AND CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
-            ResultSet rs = stmt.executeQuery(sql);
-            if(rs.next()){
+        String cache_key = String.format("%s,%d,%d,%d,%s,%d",world,x,y,z,uuid,radius);
+        if(check_access_cache.containsKey(cache_key)){
+            flag_access = check_access_cache.get(cache_key);
+        } else {
+            try {
+                Statement stmt = db_conn.createStatement();
+                String sql = "SELECT CUPBOARDS.CID FROM CUPBOARDS "
+                        + String.format(
+                                "WHERE X <= %d AND X >= %d "
+                              + "AND Y <= %d AND Y >= %d "
+                              + "AND Z <= %d AND Z >= %d "
+                              + "AND WORLD = \"%s\" "
+                              , x + radius, x - radius
+                              , y + radius, y - radius
+                              , z + radius, z - radius
+                              , world);
+                if(uuid != null) sql += String.format("AND CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
+                ResultSet rs = stmt.executeQuery(sql);
+                if(rs.next()){
+                    flag_access = false;
+                }
+                rs.close();
+                stmt.close();
+            } catch ( SQLException e ) {
+                plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+                plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
                 flag_access = false;
             }
-            rs.close();
-            stmt.close();
-        } catch ( SQLException e ) {
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
-            flag_access = false;
+            check_access_cache.put(cache_key, flag_access);
         }
         if(flag_access) return true;
         return false;
