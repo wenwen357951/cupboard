@@ -1,18 +1,25 @@
 package tw.mics.spigot.plugin.cupboard.data;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+
+import com.google.gson.Gson;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
@@ -32,6 +39,7 @@ public class CupboardsData {
 		this.plugin = p;
 		dbfile = new File(dataFolder, "database.db");
         this.initDatabase();
+        this.convertOldData(dataFolder);
     }
     
     private void initDatabase() {
@@ -56,7 +64,7 @@ public class CupboardsData {
           stmt.executeUpdate(sql);
           
           sql = "CREATE INDEX IF NOT EXISTS player_cid_index " +
-                  "on PLAYER_OWN_CUPBOARDS (CID)";
+                  "on PLAYER_OWN_CUPBOARDS (UUID)";
           stmt.executeUpdate(sql);
           stmt.close();
           db_conn.setAutoCommit(false);
@@ -68,9 +76,33 @@ public class CupboardsData {
         }
         plugin.logDebug("Opened database successfully");
 	}
+    
+    @SuppressWarnings("unchecked")
+    private void convertOldData(File dataFolder){
+            HashMap<String, List<String>> cupboards = new HashMap<String, List<String>>();
+            Gson gson = new Gson();
+            File file = new File(dataFolder, "cupboards.json");
+            try {
+                FileReader reader = new FileReader(file);
+                cupboards = gson.fromJson(reader, HashMap.class);
+                reader.close();
+            } catch (IOException e) {
+                return;
+            }
+            //start convert files
+            plugin.log("Converting database...");
+            for(String cup:cupboards.keySet()){
+                Block b = Util.StringToLoc(cup).getBlock();
+                putCupboard(b, null);
+                for(String puuid:cupboards.get(cup)){
+                    this.toggleBoardAccess(plugin.getServer().getOfflinePlayer(UUID.fromString(puuid)), b);
+                }
+            }
+            file.delete();
+    }
 
-	public boolean putCupboard(Block b, Player p){
-	    if(!checkAccess(b, p, CUPBOARD_DIST)) return false;
+	public boolean putCupboard(Block b, OfflinePlayer p){
+	    if(p != null && !checkAccess(b, p, CUPBOARD_DIST)) return false;
         try {
             //insert cupboard
             String sql = "INSERT INTO CUPBOARDS (WORLD, X, Y, Z, LOC) " +
@@ -85,14 +117,16 @@ public class CupboardsData {
             
             int cid = pstmt.getGeneratedKeys().getInt(1);
             pstmt.close();
-
-            sql = "INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) " +
-                    "VALUES (?,?);";
-            pstmt = db_conn.prepareStatement(sql);
-            pstmt.setString(1, p.getUniqueId().toString());
-            pstmt.setInt(2, cid);
-            pstmt.execute();
-            pstmt.close();
+            
+            if(p != null){
+                sql = "INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) " +
+                        "VALUES (?,?);";
+                pstmt = db_conn.prepareStatement(sql);
+                pstmt.setString(1, p.getUniqueId().toString());
+                pstmt.setInt(2, cid);
+                pstmt.execute();
+                pstmt.close();
+            }
             
             db_conn.commit();
         } catch ( SQLException e ) {
@@ -131,11 +165,10 @@ public class CupboardsData {
         return flag;
     }
     
-	public Boolean toggleBoardAccess(Player p, Block b){
+	public Boolean toggleBoardAccess(OfflinePlayer p, Block b){
         Boolean access_flag = null;
         Boolean return_flag = null;
 	    try {
-	        
 	        //確認是否有該金磚權限
             Statement stmt = db_conn.createStatement();
             String sql = String.format( 
@@ -252,7 +285,7 @@ public class CupboardsData {
         return checkAccess(l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ(), uuid, PROTECT_DIST);
     }
     
-    private boolean checkAccess(Block b, Player p, int radius){
+    private boolean checkAccess(Block b, OfflinePlayer p, int radius){
         return checkAccess(b.getWorld().getName(), b.getX(), b.getY(), b.getZ(), p.getUniqueId().toString(), radius);
     }
     
