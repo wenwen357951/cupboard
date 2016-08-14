@@ -189,31 +189,32 @@ public class CupboardsData {
 	}
 	
 	public boolean checkIsLimit(Block b){
-		return checkIsLimit(b.getLocation(), null);
+		return !checkAccess(b);
 	}
 	
 	public boolean checkIsLimit(Location l){
-		return checkIsLimit(l, null);
+		return !checkAccess(l);
 	}
 	
 	public boolean checkIsLimit(Block b, Player p){
-		return checkIsLimit(b.getLocation(), p);
+		return !checkAccess(b, p);
 		
 	}
 	
     public boolean checkIsLimit(Location l, Player p){
-        return false;
+        return !checkAccess(l, p);
     }
 
     public boolean checkIsLimitByUUIDString(Block b, String uuid){
-        return checkIsLimitByUUIDString(b.getLocation(), uuid);
+        return !checkAccess(b, uuid);
     }
     
     public boolean checkIsLimitByUUIDString(Location l, String uuid){
-        return false;
+        return !checkAccess(l, uuid);
     }
 
     public int cleanNotExistCupboard() {
+        //TODO
         int remove_count = 0;
         return remove_count;
     }
@@ -227,19 +228,33 @@ public class CupboardsData {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
     }
+
+    private boolean checkAccess(Block b){
+        return checkAccess(b.getWorld().getName(), b.getX(), b.getY(), b.getZ(), null, PROTECT_DIST);
+    }
     
-    @SuppressWarnings("unused")
+    private boolean checkAccess(Location l){
+        return checkAccess(l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ(), null, PROTECT_DIST);
+    }
+
     private boolean checkAccess(Block b, Player p){
         return checkAccess(b.getWorld().getName(), b.getX(), b.getY(), b.getZ(), p.getUniqueId().toString(), PROTECT_DIST);
     }
     
-    private boolean checkAccess(Block b, Player p, int radius){
-        return checkAccess(b.getWorld().getName(), b.getX(), b.getY(), b.getZ(), p.getUniqueId().toString(), radius);
-    }
-    
-    @SuppressWarnings("unused")
     private boolean checkAccess(Location l, Player p){
         return checkAccess(l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ(), p.getUniqueId().toString(), PROTECT_DIST);
+    }
+    
+    private boolean checkAccess(Block b, String uuid){
+        return checkAccess(b.getWorld().getName(), b.getX(), b.getY(), b.getZ(), uuid, PROTECT_DIST);
+    }
+    
+    private boolean checkAccess(Location l, String uuid){
+        return checkAccess(l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ(), uuid, PROTECT_DIST);
+    }
+    
+    private boolean checkAccess(Block b, Player p, int radius){
+        return checkAccess(b.getWorld().getName(), b.getX(), b.getY(), b.getZ(), p.getUniqueId().toString(), radius);
     }
     
     private boolean checkAccess(String world, int x, int y, int z, String uuid,int radius){
@@ -261,11 +276,13 @@ public class CupboardsData {
         ResultSet rs = stmt.executeQuery(sql);
         if(rs.next()){
             flag_access = false;
-            do{
-                if(rs.getString(2) != null && rs.getString(2).equals(uuid)){
-                    flag_access = true;
-                }
-            }while(rs.next());
+            if(uuid != null){ //有玩家id才確認權限
+                do{
+                    if(rs.getString(2) != null && rs.getString(2).equals(uuid)){
+                        flag_access = true;
+                    }
+                }while(rs.next());
+            }
         }
         rs.close();
         stmt.close();
@@ -273,7 +290,7 @@ public class CupboardsData {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
+            if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
             flag_access = false;
         }
         if(flag_access) return true;
