@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
@@ -85,8 +84,8 @@ public class WorldProtectListener extends MyListener {
 			}
 		}
 	}
-	
-	//暫時防止岩漿流動
+
+    //防止岩漿流動
     @EventHandler
     public void onLavaFlow(BlockFromToEvent e){
         if(!(
@@ -112,10 +111,35 @@ public class WorldProtectListener extends MyListener {
         }
         
         if(Config.WP_NETHER_REMOVE_BLOCK.getBoolean()){
-		    if(this.cant_flow_lava.contains(Util.LocToString(e.getToBlock().getLocation()))){
-		        e.setCancelled(true);
-		    }
-		}
+            if(this.cant_flow_lava.contains(Util.LocToString(e.getToBlock().getLocation()))){
+                e.setCancelled(true);
+            }
+        }
+    }
+    
+    //防止水流動
+    @EventHandler
+    public void onWaterFlow(BlockFromToEvent e){
+        final int water_high_limit = Config.WP_WATER_FLOW_HIGH_LIMIT.getInt();
+        if(water_high_limit != -1){
+            if(!(
+                    e.getBlock().getType() == Material.STATIONARY_WATER ||
+                    e.getBlock().getType() == Material.WATER
+            )) return;
+            
+            boolean flag_deny = true;
+            Location l = e.getToBlock().getLocation();
+            for(int i = 0; i < water_high_limit; i++){
+                l.add(0, -1, 0);
+                if(l.getBlock().getType().isSolid()){
+                    flag_deny = false;
+                    break;
+                }
+            }
+            if(flag_deny){
+                e.setCancelled(true);
+            }
+        }
     }
 	
 	private void aroundLavaCleaner(Location location, int count, boolean place_floor){
@@ -172,7 +196,6 @@ public class WorldProtectListener extends MyListener {
 	public void onPigZombieDeath(EntityDeathEvent e){
 		if(!Config.WP_PIGZOMBIE_DROP_NETHER_WART.getBoolean())return;
 		LivingEntity entity = e.getEntity();
-        World world = entity.getWorld();
         ArrayList<ItemStack> will_remove = new ArrayList<ItemStack>();
         int add_nether_wart_count = 0;
         if (entity instanceof PigZombie){
