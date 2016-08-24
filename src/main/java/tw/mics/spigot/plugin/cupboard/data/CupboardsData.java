@@ -1,8 +1,6 @@
 package tw.mics.spigot.plugin.cupboard.data;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-
-import com.google.gson.Gson;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
@@ -213,6 +208,9 @@ public class CupboardsData {
 	    check_access_cache.clear();
         return return_flag;
 	}
+	public boolean checkExplosionAble(Location l, float radius){
+        return checkAccess(l, PROTECT_DIST + (int)Math.ceil(radius));
+	}
 	
 	public boolean checkIsLimit(Block b){
 		return !checkAccess(b);
@@ -312,6 +310,10 @@ public class CupboardsData {
     
     private boolean checkAccess(Block b, OfflinePlayer p, int radius){
         return checkAccess(b.getWorld().getName(), b.getX(), b.getY(), b.getZ(), p.getUniqueId().toString(), radius);
+    }
+    
+    private boolean checkAccess(Location b, int radius){
+        return checkAccess(b.getWorld().getName(), b.getBlockX(), b.getBlockY(), b.getBlockZ(), null, radius);
     }
     
     private boolean checkAccess(String world, int x, int y, int z, String uuid,int radius){
