@@ -145,6 +145,7 @@ public class CupboardsData {
             } else {
                 flag = false;
             }
+            stmt.close();
             rs.close();
             db_conn.commit();
         } catch ( SQLException e ) {
