@@ -183,9 +183,8 @@ public class WorldProtectListener extends MyListener {
 		LivingEntity entity = e.getEntity();
         World world = entity.getWorld();
         ArrayList<ItemStack> will_remove = new ArrayList<ItemStack>();
-        boolean in_nether = world.getEnvironment().equals(World.Environment.NETHER);
         int add_nether_wart_count = 0;
-        if (in_nether && entity instanceof PigZombie){
+        if (entity instanceof PigZombie){
         	for(ItemStack i : e.getDrops()){
         		if(i.getType().equals(Material.GOLD_NUGGET)){
         			if(Config.WP_PIGZOMBIE_DROP_NETHER_WART_PERCENT.getDouble() >= Math.random()){
