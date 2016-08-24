@@ -19,12 +19,12 @@ public enum Config {
 	OP_BYPASS("cupboard.is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),
 	
 	WP_NETHER_DOOR_PROTECT_ENABLE("world-protect.nether-portal-protect.enable", true, "enable nether door protect (if this is false, below is non-use)"),
-	WP_NETHER_SREACH_RADIUS("world-protect.nether-portal-protect.sreach-redius", 16, "change nether portal sreach radius"),
+	WP_NETHER_SREACH_RADIUS("world-protect.nether-portal-protect.sreach-redius", 48, "change nether portal sreach radius"),
     WP_NETHER_SCALE_ENABLE("world-protect.nether-portal-protect.nether-scale-enable", true, "enable nether portal scale"),
 	WP_NETHER_SCALE("world-protect.nether-portal-protect.nether-scale", 8, "change nether portal scale"),
 	WP_NETHER_REMOVE_BLOCK("world-protect.nether-portal-protect.remove-block", true, "remove block when nether door is blocked"),
 	WP_ANTI_NETHER_DOOR_BLOCK("world-protect.nether-portal-protect.anti-nether-door-block", true, "teleport back if you cant move out portal after 15 sec"),
-	WP_ANTI_NETHER_DOOR_ENTITY_TELEPORT("world-protect.nether-portal-protect.anti-nether-door-entity-teleport", true, "let nether door can't teleport ant entity"),
+	WP_ANTI_NETHER_DOOR_ENTITY_TELEPORT("world-protect.nether-portal-protect.anti-nether-door-entity-teleport", false, "let nether door can't teleport ant entity"),
 	WP_LAVA_FLOW_HIGH_LIMIT("world-protect.lava-flow-limit", 2, "-1 to disable, 0 to limit all lava flow"),
 	WP_WATER_FLOW_HIGH_LIMIT("world-protect.water-flow-limit", 4, "-1 to disable, 0 to limit all water flow"),
 	
@@ -33,9 +33,9 @@ public enum Config {
     WP_ORES_NO_PISTON("world-protect.no-piston.ores", true, "let tnt cant moved by piston"),
 	
 	WP_PIGZOMBIE_DROP_NETHER_WART("world-protect.pigzombie-drop-nether-wart.enable", true, "let pig zombie drop nether-wart"),
-	WP_PIGZOMBIE_DROP_NETHER_WART_PERCENT("world-protect.pigzombie-drop-nether-wart.percent", 0.3, "0~1, this mean when drop gold nugget, how many percent will turn it to nether wart."),
+	WP_PIGZOMBIE_DROP_NETHER_WART_PERCENT("world-protect.pigzombie-drop-nether-wart.percent", 0.5, "0~1, this mean when drop gold nugget, how many percent will turn it to nether wart."),
 	
-	PP_PLAYER_INVENTORY_RECOVERY_PERCENT("player-protect.player-inventory-recovery-percent", 0.5, "recovery player inventory if they death (0 to disable)"),
+	PP_PLAYER_INVENTORY_RECOVERY_PERCENT("player-protect.player-inventory-recovery-percent", 0, "recovery player inventory if they death (0 to disable)"),
 	PP_PLAYER_RANDOM_SPAWN_ENABLE("player-protect.random-spawn.enable", true, ""),
     PP_PLAYER_RANDOM_SPAWN_FIRSTJOIN("player-protect.random-spawn.first-join", false, ""),
     PP_PLAYER_RANDOM_SPAWN_WORLD("player-protect.random-spawn.world", "world", ""),
@@ -43,7 +43,7 @@ public enum Config {
     PP_PLAYER_REMOVE_SPAWN_WITH_LAVA("player-protect.remove-bed-spawn-when-have-lava", true, ""),
     PP_PLAYER_SPAWN_PROTECT("player-protect.player-spawn-protect", true, ""),
     
-	AIR_DROP_ENABLE("air-drop.enable", true, "enable airdrop?"),
+	AIR_DROP_ENABLE("air-drop.enable", false, "enable airdrop?"),
 	AIR_DROP_MIN_TIME("air-drop.min-time", 40, "airdrop min period time (min)"),
 	AIR_DROP_MAX_TIME("air-drop.max-time", 80, "airdrop max period time (min)"),
 	AIR_NOTIFY_TIME("air-drop.notify-time", 5, "notify all player before this time (have to small than min-time)"),
@@ -52,7 +52,7 @@ public enum Config {
 	AIR_DROP_ITEM_AMOUNT("air-drop.item-amount", 5, "how many items will droped?"),
 	
 	TNT_SP_ENABLE("tnt.enable", true, "let TNT can desotry obsidian, water, lava, TNT Can put in protect area and TNT hard to craft."),
-    TNT_EXPLOSION_RADIUS("tnt.radius", 10, "TNT power radius"),
+    TNT_EXPLOSION_RADIUS("tnt.radius", 6, "TNT power radius"),
     TNT_EXPLOSION_DISTANCE_LIMIT("tnt.distance-limit", 4, "TNT explosion max break block distance (set -1 to disable)"),
 	TNT_BREAK_RADIUS("tnt.break-radius", 3, "destory obsidian/water/lava check radius"),
 	TNT_OBSIDIAN_BREAK_PROBABILITY("tnt.obsidian.break-probability", 0.5, "turn obsidian block probability (after explosion)"),
@@ -62,7 +62,7 @@ public enum Config {
     TNT_LAVA_BREAK_PROBABILITY("tnt.lava.break-probability", 1, "turn lava to air probability (before explosion)"),
     
     COMPASS_ENABLE("compass.enable", true, "enable compass point to player"),
-    COMPASS_DEVIATION("compass.deviation", 100, "point to player deviation"),
+    COMPASS_DEVIATION("compass.deviation", 50, "point to player deviation"),
     COMPASS_UPDATE_TIME("compass.update-time", 100, "in tick"),
     
     REMOVED_WP_ANTI_LIQUID_FAST_PUT("world-protect.antilag.liquid-limit", true, "Removed"),
