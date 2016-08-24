@@ -34,12 +34,13 @@ public class RspCommand implements CommandExecutor {
         }
         
         
-        SpawnLocationManager.applyPlayerProtect(p);
         if(SpawnLocationManager.useNewSpawn()){
             SpawnLocationManager.teleportPlayerToNewSpawn(p);
         } else {
-            p.sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
+            SpawnLocationManager.applyPlayerProtect(p);
             p.teleport(SpawnLocationManager.getSpawnLocation());
+            p.sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
+            
         }
             
         

@@ -104,11 +104,9 @@ public class PlayerRespawnListener extends MyListener {
             saveinv.remove(p.getUniqueId().toString());
         }
         
-        //套用保護
-        SpawnLocationManager.applyPlayerProtect(p);
-        
         //床復活岩漿確認
         if(event.isBedSpawn() && isPlayerBedSave(p)){
+            SpawnLocationManager.applyPlayerProtect(p);
             return; //有床且床安全
         }
         
@@ -117,8 +115,9 @@ public class PlayerRespawnListener extends MyListener {
             if(SpawnLocationManager.useNewSpawn()){
                 SpawnLocationManager.teleportPlayerToNewSpawn(event.getPlayer());
             } else {
-                p.sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
+                SpawnLocationManager.applyPlayerProtect(p);
                 event.setRespawnLocation(SpawnLocationManager.getSpawnLocation());
+                p.sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
             }
         }
 	}
@@ -126,29 +125,30 @@ public class PlayerRespawnListener extends MyListener {
 	//終界門
 	@EventHandler
     public void onPortalTeleport(PlayerTeleportEvent event){
-        if(!Config.PP_PLAYER_RANDOM_SPAWN_ENABLE.getBoolean()) return;
         if( event.getCause() == TeleportCause.END_PORTAL && event.getTo().getWorld().getEnvironment() == Environment.NORMAL ){
 
-            //套用保護
-            SpawnLocationManager.applyPlayerProtect(event.getPlayer());
-            
             //床安全性確認
             if(event.getPlayer().getBedSpawnLocation() != null && isPlayerBedSave(event.getPlayer())){
+                SpawnLocationManager.applyPlayerProtect(event.getPlayer());
                 return; //有床且床安全
             }
-            
+
             //隨機重生
-            if(SpawnLocationManager.useNewSpawn()){
-                SpawnLocationManager.teleportPlayerToNewSpawn(event.getPlayer());
-            } else {
-                event.setTo(SpawnLocationManager.getSpawnLocation());
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-                    @Override
-                    public void run() {
-                        event.getPlayer().sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
-                        event.getPlayer().teleport(SpawnLocationManager.getSpawnLocation());
-                    }
-                });
+            if(Config.PP_PLAYER_RANDOM_SPAWN_ENABLE.getBoolean()){
+                Player p = event.getPlayer();
+                if(SpawnLocationManager.useNewSpawn()){
+                    SpawnLocationManager.teleportPlayerToNewSpawn(p);
+                } else {
+                    event.setTo(SpawnLocationManager.getSpawnLocation());
+                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                        @Override
+                        public void run() {
+                            SpawnLocationManager.applyPlayerProtect(p);
+                            p.teleport(SpawnLocationManager.getSpawnLocation());
+                            p.sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
+                        }
+                    });
+                }
             }
         }
     }

@@ -20,7 +20,7 @@ import tw.mics.spigot.plugin.cupboard.config.Locales;
 public class SpawnLocationManager {
     private static Location last_spawnLocation;
     private static long last_spawnLocationTime = 0;
-    
+
     public static void applyPlayerProtect(Player p){
         if(Config.PP_PLAYER_SPAWN_PROTECT.getBoolean()){
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Cupboard.getInstance(), new Runnable(){
@@ -79,9 +79,13 @@ public class SpawnLocationManager {
             Biome.DEEP_OCEAN,
             Biome.FROZEN_OCEAN,
             Biome.RIVER,
+            Biome.SWAMPLAND,
     };
     
     private static class SpawnFinder implements Runnable{
+        static boolean flag_spawn_finding;
+        boolean flag_not_me_finding;
+        boolean flag_finded;
         World world;
         Player player;
         double max_distance;
@@ -89,38 +93,93 @@ public class SpawnLocationManager {
         double center_z;
         Location location;
         int id;
-
-        @Override
-        public void run() {
-            if(findNext()){
-                Cupboard.getInstance().getServer().getScheduler().cancelTask(id);
-                player.teleport(location);
-                player.sendMessage(Locales.BED_WORLD_SPAWN_UPDATED.getString());
-                world.setSpawnLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-                last_spawnLocationTime = System.currentTimeMillis();
-                
-                location.add(0.5, 0, 0.5);
-                last_spawnLocation = location;
-            }
-        }
+        int gen_x, gen_z;
+        float player_speed;
+        final static int VIEW_DISTANCE = 5;
+        final static int CHUNK_PER_TICK = 5;
         
         SpawnFinder(Player p){
             player = p;
+            player.sendMessage("重生點已經過期, 正在尋找新重生點...");
             world = Cupboard.getInstance().getServer().getWorld(Config.PP_PLAYER_RANDOM_SPAWN_WORLD.getString());
             WorldBorder wb = world.getWorldBorder();
             max_distance = wb.getSize();
             center_x = wb.getCenter().getX();
             center_z = wb.getCenter().getZ();
+            flag_finded = false;
+            gen_x = -VIEW_DISTANCE;
+            gen_z = -VIEW_DISTANCE;
+            
+            player_speed = player.getWalkSpeed();
+            player.setWalkSpeed(0);
+            
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 72000, 1));
+            p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 72000, 10));
+            p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 72000, 10));
+
+            if(flag_spawn_finding){
+                flag_not_me_finding = true;
+            } else {
+                flag_not_me_finding = false;
+                flag_spawn_finding = true;
+            }
             id = Cupboard.getInstance().getServer().getScheduler().scheduleSyncRepeatingTask(Cupboard.getInstance(),
                     this, 1, 1);
+        }
+        
+        @Override
+        public void run() {
+            if(flag_not_me_finding){
+                if(!flag_spawn_finding){
+                    cancelPotionEffectAndTeleport(last_spawnLocation);
+                }
+            } else if(flag_finded){
+                for(int i = 0; i < CHUNK_PER_TICK; i++){
+                    world.getChunkAt(location.getChunk().getX()+gen_x, location.getChunk().getZ()+gen_z).load(true);
+                    gen_x++;
+                    if(gen_x > VIEW_DISTANCE){
+                        gen_x = -VIEW_DISTANCE;
+                        gen_z++;
+                        if(gen_z > VIEW_DISTANCE){
+                            cancelPotionEffectAndTeleport(location);
+                            flag_spawn_finding = false;
+                            last_spawnLocation = location;
+                            last_spawnLocationTime = System.currentTimeMillis();
+                            return;
+                        }
+                    }
+                }
+            }else if(findNext()){
+                world.setSpawnLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+                location.add(0.5, 0, 0.5);
+                flag_finded = true;
+            }
         }
         
         boolean findNext(){
             location = world.getHighestBlockAt( (int)(center_x + getRandom(max_distance)), (int)(center_z + getRandom(max_distance))).getLocation();
             if(Arrays.asList(blockBiomeList).contains(location.getBlock().getBiome())) return false;
             if(Arrays.asList(blockBlockList).contains(location.getBlock().getType())) return false;
+            if(Arrays.asList(blockBlockList).contains(location.clone().add(0,-1,0).getBlock().getType())) return false;
             return true;
         }
+        
+        private void cancelPotionEffectAndTeleport(Location l){
+            Cupboard.getInstance().getServer().getScheduler().cancelTask(id);
+            if(player_speed == 0){
+                player.setWalkSpeed((float) 0.2);
+            } else {
+                player.setWalkSpeed(player_speed);
+            }
+            player.removePotionEffect(PotionEffectType.BLINDNESS);
+            player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+            player.removePotionEffect(PotionEffectType.REGENERATION);
+            applyPlayerProtect(player);
+            
+            player.sendMessage(Locales.BED_WORLD_SPAWN_UPDATED.getString());
+            player.teleport(l);
+        }
+        
         private int getRandom(double max) {
             return getRandom((int)max);
         }
