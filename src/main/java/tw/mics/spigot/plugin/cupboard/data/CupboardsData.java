@@ -209,7 +209,7 @@ public class CupboardsData {
         return return_flag;
 	}
 	public boolean checkExplosionAble(Location l, float radius){
-        return checkAccess(l, PROTECT_DIST + (int)Math.ceil(radius));
+        return checkAccess(l, PROTECT_DIST + ((int)Math.ceil(radius)) + 1);
 	}
 	
 	public boolean checkIsLimit(Block b){
