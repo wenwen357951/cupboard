@@ -1,27 +1,20 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
-import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -34,12 +27,10 @@ import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class WorldProtectListener extends MyListener {
 	private List<String> cant_flow_lava;
-	private List<Chunk> cant_flow_liquid;
 
 	public WorldProtectListener(Cupboard instance)
 	{
 		super(instance);
-		cant_flow_liquid = new ArrayList<Chunk>();
 	    cant_flow_lava = new ArrayList<String>();
 	}
 	
@@ -210,82 +201,5 @@ public class WorldProtectListener extends MyListener {
     public void onEntityPortal(EntityPortalEvent e){
 		if(!Config.WP_NETHER_DOOR_PROTECT_ENABLE.getBoolean())return;
 		if(Config.WP_ANTI_NETHER_DOOR_ENTITY_TELEPORT.getBoolean())e.setCancelled(true);
-    }
-    
-    //防止玩家過快放置水流
-    //TODO clear data after time
-    private HashMap<String, LiquidCounter> player_liquid_counter = new HashMap<String, LiquidCounter>();
-    
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onBucketEmpty(PlayerBucketEmptyEvent e){
-        if(!Config.WP_ANTI_LIQUID_FAST_PUT.getBoolean())return;
-        Block b = e.getBlockClicked().getLocation()
-                .add(e.getBlockFace().getModX(),e.getBlockFace().getModY(),e.getBlockFace().getModZ())
-                .getBlock();
-        onBucket(e, b);
-    }
-    
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onBucketFill(PlayerBucketFillEvent e){
-        if(!Config.WP_ANTI_LIQUID_FAST_PUT.getBoolean())return;
-        Block b = e.getBlockClicked();
-        onBucket(e, b);
-    }
-    
-    private void onBucket(PlayerBucketEvent e, Block b){
-        if(e.isCancelled()) return;
-        String puuid = e.getPlayer().getUniqueId().toString();
-        LiquidCounter counter = player_liquid_counter.get(puuid);
-        if(counter == null){
-            counter = new LiquidCounter();
-            player_liquid_counter.put(puuid, counter);
-        }
-        counter.count += 1;
-        if(counter.count > 10){
-            if((System.currentTimeMillis() - counter.time) < 60000){
-                counter.update_time();
-                cant_flow_liquid.add(b.getChunk());
-                if(counter.count == 11)
-                    e.getPlayer().sendMessage(Locales.WP_LIQUID_LIMIT.getString());
-            } else {
-                counter.reset();
-                counter.count += 1;
-            }
-        } else if((System.currentTimeMillis() - counter.time) > 30000){
-            counter.reset();
-            counter.count += 1;
-        }
-    }
-    
-    //暫時防止液體流動
-    @EventHandler
-    public void onLiquidFlow(BlockFromToEvent e){
-        if(!Config.WP_ANTI_LIQUID_FAST_PUT.getBoolean())return;
-        Location l = e.getBlock().getLocation();
-        if(this.cant_flow_liquid.contains(l.getChunk())){
-            e.setCancelled(true);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable(){
-                @Override
-                public void run() {
-                    cant_flow_liquid.remove(l.getChunk());
-                }
-            }, 60);
-        }
-    }
-    
-    class LiquidCounter{
-        public int count;
-        public long time;
-        public LiquidCounter(){
-            count = 0;
-            time = System.currentTimeMillis();
-        }
-        public void reset() {
-            count = 0;
-            time = System.currentTimeMillis();
-        }
-        public void update_time(){
-            time = System.currentTimeMillis();
-        }
     }
 }
