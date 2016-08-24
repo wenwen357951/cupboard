@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
-import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.utils.SpawnLocationManager;
 
@@ -35,18 +34,14 @@ public class RspCommand implements CommandExecutor {
         }
         
         
-        if(Config.PP_PLAYER_RANDOM_SPAWN_ENABLE.getBoolean()){
-            SpawnLocationManager.applyPlayerProtect(p);
-            if(SpawnLocationManager.useNewSpawn()){
-                SpawnLocationManager.teleportPlayerToNewSpawn(p);
-            } else {
-                p.sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
-                p.teleport(SpawnLocationManager.getSpawnLocation());
-            }
-            
+        SpawnLocationManager.applyPlayerProtect(p);
+        if(SpawnLocationManager.useNewSpawn()){
+            SpawnLocationManager.teleportPlayerToNewSpawn(p);
         } else {
-            sender.sendMessage("random spawn is disable");
+            p.sendMessage(String.format(Locales.BED_WORLD_SPAWN_UPDATE_TIME.getString(), SpawnLocationManager.getTimeLeft()));
+            p.teleport(SpawnLocationManager.getSpawnLocation());
         }
+            
         
         return true;
     }
