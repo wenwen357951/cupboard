@@ -33,7 +33,7 @@ public class CupboardExplosionProtectListener extends MyListener {
         disable_explosion_id = new LinkedList<Integer>();
     }
     
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler
     public void onExplosion(ExplosionPrimeEvent e){
         Entity entity = e.getEntity();
         if(entity instanceof TNTPrimed && !Config.ANTI_TNT_EXPLOSION.getBoolean()) return;
@@ -41,11 +41,11 @@ public class CupboardExplosionProtectListener extends MyListener {
         if(!data.checkExplosionAble(e.getEntity().getLocation(), e.getRadius())){
             disable_explosion_id.push(e.getEntity().getEntityId());
         }
-        /*
-        if(disable_explosion_id.size() > 5){
+        
+        //保存50個爆炸id 應該不會有50個爆炸同時發生吧....
+        while(disable_explosion_id.size() > 50){
             disable_explosion_id.pollLast();
         }
-        */
     }
 	
     //TNT or Creeper爆炸
@@ -64,7 +64,7 @@ public class CupboardExplosionProtectListener extends MyListener {
     }
 
     //防止Armor stand被炸毀
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onArmorStandExplosion(EntityDamageByEntityEvent e){
     	if(
     		e.getEntity().getType() == EntityType.ARMOR_STAND &&
@@ -79,6 +79,7 @@ public class CupboardExplosionProtectListener extends MyListener {
     //防止Hanging類物品 被Creeper炸掉 / 被TNT炸掉
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent e) {
+        //TODO fix TNT can destory (低重要度)
 		if(e.getCause() == RemoveCause.ENTITY){ //by Entity
 		    if(disable_explosion_id.contains(e.getRemover().getEntityId())){
                 e.setCancelled(true);
