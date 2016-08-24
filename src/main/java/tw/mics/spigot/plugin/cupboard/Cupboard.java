@@ -92,9 +92,8 @@ public class Cupboard extends JavaPlugin implements Listener {
             registedObject.add(new Compass(this));
         }
 	}
-	
-	public void reload(){
-        this.logDebug("");
+	private void unload(){
+	    this.logDebug("");
         this.logDebug("============================================");
         this.logDebug("Disconnect Database");
         this.logDebug("============================================");
@@ -104,26 +103,28 @@ public class Cupboard extends JavaPlugin implements Listener {
         this.logDebug("============================================");
         this.logDebug("Unregister Object");
         this.logDebug("============================================");
-		for(Object l : registedObject){
-			if(l instanceof MyListener){
-				((MyListener)l).unregisterListener();
-			} else {
-				this.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				this.log("[ERROR] Object " + l.getClass().getName() + " Can't unreigster");
-				this.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			}
-		}
+        for(Object l : registedObject){
+            if(l instanceof MyListener){
+                ((MyListener)l).unregisterListener();
+            } else {
+                this.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                this.log("[ERROR] Object " + l.getClass().getName() + " Can't unreigster");
+                this.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            }
+        }
 
-		this.logDebug("");
-		this.logDebug("============================================");
-		this.logDebug("Unregister ALL Listener and Schedule tasks");
-		this.logDebug("============================================");
-		//force unregister again
+        this.logDebug("");
+        this.logDebug("============================================");
+        this.logDebug("Unregister ALL Listener and Schedule tasks");
+        this.logDebug("============================================");
+        //force unregister again
         this.logDebug("Unregister Listener!");
-		HandlerList.unregisterAll();
+        HandlerList.unregisterAll();
         this.logDebug("Unregister Schedule tasks!");
-		this.getServer().getScheduler().cancelAllTasks();
-		
+        this.getServer().getScheduler().cancelAllTasks();
+	}
+	public void reload(){
+	    unload();
 		//new registerdListeners
 		registedObject = new ArrayList<Object>();
         //load config
@@ -146,6 +147,7 @@ public class Cupboard extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
     	PackageEntity.removeAll(); //remove all airdrop
+    	unload(); //unload everything
     }
     
     public boolean isOP(Player p){
