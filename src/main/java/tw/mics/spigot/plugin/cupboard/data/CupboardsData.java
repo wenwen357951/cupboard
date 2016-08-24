@@ -53,7 +53,6 @@ public class CupboardsData {
             }
         };
         this.initDatabase();
-        this.convertOldData(dataFolder);
     }
     
     private void initDatabase() {
@@ -90,30 +89,6 @@ public class CupboardsData {
         }
         plugin.logDebug("Opened database successfully");
 	}
-    
-    @SuppressWarnings("unchecked")
-    private void convertOldData(File dataFolder){
-            HashMap<String, List<String>> cupboards = new HashMap<String, List<String>>();
-            Gson gson = new Gson();
-            File file = new File(dataFolder, "cupboards.json");
-            try {
-                FileReader reader = new FileReader(file);
-                cupboards = gson.fromJson(reader, HashMap.class);
-                reader.close();
-            } catch (IOException e) {
-                return;
-            }
-            //start convert files
-            plugin.log("Converting database...");
-            for(String cup:cupboards.keySet()){
-                Block b = Util.StringToLoc(cup).getBlock();
-                putCupboard(b, null);
-                for(String puuid:cupboards.get(cup)){
-                    this.toggleBoardAccess(plugin.getServer().getOfflinePlayer(UUID.fromString(puuid)), b);
-                }
-            }
-            file.delete();
-    }
 
 	public boolean putCupboard(Block b, OfflinePlayer p){
 	    if(p != null && !checkAccess(b, p, CUPBOARD_DIST)) return false;
