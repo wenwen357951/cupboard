@@ -32,8 +32,9 @@ public enum Config {
     WP_RAILS_NO_PISTON("world-protect.no-piston.rails", true, "let tnt cant moved by piston"),
     WP_ORES_NO_PISTON("world-protect.no-piston.ores", true, "let tnt cant moved by piston"),
 	
-	WP_PIGZOMBIE_DROP_NETHER_WART("world-protect.pigzombie-drop-nether-wart.enable", true, "let pig zombie drop nether-wart"),
+    WP_PIGZOMBIE_DROP_NETHER_WART("world-protect.pigzombie-drop-nether-wart.enable", true, "let pig zombie drop nether-wart"),
 	WP_PIGZOMBIE_DROP_NETHER_WART_PERCENT("world-protect.pigzombie-drop-nether-wart.percent", 0.5, "0~1, this mean when drop gold nugget, how many percent will turn it to nether wart."),
+	WP_ANTI_MOB_TOWNER("world-protect.anti-mob-towner", true, "if true, no exp drop, no item drop too."),
 	
 	PP_PLAYER_INVENTORY_RECOVERY_PERCENT("player-protect.player-inventory-recovery-percent", 0, "recovery player inventory if they death (0 to disable)"),
 	PP_PLAYER_RANDOM_SPAWN_ENABLE("player-protect.random-spawn.enable", true, ""),

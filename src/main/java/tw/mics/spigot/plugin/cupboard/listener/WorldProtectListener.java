@@ -219,6 +219,15 @@ public class WorldProtectListener extends MyListener {
         }
 	}
 	
+	//怪物自然死亡不會掉落物品
+    @EventHandler
+    public void onMobsDeath(EntityDeathEvent e){
+        if(!Config.WP_ANTI_MOB_TOWNER.getBoolean())return;
+        if(e.getDroppedExp() == 0){
+            e.getDrops().clear();
+        }
+    }
+	
 	//防止除玩家之外之物件透過地獄門傳送
     @EventHandler
     public void onEntityPortal(EntityPortalEvent e){
