@@ -1,13 +1,19 @@
 package tw.mics.spigot.plugin.cupboard.data;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +89,7 @@ public class CupboardsData {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
         plugin.logDebug("Opened database successfully");
+        this.changelog("Database loaded.");
 	}
 
 	public boolean putCupboard(Block b, OfflinePlayer p){
@@ -119,11 +126,12 @@ public class CupboardsData {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
         
+        this.changelog(String.format("%s put Cupboard at %s.", p.getName(), Util.LocToString(b.getLocation())));
         check_access_cache.clear();
     	return true;
     }
 	
-    public boolean removeCupboard(Block b){
+    public boolean removeCupboard(Block b, OfflinePlayer p){
         boolean flag = false;
         
         try {
@@ -148,6 +156,8 @@ public class CupboardsData {
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         } 
+        
+        this.changelog(String.format("%s remove Cupboard at %s.", p.getName(), Util.LocToString(b.getLocation())));
         check_access_cache.clear();
         return flag;
     }
@@ -187,12 +197,14 @@ public class CupboardsData {
                             p.getUniqueId().toString(), cid);
                     stmt.execute(sql);
                     return_flag = false;
+                    this.changelog(String.format("%s grant Cupboard access at %s", p.getName(), Util.LocToString(b.getLocation())));
                 } else {
                     sql = String.format("INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) " +
                             "VALUES (\"%s\", %d);", 
                             p.getUniqueId().toString(), cid);
                     stmt.execute(sql);
                     return_flag = true;
+                    this.changelog(String.format("%s revoke Cupboard access at %s.", p.getName(), Util.LocToString(b.getLocation())));
                 }
             }
 
@@ -237,9 +249,6 @@ public class CupboardsData {
     }
 
     public void cleanNotExistCupboard() {
-        //TODO clear not exist player data.
-        //TODO clear empty gold block.
-        
         List<Integer> remove_cid_list = new ArrayList<Integer>();
         List<String> remove_uuid_list = new ArrayList<String>();
         try {
@@ -260,6 +269,7 @@ public class CupboardsData {
             for(String uuid : remove_uuid_list){
                 pstmt_player.setString(1, uuid);
                 pstmt_player.addBatch();
+                this.changelog(String.format("Player data %s removed", uuid));
             }
             pstmt_player.executeBatch();
             pstmt_player.close();
@@ -271,6 +281,7 @@ public class CupboardsData {
             while(rs.next()){
                 Util.StringToLoc(rs.getString(2)).getBlock().setType(Material.AIR);
                 remove_cid_list.add(rs.getInt(1));
+                this.changelog(String.format("Cupboard at %s removed (reason: no anyone can access)", rs.getString(2)));
             }
             
             //Clear not gold block data
@@ -279,6 +290,7 @@ public class CupboardsData {
             while(rs.next()){
                 if(Util.StringToLoc(rs.getString(2)).getBlock().getType() != Material.GOLD_BLOCK){
                     remove_cid_list.add(rs.getInt(1));
+                    this.changelog(String.format("Cupboard at %s removed (reason: not gold block)", rs.getString(2)));
                 }
             }
             
@@ -311,6 +323,7 @@ public class CupboardsData {
     public void close() {
         try {
             db_conn.close();
+            this.changelog("Database unloaded.");
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
@@ -386,5 +399,30 @@ public class CupboardsData {
         }
         if(flag_access) return true;
         return false;
+    }
+    private void changelog(String msg){
+        new Thread(() -> {
+            try
+            {
+                File dataFolder = plugin.getDataFolder();
+                if(!dataFolder.exists()){
+                    dataFolder.mkdir();
+                }
+                File saveTo = new File(plugin.getDataFolder(), "cupboard.log");
+                if (!saveTo.exists()){
+                    saveTo.createNewFile();
+                }
+                FileWriter fw = new FileWriter(saveTo, true);
+                PrintWriter pw = new PrintWriter(fw);
+                DateFormat dateFormat = new SimpleDateFormat("[yyyy/MM/dd HH:mm:ss] ");
+                Calendar cal = Calendar.getInstance();
+                pw.println(dateFormat.format(cal.getTime()) + msg);
+                pw.flush();
+                pw.close();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

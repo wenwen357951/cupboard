@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
+import org.bukkit.entity.Animals;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
@@ -222,7 +223,9 @@ public class WorldProtectListener extends MyListener {
 	//怪物自然死亡不會掉落物品
     @EventHandler
     public void onMobsDeath(EntityDeathEvent e){
-        if(!Config.WP_ANTI_MOB_TOWNER.getBoolean())return;
+        if(!Config.WP_ANTI_MOB_TOWNER.getBoolean()) return;
+        if(e.getEntity() instanceof Player) return;
+        if(e.getEntity() instanceof Animals) return;
         if(e.getDroppedExp() == 0){
             e.getDrops().clear();
         }

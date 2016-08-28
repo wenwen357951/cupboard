@@ -28,7 +28,7 @@ public class GoldBlockListener extends MyListener {
     	if(event.isCancelled())return;
     	if(event.getBlock().getType() == Material.GOLD_BLOCK){
     		Player p = event.getPlayer();
-    		if(plugin.cupboards.removeCupboard(event.getBlock())){
+    		if(plugin.cupboards.removeCupboard(event.getBlock(), event.getPlayer())){
     		    Util.msgToPlayer(p, Locales.GOLD_REMOVE.getString());
     		}
     	}
