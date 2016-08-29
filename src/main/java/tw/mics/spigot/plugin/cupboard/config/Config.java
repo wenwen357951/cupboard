@@ -38,6 +38,7 @@ public enum Config {
 	
 	PP_PLAYER_INVENTORY_RECOVERY_PERCENT("player-protect.player-inventory-recovery-percent", 0, "recovery player inventory if they death (0 to disable)"),
 	PP_PLAYER_RANDOM_SPAWN_ENABLE("player-protect.random-spawn.enable", true, ""),
+	PP_PLAYER_RANDOM_SPAWN_THE_END_ENABLE("player-protect.random-spawn.the-end-enable", true, "enable random spawn when teleport from the end"),
     PP_PLAYER_RANDOM_SPAWN_FIRSTJOIN("player-protect.random-spawn.first-join", false, ""),
     PP_PLAYER_RANDOM_SPAWN_WORLD("player-protect.random-spawn.world", "world", ""),
     PP_PLAYER_RANDOM_SPAWN_NEW_LOCATION_TIME("player-protect.random-spawn.NewRandomPointTimeSec", 180, ""),

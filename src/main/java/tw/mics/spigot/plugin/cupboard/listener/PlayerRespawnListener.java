@@ -134,7 +134,7 @@ public class PlayerRespawnListener extends MyListener {
             }
 
             //隨機重生
-            if(Config.PP_PLAYER_RANDOM_SPAWN_ENABLE.getBoolean()){
+            if(Config.PP_PLAYER_RANDOM_SPAWN_THE_END_ENABLE.getBoolean()){
                 Player p = event.getPlayer();
                 if(SpawnLocationManager.useNewSpawn()){
                     SpawnLocationManager.teleportPlayerToNewSpawn(p);
