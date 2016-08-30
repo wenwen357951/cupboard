@@ -197,14 +197,14 @@ public class CupboardsData {
                             p.getUniqueId().toString(), cid);
                     stmt.execute(sql);
                     return_flag = false;
-                    this.changelog(String.format("%s grant Cupboard access at %s", p.getName(), Util.LocToString(b.getLocation())));
+                    this.changelog(String.format("%s revoke access at %s", p.getName(), Util.LocToString(b.getLocation())));
                 } else {
                     sql = String.format("INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) " +
                             "VALUES (\"%s\", %d);", 
                             p.getUniqueId().toString(), cid);
                     stmt.execute(sql);
                     return_flag = true;
-                    this.changelog(String.format("%s revoke Cupboard access at %s.", p.getName(), Util.LocToString(b.getLocation())));
+                    this.changelog(String.format("%s grant access at %s.", p.getName(), Util.LocToString(b.getLocation())));
                 }
             }
 
