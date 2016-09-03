@@ -95,7 +95,7 @@ public class SpawnLocationManager {
         int id;
         int gen_x, gen_z;
         float player_speed;
-        final static int VIEW_DISTANCE = 5;
+        final static int VIEW_DISTANCE = 8;
         final static int CHUNK_PER_TICK = 3;
         
         SpawnFinder(Player p){
