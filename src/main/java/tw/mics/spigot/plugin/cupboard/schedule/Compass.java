@@ -3,7 +3,6 @@ package tw.mics.spigot.plugin.cupboard.schedule;
 import java.util.Random;
 
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
@@ -27,10 +26,6 @@ public class Compass {
         runnable = new Runnable(){
             public void run() {
                 plugin.getServer().getOnlinePlayers().forEach(p->{
-                    if(
-                            p.getInventory().contains(Material.COMPASS) ||
-                            p.getInventory().getItemInOffHand().getType() == Material.COMPASS
-                            ){
                         Player nearest_player = null;
                         double nearest_dist = 60000000;
                         for(Player t:plugin.getServer().getOnlinePlayers()){
@@ -52,7 +47,6 @@ public class Compass {
                             p.setCompassTarget(nearest_player.getLocation().add(dev, 0, getRandom(dev)));
                         }
                         //plugin.getServer().getLogger().info(String.format(" x:%.2f z:%.2f", p.getCompassTarget().getX(), p.getCompassTarget().getZ()));
-                    }
                 });
             }
         };
