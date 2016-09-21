@@ -24,14 +24,14 @@ public class NetherTopChecker {
                 plugin.getServer().getOnlinePlayers().forEach(p->{
                     if(
                             p.getWorld().getEnvironment() == Environment.NETHER &&
-                            p.getLocation().getY() > 128
+                            p.getLocation().getY() >= 128
                             ){
                         p.damage(10);
                     }
                 });
             }
         };
-        schedule_id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, runnable, 0, 5);
+        schedule_id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, runnable, 0, 20);
         this.plugin.logDebug("Nether top checke task added");
     }
 }
