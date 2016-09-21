@@ -30,6 +30,7 @@ import tw.mics.spigot.plugin.cupboard.listener.TNTExplosionListener;
 import tw.mics.spigot.plugin.cupboard.listener.WorldProtectListener;
 import tw.mics.spigot.plugin.cupboard.schedule.AirDrop;
 import tw.mics.spigot.plugin.cupboard.schedule.Compass;
+import tw.mics.spigot.plugin.cupboard.schedule.NetherTopChecker;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
@@ -89,6 +90,10 @@ public class Cupboard extends JavaPlugin implements Listener {
         
         if(Config.COMPASS_ENABLE.getBoolean()){
             registedObject.add(new Compass(this));
+        }
+        
+        if(Config.NETHER_TOP_CHECKER.getBoolean()){
+            registedObject.add(new NetherTopChecker(this));
         }
 	}
 	private void unload(){

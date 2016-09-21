@@ -67,6 +67,8 @@ public enum Config {
     COMPASS_DEVIATION("compass.deviation", 50, "point to player deviation"),
     COMPASS_UPDATE_TIME("compass.update-time", 100, "in tick"),
     
+    NETHER_TOP_CHECKER("nether-top-checker.enable", true, "check any player top on nether bedtock"),
+    
     REMOVED_WP_ANTI_LIQUID_FAST_PUT("world-protect.antilag.liquid-limit", true, "Removed"),
     REMOVED_WP_TNT_NO_PISTON("world-protect.tnt-no-piston", true, "Removed"),
     REMOVED_CUPBOARD_PROTECT_CHEST("cupboard.protect_chest", false, "Removed"),
