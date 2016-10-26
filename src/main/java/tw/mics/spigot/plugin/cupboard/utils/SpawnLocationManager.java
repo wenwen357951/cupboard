@@ -1,6 +1,7 @@
 package tw.mics.spigot.plugin.cupboard.utils;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -96,6 +97,7 @@ public class SpawnLocationManager {
         float player_speed;
         final static int VIEW_DISTANCE = 8;
         final static int CHUNK_PER_TICK = 3;
+        int findcount;
         
         SpawnFinder(Player p){
             player = p;
@@ -108,6 +110,7 @@ public class SpawnLocationManager {
             flag_finded = false;
             gen_x = -VIEW_DISTANCE;
             gen_z = -VIEW_DISTANCE;
+            findcount = 0;
             
             player_speed = player.getWalkSpeed();
             player.setWalkSpeed(0);
@@ -156,7 +159,18 @@ public class SpawnLocationManager {
         }
         
         boolean findNext(){
-            location = world.getHighestBlockAt( (int)(center_x + getRandom(max_distance)), (int)(center_z + getRandom(max_distance))).getLocation();
+            List<Player> players = world.getPlayers();
+            if(players.size() > 0 && findcount < 3){
+                Player p = players.get(new Random().nextInt(players.size()));
+                int distance = new Random().nextInt(100)+200; //距離200-300
+                double angle = (new Random().nextDouble() * Math.PI * 2);
+                int x = p.getLocation().getBlockX() + (int)(Math.cos(angle) * distance);
+                int z = p.getLocation().getBlockX() + (int)(Math.sin(angle) * distance);
+                location = world.getHighestBlockAt(x, z).getLocation();
+            } else {
+                location = world.getHighestBlockAt( (int)(center_x + getRandom(max_distance)), (int)(center_z + getRandom(max_distance))).getLocation();
+            }
+            findcount++;
             if(Arrays.asList(blockBiomeList).contains(location.getBlock().getBiome())) return false;
             if(Arrays.asList(blockBlockList).contains(location.getBlock().getType())) return false;
             if(Arrays.asList(blockBlockList).contains(location.clone().add(0,-1,0).getBlock().getType())) return false;
