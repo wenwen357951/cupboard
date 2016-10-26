@@ -16,6 +16,7 @@ import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Drops;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
+import tw.mics.spigot.plugin.cupboard.data.Database;
 import tw.mics.spigot.plugin.cupboard.entity.PackageEntity;
 import tw.mics.spigot.plugin.cupboard.listener.AirdropInteractListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardBlockProtectListener;
@@ -36,6 +37,7 @@ import tw.mics.spigot.plugin.cupboard.schedule.NetherTopChecker;
 public class Cupboard extends JavaPlugin implements Listener {
 	public CupboardsData cupboards;
     public Drops drops;
+    public Database database;
     private static Cupboard INSTANCE;
     private ArrayList<Object> registedObject;
 	
@@ -54,7 +56,8 @@ public class Cupboard extends JavaPlugin implements Listener {
         drops = new Drops();
         
         //load cupboards
-        cupboards = new CupboardsData(getDataFolder(),this);
+        database = new Database(this, getDataFolder());
+        cupboards = new CupboardsData(this, database.getConnection());
         this.logDebug("Loaded Cupboards data!");
 
         this.logDebug("Cleaning Cupboards data!");
@@ -102,7 +105,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         this.logDebug("Disconnect Database");
         this.logDebug("============================================");
         this.logDebug("");
-        cupboards.close();
+        database.close();
         
         this.logDebug("============================================");
         this.logDebug("Unregister Object");

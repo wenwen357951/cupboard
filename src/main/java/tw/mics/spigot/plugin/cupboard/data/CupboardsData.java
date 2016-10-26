@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,7 +30,6 @@ import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class CupboardsData {
-    private File dbfile;
     Connection db_conn;
     
 	final private int PROTECT_DIST = Config.CUPBOARD_PROTECT_DIST.getInt();
@@ -42,9 +40,9 @@ public class CupboardsData {
 	private Map<String, Boolean> check_access_cache;
 	
 	private Cupboard plugin;
-	public CupboardsData(File dataFolder, Cupboard p){
+	public CupboardsData(Cupboard p, Connection conn){
 		this.plugin = p;
-		dbfile = new File(dataFolder, "database.db");
+		db_conn = conn;
 		check_access_cache = new LinkedHashMap<String, Boolean>(maxEntries*10/7, 0.7f, true) {
             private static final long serialVersionUID = 1L;
             
@@ -53,44 +51,7 @@ public class CupboardsData {
                 return size() > maxEntries;
             }
         };
-        this.initDatabase();
     }
-    
-    private void initDatabase() {
-        try {
-          Class.forName("org.sqlite.JDBC");
-          db_conn = DriverManager.getConnection("jdbc:sqlite:"+dbfile.getPath());
-       
-          //新增表格
-          Statement stmt = db_conn.createStatement();
-          String sql = "CREATE TABLE IF NOT EXISTS CUPBOARDS " +
-                  "(CID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                  " WORLD   TEXT     NOT NULL," +
-                  " X       INTEGER  NOT NULL," +
-                  " Y       INTEGER  NOT NULL," +
-                  " Z       INTEGER  NOT NULL," +
-                  " LOC     TEXT     UNIQUE NOT NULL)";
-          stmt.executeUpdate(sql);
-
-          sql = "CREATE TABLE IF NOT EXISTS PLAYER_OWN_CUPBOARDS " +
-                  "(UUID TEXT NOT NULL," +
-                  " CID  INTEGER NOT NULL)";
-          stmt.executeUpdate(sql);
-          
-          sql = "CREATE INDEX IF NOT EXISTS player_cid_index " +
-                  "on PLAYER_OWN_CUPBOARDS (UUID)";
-          stmt.executeUpdate(sql);
-          stmt.close();
-          db_conn.setAutoCommit(false);
-          
-        } catch ( SQLException | ClassNotFoundException e ) {
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        }
-        plugin.logDebug("Opened database successfully");
-        this.changelog("Database loaded.");
-	}
 
 	public boolean putCupboard(Block b, OfflinePlayer p){
 	    if(p != null && !checkAccess(b, p, CUPBOARD_DIST)) return false;
@@ -318,17 +279,6 @@ public class CupboardsData {
 
         this.plugin.log("Cleaned %d not exist player!", remove_uuid_list.size());
         this.plugin.log("Cleaned %d not exist or non anyone can access cupboards!", remove_cid_list.size());
-    }
-    
-    public void close() {
-        try {
-            db_conn.close();
-            this.changelog("Database unloaded.");
-        } catch ( SQLException e ) {
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        }
     }
 
     private boolean checkAccess(Block b){
