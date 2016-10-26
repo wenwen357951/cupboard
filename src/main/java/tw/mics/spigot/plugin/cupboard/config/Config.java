@@ -16,11 +16,14 @@ public enum Config {
     CUPBOARD_BETWEEN_DIST("cupboard.between_dist", 18, "this is how many block between cupboard can put another cupboard"),
 	ANTI_TNT_EXPLOSION("cupboard.anti-tnt-explosion", false, "is cupboard protect explosion from TNT?"),
 	ANTI_OTHERS_EXPLOSION("cupboard.anti-creeper-explosion", true, "is cupboard protect explosion from CREEPER?"),
-	OP_BYPASS("cupboard.is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),
+    OP_BYPASS("cupboard.is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),
+    ENABLE_WORLD("cupboard.enable-world", new String[]{
+            "world"
+    }, "witch world is enable cupboard?"),
 	
 	WP_NETHER_DOOR_PROTECT_ENABLE("world-protect.nether-portal-protect.enable", true, "enable nether door protect (if this is false, below is non-use)"),
 	WP_NETHER_SREACH_RADIUS("world-protect.nether-portal-protect.sreach-redius", 48, "change nether portal sreach radius"),
-    WP_NETHER_SCALE_ENABLE("world-protect.nether-portal-protect.nether-scale-enable", true, "enable nether portal scale"),
+    WP_NETHER_SCALE_ENABLE("world-protect.nether-portal-protect.nether-scale-enable", false, "enable nether portal scale"),
 	WP_NETHER_SCALE("world-protect.nether-portal-protect.nether-scale", 8, "change nether portal scale"),
 	WP_NETHER_REMOVE_BLOCK("world-protect.nether-portal-protect.remove-block", true, "remove block when nether door is blocked"),
 	WP_ANTI_NETHER_DOOR_BLOCK("world-protect.nether-portal-protect.anti-nether-door-block", true, "teleport back if you cant move out portal after 15 sec"),
@@ -63,7 +66,7 @@ public enum Config {
 	TNT_WATER_BREAK_PROBABILITY("tnt.water.break-probability", 1, "turn water block to air probability (before explosion)"),
     TNT_LAVA_BREAK_PROBABILITY("tnt.lava.break-probability", 1, "turn lava to air probability (before explosion)"),
     
-    COMPASS_ENABLE("compass.enable", true, "enable compass point to player"),
+    COMPASS_ENABLE("compass.enable", false, "enable compass point to player"),
     COMPASS_DEVIATION("compass.deviation", 50, "point to player deviation"),
     COMPASS_UPDATE_TIME("compass.update-time", 100, "in tick"),
     
