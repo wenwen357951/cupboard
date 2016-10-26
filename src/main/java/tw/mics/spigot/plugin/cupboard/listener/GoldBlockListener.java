@@ -1,6 +1,8 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
 
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,6 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
+import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.utils.Util;
 
@@ -38,6 +41,8 @@ public class GoldBlockListener extends MyListener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onGoldBlockPlace(BlockPlaceEvent event){
     	if(event.isCancelled())return;
+    	List<String> enable_world = Config.ENABLE_WORLD.getStringList();
+        if(!enable_world.contains(event.getBlock().getWorld().getName()))return;
     	if(event.getBlockPlaced().getType() == Material.GOLD_BLOCK){
     		Player p = event.getPlayer();
     		if(!plugin.cupboards.putCupboard(event.getBlockPlaced(), p)){
@@ -56,6 +61,8 @@ public class GoldBlockListener extends MyListener {
     	if (event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.GOLD_BLOCK) return;       	// 非黃金磚則無視
     	if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return; 						// 非右鍵方塊則無視
         //if (event.getItem() != null && event.getItem().getType().isBlock()) return;   	// 非空手則無視
+        List<String> enable_world = Config.ENABLE_WORLD.getStringList();
+        if(!enable_world.contains(event.getClickedBlock().getWorld().getName()))return;
     	Location front_block_loc = event.getClickedBlock().getLocation().clone();
 		Player p = event.getPlayer();
     	switch(event.getBlockFace()){
