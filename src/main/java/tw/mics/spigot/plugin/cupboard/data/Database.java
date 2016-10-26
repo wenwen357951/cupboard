@@ -49,6 +49,11 @@ public class Database {
           sql = "CREATE INDEX IF NOT EXISTS player_cid_index " +
                   "on PLAYER_OWN_CUPBOARDS (UUID)";
           stmt.executeUpdate(sql);
+          
+          sql = "CREATE TABLE IF NOT EXISTS PLAYER_EVIL_POINT " +
+                  "(UUID TEXT NOT NULL," +
+                  " EVIL_POINT INTEGER NOT NULL)";
+          stmt.executeUpdate(sql);
           stmt.close();
           db_conn.setAutoCommit(false);
           
