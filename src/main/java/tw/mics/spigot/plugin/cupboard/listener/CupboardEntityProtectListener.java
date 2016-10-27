@@ -18,6 +18,7 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
+import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class CupboardEntityProtectListener extends MyListener {
 	final static private Material[] protect_vehicle = {
@@ -62,13 +63,12 @@ public class CupboardEntityProtectListener extends MyListener {
     @EventHandler
     public void onPlayerHitEntity(EntityDamageByEntityEvent e){
         if(e.getEntityType() != EntityType.ITEM_FRAME) return;
-        if(e.getDamager() instanceof Player){
+        Player damager = Util.getDamager(e.getDamager());
+        if(damager != null){
             Location bl = e.getEntity().getLocation().getBlock().getLocation();
-            Player p = (Player) e.getDamager();
-            if(data.checkIsLimit(bl, p)){
-                if(this.plugin.isOP(p)) return;
+            if(data.checkIsLimit(bl, damager)){
+                if(this.plugin.isOP(damager)) return;
                 e.setCancelled(true);
-                p.updateInventory();
             }
         }
     }
@@ -147,13 +147,14 @@ public class CupboardEntityProtectListener extends MyListener {
     @EventHandler
     public void onArmorStandDamage(EntityDamageByEntityEvent e){
     	if (e.getEntity().getType() != EntityType.ARMOR_STAND) return;
-    	if (e.getDamager() instanceof Player){
-    		Player p = (Player) e.getDamager();
-        	if (this.plugin.cupboards.checkIsLimit(e.getEntity().getLocation(), p)){
-        		if(this.plugin.isOP(p))return;
-        		e.setCancelled(true);
-        	}
-    	}
+        Player damager = Util.getDamager(e.getDamager());
+        if(damager != null){
+            Location bl = e.getEntity().getLocation().getBlock().getLocation();
+            if(data.checkIsLimit(bl, damager)){
+                if(this.plugin.isOP(damager)) return;
+                e.setCancelled(true);
+            }
+        }
     }
 
 }
