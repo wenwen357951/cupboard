@@ -179,7 +179,7 @@ public class SpawnLocationManager {
                 int distance = new Random().nextInt(100)+200; //距離200-300
                 double angle = (new Random().nextDouble() * Math.PI * 2);
                 int x = p.getLocation().getBlockX() + (int)(Math.cos(angle) * distance);
-                int z = p.getLocation().getBlockX() + (int)(Math.sin(angle) * distance);
+                int z = p.getLocation().getBlockZ() + (int)(Math.sin(angle) * distance);
                 location = world.getHighestBlockAt(x, z).getLocation();
             } else {
                 location = world.getHighestBlockAt( (int)(center_x + getRandom(max_distance)), (int)(center_z + getRandom(max_distance))).getLocation();
