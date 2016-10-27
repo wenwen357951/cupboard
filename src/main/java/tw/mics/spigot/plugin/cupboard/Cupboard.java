@@ -17,11 +17,13 @@ import tw.mics.spigot.plugin.cupboard.config.Drops;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
 import tw.mics.spigot.plugin.cupboard.data.Database;
+import tw.mics.spigot.plugin.cupboard.data.EvilPointData;
 import tw.mics.spigot.plugin.cupboard.entity.PackageEntity;
 import tw.mics.spigot.plugin.cupboard.listener.AirdropInteractListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardBlockProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardEntityProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardExplosionProtectListener;
+import tw.mics.spigot.plugin.cupboard.listener.EvilPointListener;
 import tw.mics.spigot.plugin.cupboard.listener.GoldBlockListener;
 import tw.mics.spigot.plugin.cupboard.listener.MyListener;
 import tw.mics.spigot.plugin.cupboard.listener.PlayerRespawnListener;
@@ -35,7 +37,8 @@ import tw.mics.spigot.plugin.cupboard.schedule.NetherTopChecker;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
-	public CupboardsData cupboards;
+    public CupboardsData cupboards;
+    public EvilPointData evilpoint;
     public Drops drops;
     public Database database;
     private static Cupboard INSTANCE;
@@ -58,6 +61,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         //load cupboards
         database = new Database(this, getDataFolder());
         cupboards = new CupboardsData(this, database.getConnection());
+        evilpoint = new EvilPointData(this, database.getConnection());
         this.logDebug("Loaded Cupboards data!");
 
         this.logDebug("Cleaning Cupboards data!");
@@ -80,6 +84,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         registedObject.add(new PlayerRespawnListener(this));
         registedObject.add(new SuicideListener(this));
         registedObject.add(new AirdropInteractListener(this));
+        registedObject.add(new EvilPointListener(this));
         
         //rewrite TNT Receipts Listener
         if(Config.TNT_SP_ENABLE.getBoolean()){
