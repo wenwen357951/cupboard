@@ -33,10 +33,8 @@ public class EvilPointListener extends MyListener {
     @EventHandler
     public void onPlayerDamagePlayer(EntityDamageByEntityEvent event){
         if(!(event.getEntity() instanceof Player)) return;
-        Player damager = Util.getDamager(event.getEntity());
+        Player damager = Util.getDamager(event.getDamager());
         //傷害計算
-        
-
         if(damager != null){
             //傷害增幅
             int ep = Cupboard.getInstance().evilpoint.getEvil((Player) event.getEntity());
@@ -61,8 +59,8 @@ public class EvilPointListener extends MyListener {
             event.setDamage(event.getDamage() * modifer);
 
             //點數計算
-            evilpoint.plusEvil((Player) damager, (int)Math.ceil(event.getFinalDamage()));
-            evilpoint.scoreboardUpdate((Player) damager);
+            evilpoint.plusEvil(damager, (int)Math.ceil(event.getFinalDamage()));
+            evilpoint.scoreboardUpdate(damager);
         } else {
             int ep = Cupboard.getInstance().evilpoint.getEvil((Player) event.getEntity());
             double modifer = 1;

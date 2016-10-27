@@ -174,7 +174,7 @@ public class SpawnLocationManager {
         
         boolean findNext(){
             List<Player> players = world.getPlayers();
-            if(players.size() > 0 && findcount < 3){
+            if(players.size() > 0 && findcount < 10){
                 Player p = players.get(new Random().nextInt(players.size()));
                 int distance = new Random().nextInt(100)+200; //距離200-300
                 double angle = (new Random().nextDouble() * Math.PI * 2);
