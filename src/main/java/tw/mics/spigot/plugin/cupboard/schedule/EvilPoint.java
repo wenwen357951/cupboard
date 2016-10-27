@@ -35,7 +35,8 @@ public class EvilPoint {
                     if(
                             !p.getInventory().contains(Material.TNT) &&
                             !p.getEnderChest().contains(Material.TNT) &&
-                            limit.get(p.getUniqueId()) < 60
+                            limit.get(p.getUniqueId()) < 60 &&
+                            evilpoint.getEvil(p) > 0
                     ){
                         evilpoint.minusEvil(p, 1);
                         limit.put(p.getUniqueId(), limit.get(p.getUniqueId())+1);

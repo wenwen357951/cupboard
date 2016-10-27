@@ -39,12 +39,34 @@ public class PlayerRespawnListener extends MyListener {
     public void onPlayerDeath(PlayerDeathEvent event){
         Player p = event.getEntity();
         List<ItemStack> keepInv = new ArrayList<ItemStack>();
-        if(Config.PP_PLAYER_INVENTORY_RECOVERY_PERCENT.getDouble() != 0 && p.isOnline()){
+        double recover_percent = 0;
+        int evilpoint = Cupboard.getInstance().evilpoint.getEvil(p);
+        if(evilpoint == 0){
+            recover_percent = 0.5;
+        } else if(evilpoint <=100) {
+            recover_percent = 0.3;
+        } else if(evilpoint <=300) {
+            recover_percent = 0.1;
+        }
+        if(recover_percent !=0 && p.isOnline()){
             for(ItemStack i: Arrays.asList(event.getEntity().getInventory().getContents())){
                 if(i == null) continue;
-                if(new Random().nextDouble() < Config.PP_PLAYER_INVENTORY_RECOVERY_PERCENT.getDouble() ){
-                    keepInv.add(i);
+                if(i.getAmount() < 1/recover_percent){
+                    if(new Random().nextDouble() < recover_percent ){
+                            keepInv.add(i);
+                            event.getDrops().remove(i);
+                    }
+                } else {
+                    int keep_amount = (int)Math.rint(i.getAmount() * recover_percent);
+                    int drop_amount = i.getAmount()-keep_amount;
+                    ItemStack keep_item = i.clone();
+                    ItemStack drop_item = i.clone();
+                    keep_item.setAmount(keep_amount);
+                    drop_item.setAmount(drop_amount);
+                    
+                    keepInv.add(keep_item);
                     event.getDrops().remove(i);
+                    event.getDrops().add(drop_item);
                 }
             }
             saveinv.put(p.getUniqueId().toString(), keepInv);

@@ -39,7 +39,7 @@ public enum Config {
 	WP_PIGZOMBIE_DROP_NETHER_WART_PERCENT("world-protect.pigzombie-drop-nether-wart.percent", 0.5, "0~1, this mean when drop gold nugget, how many percent will turn it to nether wart."),
 	WP_ANTI_MOB_TOWNER("world-protect.anti-mob-towner", true, "if true, no exp drop, no item drop too."),
 	
-	PP_PLAYER_INVENTORY_RECOVERY_PERCENT("player-protect.player-inventory-recovery-percent", 0, "recovery player inventory if they death (0 to disable)"),
+	
 	PP_PLAYER_RANDOM_SPAWN_ENABLE("player-protect.random-spawn.enable", true, ""),
 	PP_PLAYER_RANDOM_SPAWN_THE_END_ENABLE("player-protect.random-spawn.the-end-enable", true, "enable random spawn when teleport from the end"),
     PP_PLAYER_RANDOM_SPAWN_FIRSTJOIN("player-protect.random-spawn.first-join", false, ""),
@@ -72,6 +72,7 @@ public enum Config {
     
     NETHER_TOP_CHECKER("nether-top-checker.enable", true, "check any player top on nether bedtock"),
     
+    REMOVED_PP_PLAYER_INVENTORY_RECOVERY_PERCENT("player-protect.player-inventory-recovery-percent", 0, "Removed"),
     REMOVED_WP_ANTI_LIQUID_FAST_PUT("world-protect.antilag.liquid-limit", true, "Removed"),
     REMOVED_WP_TNT_NO_PISTON("world-protect.tnt-no-piston", true, "Removed"),
     REMOVED_CUPBOARD_PROTECT_CHEST("cupboard.protect_chest", false, "Removed"),

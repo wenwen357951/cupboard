@@ -23,14 +23,28 @@ public class SpawnLocationManager {
     private static long last_spawnLocationTime = 0;
 
     public static void applyPlayerProtect(Player p){
+
         if(Config.PP_PLAYER_SPAWN_PROTECT.getBoolean()){
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Cupboard.getInstance(), new Runnable(){
                 @Override
                 public void run() {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 3));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 600, 3));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 600, 3));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 0));
+                    int bufftime = 0;
+                    int evilpoint = Cupboard.getInstance().evilpoint.getEvil(p);
+                    if(evilpoint == 0){
+                        bufftime = 6000;
+                    } else if(evilpoint <=100) {
+                        bufftime = 3600;
+                    } else if(evilpoint <=300) {
+                        bufftime = 2400;
+                    } else if(evilpoint <=500) {
+                        bufftime = 1200;
+                    }
+                    if(bufftime != 0){
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, bufftime, 3));
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, bufftime, 3));
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, bufftime, 3));
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, bufftime, 0));
+                    }
                     p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1));
                 }
             });
