@@ -43,7 +43,7 @@ public class EvilPoint {
                 });
             }
         };
-        schedule_id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, runnable, 0, 60);
+        schedule_id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, runnable, 0, 6000);
         this.plugin.logDebug("Evilpoint timer task added");
     }
 }
