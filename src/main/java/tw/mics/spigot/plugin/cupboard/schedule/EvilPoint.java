@@ -42,6 +42,7 @@ public class EvilPoint {
                         limit.put(p.getUniqueId(), limit.get(p.getUniqueId())+1);
                     }
                 });
+                evilpoint.scoreboardUpdate();
             }
         };
         schedule_id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, runnable, 0, 6000);
