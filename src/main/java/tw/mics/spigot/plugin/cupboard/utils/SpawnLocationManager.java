@@ -31,13 +31,11 @@ public class SpawnLocationManager {
                     int bufftime = 0;
                     int evilpoint = Cupboard.getInstance().evilpoint.getEvil(p);
                     if(evilpoint == 0){
-                        bufftime = 6000;
-                    } else if(evilpoint <=100) {
-                        bufftime = 3600;
-                    } else if(evilpoint <=300) {
-                        bufftime = 2400;
-                    } else if(evilpoint <=500) {
                         bufftime = 1200;
+                    } else if(evilpoint <=100) {
+                        bufftime = 600;
+                    } else if(evilpoint <=300) {
+                        bufftime = 300;
                     }
                     if(bufftime != 0){
                         p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, bufftime, 3));
