@@ -35,7 +35,9 @@ public class SpawnLocationManager {
                     } else if(evilpoint <=100) {
                         bufftime = 600;
                     } else if(evilpoint <=300) {
-                        bufftime = 300;
+                        bufftime = 400;
+                    } else if(evilpoint <=500) {
+                        bufftime = 200;
                     }
                     if(bufftime != 0){
                         p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, bufftime, 3));
@@ -174,7 +176,7 @@ public class SpawnLocationManager {
             List<Player> players = world.getPlayers();
             if(players.size() > 0 && findcount < 10){
                 Player p = players.get(new Random().nextInt(players.size()));
-                int distance = new Random().nextInt(500)+500; //距離200-300
+                int distance = new Random().nextInt(500)+1000; //距離1000-1500
                 double angle = (new Random().nextDouble() * Math.PI * 2);
                 int x = p.getLocation().getBlockX() + (int)(Math.cos(angle) * distance);
                 int z = p.getLocation().getBlockZ() + (int)(Math.sin(angle) * distance);
