@@ -6,9 +6,30 @@ import java.util.StringTokenizer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.ThrownPotion;
 
 public class Util {
+    public static Player getDamager(Entity e){
+        Player damager = null;
+        if(e instanceof Player){
+            damager = (Player) e;
+        } else if(e instanceof Arrow){
+            Arrow arrow = (Arrow)e;
+            if(arrow.getShooter() instanceof Player){
+                damager = (Player) arrow.getShooter();
+            }
+        } else if(e instanceof ThrownPotion){
+            ThrownPotion potion = (ThrownPotion)e;
+            if(potion.getShooter() instanceof Player){
+                damager = (Player) potion.getShooter();
+            }
+        }
+        return damager; //return null if not player
+    }
+    
 	public static void msgToPlayer(Player p, String str){
 		p.sendMessage(str);
 	}
