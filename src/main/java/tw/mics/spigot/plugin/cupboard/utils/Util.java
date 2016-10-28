@@ -10,6 +10,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
+import org.bukkit.entity.Wolf;
 
 public class Util {
     public static Player getDamager(Entity e){
@@ -25,6 +26,11 @@ public class Util {
             ThrownPotion potion = (ThrownPotion)e;
             if(potion.getShooter() instanceof Player){
                 damager = (Player) potion.getShooter();
+            }
+        } else if(e instanceof Wolf){
+            Wolf wolf = (Wolf)e;
+            if(wolf.getOwner() instanceof Player){
+                damager = (Player) wolf.getOwner();
             }
         }
         return damager; //return null if not player
