@@ -106,7 +106,7 @@ public class EvilPointListener extends MyListener {
         if(event.getClickedInventory() == null)return;
         if(event.getClickedInventory().getType() != InventoryType.WORKBENCH)return;
         if(event.getCurrentItem().getType() != Material.TNT)return;
-        Cupboard.getInstance().log("%s %d",event.getAction().toString(), event.getRawSlot());
+        //Cupboard.getInstance().log("%s %d",event.getAction().toString(), event.getRawSlot());
         
         if(event.getRawSlot() != 0) return;
         Inventory inv = event.getClickedInventory();
