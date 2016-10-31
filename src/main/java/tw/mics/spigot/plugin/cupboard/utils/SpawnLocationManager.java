@@ -110,7 +110,7 @@ public class SpawnLocationManager {
         int gen_x, gen_z;
         float player_speed;
         final static int VIEW_DISTANCE = 8;
-        final static int CHUNK_PER_TICK = 3;
+        final static int CHUNK_PER_TICK = 2;
         int findcount;
         
         SpawnFinder(Player p){
@@ -174,7 +174,7 @@ public class SpawnLocationManager {
         
         boolean findNext(){
             List<Player> players = world.getPlayers();
-            if(players.size() > 0 && findcount < 10){
+            if(players.size() > 0 && findcount < 5){
                 Player p = players.get(new Random().nextInt(players.size()));
                 int distance = new Random().nextInt(500)+1000; //距離1000-1500
                 double angle = (new Random().nextDouble() * Math.PI * 2);
