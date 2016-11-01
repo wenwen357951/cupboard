@@ -7,6 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -31,14 +32,16 @@ public class EvilPointListener extends MyListener {
     
     //傷害玩家
     @EventHandler
-    public void onPlayerDamagePlayer(EntityDamageByEntityEvent event){
+    public void onPlayerDamagePlayer(EntityDamageEvent event){
         if(!(event.getEntity() instanceof Player)) return;
-        Player damager = Util.getDamager(event.getDamager());
+        Player damager = null;
+        if(event instanceof EntityDamageByEntityEvent)
+            damager = Util.getDamager(((EntityDamageByEntityEvent)event).getDamager());
         //傷害計算
+        double modifer = 1;
         if(damager != null && damager != event.getEntity()){
             //傷害增幅
             int ep = Cupboard.getInstance().evilpoint.getEvil((Player) event.getEntity());
-            double modifer = 1;
             if(ep > 9999){
                 modifer = 3;
             } else if(ep > 5000) {
@@ -56,20 +59,26 @@ public class EvilPointListener extends MyListener {
             } else if(ep == 0) {
                 modifer = 0.5;
             }
-            event.setDamage(event.getDamage() * modifer);
 
             //點數計算
             evilpoint.plusEvil(damager, (int)Math.ceil(event.getFinalDamage()));
             evilpoint.scoreboardUpdate(damager);
         } else {
             int ep = Cupboard.getInstance().evilpoint.getEvil((Player) event.getEntity());
-            double modifer = 1;
             if(ep > 9999){
                 modifer = 3;
             } else if(ep > 5000) {
                 modifer = 2;
             }
-            event.setDamage(event.getDamage() * modifer);
+        }
+        if(modifer != 1){
+            double damage = event.getFinalDamage() * modifer;
+            event.setDamage(DamageModifier.ABSORPTION, 0);
+            event.setDamage(DamageModifier.ARMOR, 0);
+            event.setDamage(DamageModifier.BLOCKING, 0);
+            event.setDamage(DamageModifier.MAGIC, 0);
+            event.setDamage(DamageModifier.RESISTANCE, 0);
+            event.setDamage(DamageModifier.BASE, damage);
         }
     }
     
