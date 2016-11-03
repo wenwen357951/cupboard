@@ -35,7 +35,7 @@ public class EvilPoint {
                     if(
                             !p.getInventory().contains(Material.TNT) &&
                             !p.getEnderChest().contains(Material.TNT) &&
-                            limit.get(p.getUniqueId()) < 60 &&
+                            limit.get(p.getUniqueId()) < 40 &&
                             evilpoint.getEvil(p) > 0
                     ){
                         int count = 1 + evilpoint.getEvil(p) / 1000; //每1000點多扣1
