@@ -38,7 +38,8 @@ public class EvilPoint {
                             limit.get(p.getUniqueId()) < 60 &&
                             evilpoint.getEvil(p) > 0
                     ){
-                        evilpoint.minusEvil(p, 1);
+                        int count = 1 + evilpoint.getEvil(p) / 1000; //每1000點多扣1
+                        evilpoint.minusEvil(p, count);
                         limit.put(p.getUniqueId(), limit.get(p.getUniqueId())+1);
                     }
                 });
