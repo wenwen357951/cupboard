@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -281,7 +282,7 @@ public class CupboardBlockProtectListener extends MyListener {
     //防止活塞
     @EventHandler
     void onPistonExtend(BlockPistonExtendEvent e){
-        e.setCancelled(checkPiston(e.getBlocks(), e.getBlock()));
+        e.setCancelled(checkPiston(e.getBlocks(), e.getBlock(), true, e.getDirection()));
     }
 
     @EventHandler
@@ -311,13 +312,43 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.REDSTONE_ORE,
             Material.GLOWING_REDSTONE_ORE,
     };
-    
     private boolean checkPiston(List<Block> blocks, Block piston){
+        return checkPiston(blocks, piston, false, null);
+    }
+    private boolean checkPiston(List<Block> blocks, Block piston, Boolean push, BlockFace direction){
         boolean check_flag = false;
         String uuid = null;
         if(piston.hasMetadata("owner_uuid")){
             uuid = piston.getMetadata("owner_uuid").get(0).asString();
             check_flag = true;
+        }
+        if(push && check_flag){
+            Location l = piston.getLocation().clone();
+            switch(direction){
+            case UP:
+                l.add(0, (blocks.size()+1), 0);
+                break;
+            case DOWN:
+                l.add(0, -(blocks.size()+1), 0);
+                break;
+            case WEST:
+                l.add(-(blocks.size()+1), 0, 0);
+                break;
+            case EAST:
+                l.add((blocks.size()+1), 0, 0);
+                break;
+            case NORTH:
+                l.add(0, 0, -(blocks.size()+1));
+                break;
+            case SOUTH:
+                l.add(0, 0, (blocks.size()+1));
+                break;
+            default:
+                break;
+            }
+            if(plugin.cupboards.checkIsLimitByUUIDString(l, uuid)){
+                return true;
+            }
         }
         for(Block block : blocks){
             if(block.getType().equals(Material.GOLD_BLOCK)){
@@ -335,6 +366,8 @@ public class CupboardBlockProtectListener extends MyListener {
             if(check_flag){
                 if(plugin.cupboards.checkIsLimitByUUIDString(block, uuid)){
                     return true;
+                } else {
+                    block.setMetadata("owner_uuid", new FixedMetadataValue(plugin, uuid));
                 }
             }
         }
