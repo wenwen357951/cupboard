@@ -281,13 +281,12 @@ public class CupboardBlockProtectListener extends MyListener {
     //防止活塞
     @EventHandler
     void onPistonExtend(BlockPistonExtendEvent e){
-        e.setCancelled(checkPiston(e.getBlocks()));
+        e.setCancelled(checkPiston(e.getBlocks(), e.getBlock()));
     }
 
     @EventHandler
     void onPistonRetract(BlockPistonRetractEvent e){
-        e.setCancelled(checkPiston(e.getBlocks()));
-        
+        e.setCancelled(checkPiston(e.getBlocks(), e.getBlock()));
     }
     
     private Material[] rails = {
@@ -313,7 +312,13 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.GLOWING_REDSTONE_ORE,
     };
     
-    private boolean checkPiston(List<Block> blocks){
+    private boolean checkPiston(List<Block> blocks, Block piston){
+        boolean check_flag = false;
+        String uuid = null;
+        if(piston.hasMetadata("owner_uuid")){
+            uuid = piston.getMetadata("owner_uuid").get(0).asString();
+            check_flag = true;
+        }
         for(Block block : blocks){
             if(block.getType().equals(Material.GOLD_BLOCK)){
                 return true;
@@ -327,8 +332,7 @@ public class CupboardBlockProtectListener extends MyListener {
             if(Config.WP_ORES_NO_PISTON.getBoolean() && Arrays.asList(ores).contains(block.getType())){
                 return true;
             }
-            if(block.hasMetadata("owner_uuid")){
-                String uuid = block.getMetadata("owner_uuid").get(0).asString();
+            if(check_flag){
                 if(plugin.cupboards.checkIsLimitByUUIDString(block, uuid)){
                     return true;
                 }
