@@ -39,9 +39,9 @@ public class EvilPointListener extends MyListener {
             damager = Util.getDamager(((EntityDamageByEntityEvent)event).getDamager());
         //傷害計算
         double modifer = 1;
+        int ep = Cupboard.getInstance().evilpoint.getEvil((Player) event.getEntity());
         if(damager != null && damager != event.getEntity()){
             //傷害增幅
-            int ep = Cupboard.getInstance().evilpoint.getEvil((Player) event.getEntity());
             if(ep > 9999){
                 modifer = 3;
             } else if(ep > 5000) {
@@ -60,7 +60,6 @@ public class EvilPointListener extends MyListener {
                 modifer = 0.5;
             }
         } else {
-            int ep = Cupboard.getInstance().evilpoint.getEvil((Player) event.getEntity());
             if(ep > 9999){
                 modifer = 3;
             } else if(ep > 5000) {
@@ -78,7 +77,7 @@ public class EvilPointListener extends MyListener {
         }
         
         //點數計算
-        if(damager != null && event.getFinalDamage() > 0.1){
+        if(damager != null && damager != event.getEntity() && event.getFinalDamage() > 0.1){
             evilpoint.plusEvil(damager, (int)Math.ceil(event.getFinalDamage()));
             evilpoint.scoreboardUpdate(damager);
         }
