@@ -1,6 +1,7 @@
 package tw.mics.spigot.plugin.cupboard.command;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import net.md_5.bungee.api.ChatColor;
 import tw.mics.spigot.plugin.cupboard.Cupboard;
+import tw.mics.spigot.plugin.cupboard.config.Config;
 
 public class GoldCommand implements CommandExecutor {
 	Cupboard plugin;
@@ -26,6 +28,11 @@ public class GoldCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage("§4this command must run on player");
+            return true;
+        }
+        List<String> enable_world = Config.ENABLE_WORLD.getStringList();
+        if(!enable_world.contains(((Player)sender).getWorld().getName())){
+            sender.sendMessage(ChatColor.RED + "這個世界的金磚並未啟用");
             return true;
         }
         String sender_uuid = ((Player)sender).getUniqueId().toString();
@@ -56,9 +63,9 @@ public class GoldCommand implements CommandExecutor {
                         public void run() {
                             Bukkit.getScheduler().cancelTask(sid);
                             plugin.cupboards.giveAcceee(sender_uuid, uuid, ((Player)sender).getLocation().clone());
-                            sender.sendMessage(ChatColor.GREEN + "已經把附近 ±200 格內已授權金磚賦予給 " + Bukkit.getPlayer(UUID.fromString(uuid)).getDisplayName());
+                            sender.sendMessage(ChatColor.GREEN + "已把附近 ±200 格內已授權金磚賦予給 " + Bukkit.getPlayer(UUID.fromString(uuid)).getDisplayName());
                             Player receiver = Bukkit.getPlayer(UUID.fromString(uuid));
-                            receiver.sendMessage(ChatColor.GREEN + ((Player)sender).getDisplayName() + " 已經把附近 ±200 格內已授權金磚賦予給您");
+                            receiver.sendMessage(ChatColor.GREEN + " " + ((Player)sender).getDisplayName() + " 把附近 ±200 格內已授權金磚賦予給您");
                             
                         }
                     });
