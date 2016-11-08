@@ -123,6 +123,25 @@ public class CupboardsData {
         return flag;
     }
     
+    public void giveAcceee(String giver_uuid, String receiver_uuid){
+        Statement stmt;
+        try {
+            stmt = db_conn.createStatement();
+            String sql = String.format("INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) "
+                    + "SELECT \"" + receiver_uuid + "\",CID  AS CT FROM PLAYER_OWN_CUPBOARDS  T1 "
+                    + "WHERE (UUID=\"" + giver_uuid + "\" OR UUID=\"" + receiver_uuid + "\") "
+                    + "GROUP BY CID having COUNT(CID)=1");
+                    stmt.execute(sql);
+                    stmt.close();
+                    db_conn.commit();
+        } catch (SQLException e) {
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            if(Config.DEBUG.getBoolean())e.printStackTrace();
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
+    }
+    
 	public Boolean toggleBoardAccess(OfflinePlayer p, Block b){
         Boolean access_flag = null;
         Boolean return_flag = null;
@@ -350,6 +369,42 @@ public class CupboardsData {
         if(flag_access) return true;
         return false;
     }
+
+    public boolean checkDirectAccess(Location location, Player player){
+        return checkDirectAccess(location, player.getUniqueId().toString());
+    }
+    public boolean checkDirectAccess(Location location, String uuid){
+        boolean flag_access = true;
+        try {
+            Statement stmt = db_conn.createStatement();
+            String sql = "SELECT CUPBOARDS.CID FROM CUPBOARDS "
+                    + String.format(
+                            "WHERE X = %d "
+                          + "AND Y = %d "
+                          + "AND Z = %d "
+                          + "AND WORLD = \"%s\" "
+                          , location.getBlockX()
+                          , location.getBlockY()
+                          , location.getBlockZ()
+                          , location.getWorld());
+            if(uuid != null) sql += String.format("AND CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
+            ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                flag_access = false;
+            }
+            rs.close();
+            stmt.close();
+        } catch ( SQLException e ) {
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
+            flag_access = false;
+        }
+        if(flag_access) return true;
+        return false;
+    }
+    
     private void changelog(String msg){
         new Thread(() -> {
             try
