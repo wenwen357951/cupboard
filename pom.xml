@@ -6,7 +6,7 @@
     <groupId>tw.mics.spigot.plugin.cupboard</groupId>
     <artifactId>Cupboard</artifactId>
     <packaging>jar</packaging>
-    <version>2.9.0</version>
+    <version>2.9.1</version>
     <name>Cupboard</name>
     <url>http://mics.tw</url>
     <description>Let a PvP server as like as Rust fun, but still keep Minecraft original play style.</description>
