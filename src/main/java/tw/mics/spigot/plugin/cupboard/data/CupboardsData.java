@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -228,76 +229,95 @@ public class CupboardsData {
         return !checkAccess(l, uuid);
     }
 
+    @SuppressWarnings("deprecation")
     public void cleanNotExistCupboard() {
-        List<Integer> remove_cid_list = new ArrayList<Integer>();
-        List<String> remove_uuid_list = new ArrayList<String>();
-        try {
-            Statement stmt = db_conn.createStatement();
-            //Clear non-exist player data
-            String sql = "SELECT UUID FROM PLAYER_OWN_CUPBOARDS GROUP BY UUID;";
-            ResultSet rs = stmt.executeQuery(sql);
-            while(rs.next()){
-                File player_file = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), 
-                         File.separatorChar + "playerdata" + File.separatorChar + rs.getString(1) + ".dat");
-                if(!player_file.exists()){
-                    remove_uuid_list.add(rs.getString(1));
+        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
+            @Override
+            public void run() {
+                List<Integer> remove_cid_list = new ArrayList<Integer>();
+                List<String> remove_uuid_list = new ArrayList<String>();
+                try {
+                    Statement stmt = db_conn.createStatement();
+                    //Clear non-exist player data
+                    String sql = "SELECT UUID FROM PLAYER_OWN_CUPBOARDS GROUP BY UUID;";
+                    ResultSet rs = stmt.executeQuery(sql);
+                    while(rs.next()){
+                        File player_file = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), 
+                                 File.separatorChar + "playerdata" + File.separatorChar + rs.getString(1) + ".dat");
+                        if(!player_file.exists()){
+                            remove_uuid_list.add(rs.getString(1));
+                        }
+                    }
+                    
+                    String sql_remove_player = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE UUID = ?";
+                    PreparedStatement pstmt_player = db_conn.prepareStatement(sql_remove_player);
+                    for(String uuid : remove_uuid_list){
+                        pstmt_player.setString(1, uuid);
+                        pstmt_player.addBatch();
+                        changelog(String.format("Player data %s removed", uuid));
+                    }
+                    pstmt_player.executeBatch();
+                    pstmt_player.close();
+                    
+                    //Clean no anyone can access gold block
+                    sql = "SELECT CID, LOC FROM CUPBOARDS WHERE CID NOT IN "
+                            + "(SELECT CID FROM PLAYER_OWN_CUPBOARDS GROUP BY CID)";
+                    rs = stmt.executeQuery(sql);
+                    while(rs.next()){
+                        String loc = rs.getString(2);
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                            @Override
+                            public void run() {
+                                Util.StringToLoc(loc).getBlock().setType(Material.AIR);
+                            }
+                        });
+                        remove_cid_list.add(rs.getInt(1));
+                        changelog(String.format("Cupboard at %s removed (reason: no anyone can access)", rs.getString(2)));
+                    }
+                    
+                    //Clear not gold block data
+                    sql = "SELECT CID, LOC FROM CUPBOARDS;";
+                    rs = stmt.executeQuery(sql);
+                    while(rs.next()){
+                        int cid = rs.getInt(1);
+                        String loc = rs.getString(2);
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                            @Override
+                            public void run() {
+                                if(Util.StringToLoc(loc).getBlock().getType() != Material.GOLD_BLOCK){
+                                    remove_cid_list.add(cid);
+                                    changelog(String.format("Cupboard at %s removed (reason: not gold block)", loc));
+                                }
+                            }
+                        });
+                    }
+                    
+                    stmt.close();
+                    
+                    String sql_remove_cupboards = "DELETE FROM CUPBOARDS WHERE CID = ?";
+                    String sql_remove_player_owner = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID = ?";
+                    PreparedStatement pstmt_cupboards = db_conn.prepareStatement(sql_remove_cupboards);
+                    PreparedStatement pstmt_player_owner = db_conn.prepareStatement(sql_remove_player_owner);
+                    for(Integer cid : remove_cid_list){
+                        pstmt_cupboards.setInt(1, cid);
+                        pstmt_player_owner.setInt(1, cid);
+                        pstmt_cupboards.addBatch();
+                        pstmt_player_owner.addBatch();
+                    }
+                    pstmt_cupboards.executeBatch();
+                    pstmt_player_owner.executeBatch();
+                    pstmt_cupboards.close();
+                    pstmt_player_owner.close();
+                    
+                    db_conn.commit();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
-            }
-            
-            String sql_remove_player = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE UUID = ?";
-            PreparedStatement pstmt_player = db_conn.prepareStatement(sql_remove_player);
-            for(String uuid : remove_uuid_list){
-                pstmt_player.setString(1, uuid);
-                pstmt_player.addBatch();
-                this.changelog(String.format("Player data %s removed", uuid));
-            }
-            pstmt_player.executeBatch();
-            pstmt_player.close();
-            
-            //Clean no anyone can access gold block
-            sql = "SELECT CID, LOC FROM CUPBOARDS WHERE CID NOT IN "
-                    + "(SELECT CID FROM PLAYER_OWN_CUPBOARDS GROUP BY CID)";
-            rs = stmt.executeQuery(sql);
-            while(rs.next()){
-                Util.StringToLoc(rs.getString(2)).getBlock().setType(Material.AIR);
-                remove_cid_list.add(rs.getInt(1));
-                this.changelog(String.format("Cupboard at %s removed (reason: no anyone can access)", rs.getString(2)));
-            }
-            
-            //Clear not gold block data
-            sql = "SELECT CID, LOC FROM CUPBOARDS;";
-            rs = stmt.executeQuery(sql);
-            while(rs.next()){
-                if(Util.StringToLoc(rs.getString(2)).getBlock().getType() != Material.GOLD_BLOCK){
-                    remove_cid_list.add(rs.getInt(1));
-                    this.changelog(String.format("Cupboard at %s removed (reason: not gold block)", rs.getString(2)));
-                }
-            }
-            
-            stmt.close();
-            
-            String sql_remove_cupboards = "DELETE FROM CUPBOARDS WHERE CID = ?";
-            String sql_remove_player_owner = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID = ?";
-            PreparedStatement pstmt_cupboards = db_conn.prepareStatement(sql_remove_cupboards);
-            PreparedStatement pstmt_player_owner = db_conn.prepareStatement(sql_remove_player_owner);
-            for(Integer cid : remove_cid_list){
-                pstmt_cupboards.setInt(1, cid);
-                pstmt_player_owner.setInt(1, cid);
-                pstmt_cupboards.addBatch();
-                pstmt_player_owner.addBatch();
-            }
-            pstmt_cupboards.executeBatch();
-            pstmt_player_owner.executeBatch();
-            pstmt_cupboards.close();
-            pstmt_player_owner.close();
-            
-            db_conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
-        this.plugin.log("Cleaned %d not exist player!", remove_uuid_list.size());
-        this.plugin.log("Cleaned %d not exist or non anyone can access cupboards!", remove_cid_list.size());
+                plugin.log("Cleaned %d not exist player!", remove_uuid_list.size());
+                plugin.log("Cleaned %d not exist or non anyone can access cupboards!", remove_cid_list.size());
+            }
+        });
     }
 
     private boolean checkAccess(Block b){
