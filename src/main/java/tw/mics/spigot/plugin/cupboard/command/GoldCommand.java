@@ -55,10 +55,10 @@ public class GoldCommand implements CommandExecutor {
                         @Override
                         public void run() {
                             Bukkit.getScheduler().cancelTask(sid);
-                            plugin.cupboards.giveAcceee(sender_uuid, uuid);
-                            sender.sendMessage(ChatColor.GREEN + "已將所有已授權金磚賦予給" + Bukkit.getPlayer(UUID.fromString(uuid)).getDisplayName());
+                            plugin.cupboards.giveAcceee(sender_uuid, uuid, ((Player)sender).getLocation().clone());
+                            sender.sendMessage(ChatColor.GREEN + "已經把附近 ±200 格內已授權金磚賦予給 " + Bukkit.getPlayer(UUID.fromString(uuid)).getDisplayName());
                             Player receiver = Bukkit.getPlayer(UUID.fromString(uuid));
-                            receiver.sendMessage(ChatColor.GREEN + "您收到來自 " + ((Player)sender).getDisplayName() + " 的已授權金磚賦予");
+                            receiver.sendMessage(ChatColor.GREEN + ((Player)sender).getDisplayName() + " 已經把附近 ±200 格內已授權金磚賦予給您");
                             
                         }
                     });
@@ -82,6 +82,7 @@ public class GoldCommand implements CommandExecutor {
                 }
                 if(player == sender){
                     sender.sendMessage(ChatColor.RED + "無法賦予給自己");
+                    return true;
                 }
                 Location giver_location = ((Player)sender).getLocation();
                 Location receiver_location = player.getLocation();
@@ -100,15 +101,16 @@ public class GoldCommand implements CommandExecutor {
                     }
                 }, 600);
                 confirm_list.put(sender_uuid, args[0] + "," + String.valueOf(sid) + "," + player.getUniqueId().toString());
-                sender.sendMessage(ChatColor.GREEN + "確定要將所有已授權金磚賦予給 " + player.getDisplayName() + " ?");
-                sender.sendMessage(ChatColor.GREEN + "如果確定賦予請在 30 秒內輸入 /gold confirm");
+                sender.sendMessage(ChatColor.GREEN + "即將把附近 ±200 格內已授權金磚賦予給 " + player.getDisplayName() + ", 確定要執行?");
+                sender.sendMessage(ChatColor.GREEN + "如果確定執行請在 30 秒內輸入 /gold confirm");
+                sender.sendMessage(ChatColor.RED + "警告: 這並不會讓自己的授權消失, 對方將擁有完整授權, 此動作無法取消.");
                 return true;
             }
         }
         
         sender.sendMessage(ChatColor.GOLD + "金磚管理指令:");
-        sender.sendMessage(ChatColor.YELLOW + "/gold give <player>  - 把所有已授權金磚賦予該玩家");
-        sender.sendMessage(ChatColor.YELLOW + "/gold nearest        - 找出附近 20 格內最近的已授權金磚");
+        sender.sendMessage(ChatColor.YELLOW + "/gold give <player>  - 把附近 ±200 格內已授權金磚賦予該玩家");
+        sender.sendMessage(ChatColor.YELLOW + "/gold nearest        - 找出附近 ±20 格內最近的已授權金磚");
         return true;
     }
 

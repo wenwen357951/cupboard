@@ -125,17 +125,30 @@ public class CupboardsData {
         return flag;
     }
     
-    public void giveAcceee(String giver_uuid, String receiver_uuid){
+    public void giveAcceee(String giver_uuid, String receiver_uuid, Location l){
         Statement stmt;
+        int x = l.getBlockX();
+        int y = l.getBlockY();
+        int z = l.getBlockZ();
+        int radius = 200;
+        String world = l.getWorld().getName();
         try {
             stmt = db_conn.createStatement();
             String sql = String.format("INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) "
                     + "SELECT \"" + receiver_uuid + "\",CID  AS CT FROM PLAYER_OWN_CUPBOARDS  T1 "
                     + "WHERE (UUID=\"" + giver_uuid + "\" OR UUID=\"" + receiver_uuid + "\") "
+                    + "AND CID IN (SELECT CID FROM CUPBOARDS "
+                    + String.format("WHERE X <= %d AND X >= %d "
+                            + "AND Z <= %d AND Z >= %d "
+                            + "AND WORLD = \"%s\") "
+                            , x + radius, x - radius
+                            , z + radius, z - radius
+                            , world)
                     + "GROUP BY CID having COUNT(CID)=1");
-                    stmt.execute(sql);
-                    stmt.close();
-                    db_conn.commit();
+            plugin.log(sql);
+            stmt.execute(sql);
+            stmt.close();
+            db_conn.commit();
         } catch (SQLException e) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
