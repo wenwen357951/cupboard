@@ -366,13 +366,13 @@ public class CupboardsData {
             }
             check_access_cache.put(cache_key, flag_access);
         }
-        if(flag_access) return true;
-        return false;
+        return flag_access;
     }
 
-    public boolean checkDirectAccess(Location location, Player player){
-        return checkDirectAccess(location, player.getUniqueId().toString());
+    public boolean checkDirectAccess(Block block, Player player){
+        return checkDirectAccess(block.getLocation(), player.getUniqueId().toString());
     }
+    
     public boolean checkDirectAccess(Location location, String uuid){
         boolean flag_access = true;
         try {
@@ -386,8 +386,9 @@ public class CupboardsData {
                           , location.getBlockX()
                           , location.getBlockY()
                           , location.getBlockZ()
-                          , location.getWorld());
-            if(uuid != null) sql += String.format("AND CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
+                          , location.getWorld().getName());
+            sql += String.format("AND CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
+            plugin.log(sql);
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 flag_access = false;
@@ -401,8 +402,7 @@ public class CupboardsData {
             if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
             flag_access = false;
         }
-        if(flag_access) return true;
-        return false;
+        return flag_access;
     }
     
     private void changelog(String msg){

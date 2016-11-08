@@ -70,9 +70,16 @@ public class CupboardBlockProtectListener extends MyListener {
     public void onBlockBreak(BlockBreakEvent e){
         Player p = e.getPlayer();
         Block b = e.getBlock();
-        if(b.getType() == Material.GOLD_BLOCK) return; //拆除金磚不防止
         if( p != null){
-            if(data.checkIsLimit(b, p)){
+            if(
+                    (
+                        b.getType() == Material.GOLD_BLOCK &&
+                        !data.checkDirectAccess(b, p)
+                    ) || (
+                        b.getType() != Material.GOLD_BLOCK &&
+                        data.checkIsLimit(b, p)
+                    )
+            ){
                 if(this.plugin.isOP(p))return;
                 e.setCancelled(true);
                 p.sendMessage(Locales.NO_ACCESS.getString());
