@@ -32,8 +32,8 @@ public class GoldCommand implements CommandExecutor {
         if(args.length > 0){
             //-----------nearest-----------
             if(args[0].equals("nearest") && args.length == 1){
-                //TODO Finder
-                sender.sendMessage("此功能尚未完成.");
+                sender.sendMessage(ChatColor.GREEN + "開始尋找...");
+                plugin.cupboards.findNearest((Player) sender);
                 return true;
             }
 
@@ -108,7 +108,7 @@ public class GoldCommand implements CommandExecutor {
         
         sender.sendMessage(ChatColor.GOLD + "金磚管理指令:");
         sender.sendMessage(ChatColor.YELLOW + "/gold give <player>  - 把所有已授權金磚賦予該玩家");
-        sender.sendMessage(ChatColor.YELLOW + "/gold nearest        - 找出  20 格內已授權金磚");
+        sender.sendMessage(ChatColor.YELLOW + "/gold nearest        - 找出附近 20 格內最近的已授權金磚");
         return true;
     }
 

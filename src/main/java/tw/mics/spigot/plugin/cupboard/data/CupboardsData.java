@@ -26,6 +26,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import net.md_5.bungee.api.ChatColor;
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.utils.Util;
@@ -408,7 +409,6 @@ public class CupboardsData {
                           , location.getBlockZ()
                           , location.getWorld().getName());
             sql += String.format("AND CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
-            plugin.log(sql);
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 flag_access = false;
@@ -423,6 +423,59 @@ public class CupboardsData {
             flag_access = false;
         }
         return flag_access;
+    }
+    
+    @SuppressWarnings("deprecation")
+    public void findNearest(Player p){
+        Location l = p.getLocation().clone();
+        String uuid = p.getUniqueId().toString();
+        int x = l.getBlockX();
+        int y = l.getBlockY();
+        int z = l.getBlockZ();
+        int radius = 20;
+        String world = l.getWorld().getName();
+        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
+            @Override
+            public void run() {
+                double distance = radius*2;
+                String nearest_loc = null;
+                try {
+                    Statement stmt = db_conn.createStatement();
+                    String sql = "SELECT CUPBOARDS.LOC FROM CUPBOARDS "
+                            + String.format(
+                                    "WHERE X <= %d AND X >= %d "
+                                  + "AND Y <= %d AND Y >= %d "
+                                  + "AND Z <= %d AND Z >= %d "
+                                  + "AND WORLD = \"%s\" "
+                                  , x + radius, x - radius
+                                  , y + radius, y - radius
+                                  , z + radius, z - radius
+                                  , world);
+                    sql += String.format("AND CID IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
+                    ResultSet rs = stmt.executeQuery(sql);
+                    while(rs.next()){
+                        String this_loc_str = rs.getString(1);
+                        double this_distance = l.distance(Util.StringToLoc(this_loc_str));
+                        if(this_distance < distance){
+                            nearest_loc = this_loc_str;
+                            distance = this_distance;
+                        }
+                    }
+                    rs.close();
+                    stmt.close();
+                } catch ( SQLException e ) {
+                    plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+                    plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage(ChatColor.DARK_RED + "系統嚴重錯誤, 請聯繫管理員");
+                }
+                if(nearest_loc == null){
+                    p.sendMessage(ChatColor.RED + "附近沒有已授權金磚");
+                } else {
+                    p.sendMessage(ChatColor.GOLD + "最近的已授權金磚在 " + nearest_loc);
+                }
+            }
+        });
     }
     
     private void changelog(String msg){
