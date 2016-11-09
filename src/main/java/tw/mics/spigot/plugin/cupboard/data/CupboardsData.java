@@ -128,7 +128,6 @@ public class CupboardsData {
     public void giveAcceee(String giver_uuid, String receiver_uuid, Location l){
         Statement stmt;
         int x = l.getBlockX();
-        int y = l.getBlockY();
         int z = l.getBlockZ();
         int radius = 200;
         String world = l.getWorld().getName();
@@ -145,7 +144,6 @@ public class CupboardsData {
                             , z + radius, z - radius
                             , world)
                     + "GROUP BY CID having COUNT(CID)=1");
-            plugin.log(sql);
             stmt.execute(sql);
             stmt.close();
             db_conn.commit();
@@ -155,6 +153,7 @@ public class CupboardsData {
             if(Config.DEBUG.getBoolean())e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
+        check_access_cache.clear();
     }
     
 	public Boolean toggleBoardAccess(OfflinePlayer p, Block b){
@@ -367,11 +366,10 @@ public class CupboardsData {
     }
     
     private boolean checkAccess(String world, int x, int y, int z, String uuid,int radius){
-        boolean flag_access = true;
         String cache_key = String.format("%s,%d,%d,%d,%s,%d",world,x,y,z,uuid,radius);
-        if(check_access_cache.containsKey(cache_key)){
-            flag_access = check_access_cache.get(cache_key);
-        } else {
+        Boolean flag_access = check_access_cache.get(cache_key);
+        if(flag_access == null){
+            flag_access = true;
             try {
                 Statement stmt = db_conn.createStatement();
                 String sql = "SELECT CUPBOARDS.CID FROM CUPBOARDS "
