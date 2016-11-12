@@ -49,7 +49,6 @@ public class Cupboard extends JavaPlugin implements Listener {
 	
 	@Override
 	public void onEnable() {
-		
 		INSTANCE = this;
 		registedObject = new ArrayList<Object>();
         //load config
@@ -68,7 +67,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         this.logDebug("Loaded Cupboards data!");
 
         this.logDebug("Cleaning Cupboards data!");
-        cupboards.cleanNotExistCupboard();
+        cupboards.cleanNotExistUser();
 
         this.getCommand("kill").setExecutor(new KillCommand(this));
         this.getCommand("cupboardreload").setExecutor(new ReloadCommand(this));
