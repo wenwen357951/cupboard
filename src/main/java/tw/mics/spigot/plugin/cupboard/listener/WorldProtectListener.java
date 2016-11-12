@@ -101,7 +101,8 @@ public class WorldProtectListener extends MyListener {
             Location l = e.getToBlock().getLocation();
             for(int i = 0; i < lava_high_limit; i++){
                 l.add(0, -1, 0);
-                if(l.getBlock().getType().isSolid()){
+                Material block_type = l.getBlock().getType();
+                if(block_type != Material.AIR){
                     flag_deny = false;
                     break;
                 }
@@ -132,7 +133,8 @@ public class WorldProtectListener extends MyListener {
             Location l = e.getToBlock().getLocation();
             for(int i = 0; i < water_high_limit; i++){
                 l.add(0, -1, 0);
-                if(l.getBlock().getType().isSolid()){
+                Material block_type = l.getBlock().getType();
+                if(block_type != Material.AIR){
                     flag_deny = false;
                     break;
                 }
