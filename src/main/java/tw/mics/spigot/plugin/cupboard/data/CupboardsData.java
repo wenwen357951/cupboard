@@ -80,8 +80,7 @@ public class CupboardsData {
                 pstmt.execute();
                 pstmt.close();
             }
-            
-            
+            db_conn.commit();
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
@@ -112,7 +111,7 @@ public class CupboardsData {
             }
             stmt.close();
             rs.close();
-            
+            db_conn.commit();
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
@@ -172,7 +171,7 @@ public class CupboardsData {
             }
             stmt.close();
             rs.close();
-            
+            db_conn.commit();
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
@@ -347,7 +346,7 @@ public class CupboardsData {
                     pstmt_player.close();
                     
                     stmt.close();
-                    
+                    db_conn.commit();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

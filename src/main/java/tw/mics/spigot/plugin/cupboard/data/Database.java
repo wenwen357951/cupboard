@@ -29,7 +29,7 @@ public class Database {
         try {
           Class.forName("org.sqlite.JDBC");
           db_conn = DriverManager.getConnection("jdbc:sqlite:"+dbfile.getPath());
-          db_conn.setAutoCommit(true);
+          db_conn.setAutoCommit(false);
        
           //新增表格
           Statement stmt = db_conn.createStatement();
@@ -56,6 +56,7 @@ public class Database {
                   " EVIL_POINT INTEGER NOT NULL)";
           stmt.executeUpdate(sql);
           stmt.close();
+          db_conn.commit();
           
         } catch ( SQLException | ClassNotFoundException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
