@@ -281,16 +281,22 @@ public class CupboardsData {
                     
                     //Delete
                     String sql_remove_cupboards = "DELETE FROM CUPBOARDS WHERE CID = ?";
+                    String sql_remove_player_owner = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID = ?";
                     PreparedStatement pstmt_cupboards = db_conn.prepareStatement(sql_remove_cupboards);
+                    PreparedStatement pstmt_player_owner = db_conn.prepareStatement(sql_remove_player_owner);
                     for(Integer cid : remove_cid_list){
                         pstmt_cupboards.setInt(1, cid);
+                        pstmt_player_owner.setInt(1, cid);
                         pstmt_cupboards.addBatch();
+                        pstmt_player_owner.addBatch();
                     }
                     pstmt_cupboards.executeBatch();
-                    pstmt_cupboards.close();  
+                    pstmt_player_owner.executeBatch();
+                    pstmt_cupboards.close();
+                    pstmt_player_owner.close();   
                     
-                    sql = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID NOT IN (SELECT CID FROM CUPBOARDS);";
-                    stmt.execute(sql);
+                    //sql = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID NOT IN (SELECT CID FROM CUPBOARDS);";
+                    //stmt.execute(sql);
                     stmt.close();
                     db_conn.commit();
                 } catch (SQLException e) {
