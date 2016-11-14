@@ -81,10 +81,11 @@ public class CupboardsData {
                 pstmt.close();
             }
             
-            db_conn.commit();
+            
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
         
@@ -111,10 +112,11 @@ public class CupboardsData {
             }
             stmt.close();
             rs.close();
-            db_conn.commit();
+            
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         } 
         
@@ -170,11 +172,11 @@ public class CupboardsData {
             }
             stmt.close();
             rs.close();
-            db_conn.commit();
+            
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
-            if(Config.DEBUG.getBoolean())e.printStackTrace();
+            e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         } 
 	    check_access_cache.clear();
@@ -237,6 +239,7 @@ public class CupboardsData {
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
             flag_access = false;
@@ -281,24 +284,17 @@ public class CupboardsData {
                     
                     //Delete
                     String sql_remove_cupboards = "DELETE FROM CUPBOARDS WHERE CID = ?";
-                    String sql_remove_player_owner = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID = ?";
                     PreparedStatement pstmt_cupboards = db_conn.prepareStatement(sql_remove_cupboards);
-                    PreparedStatement pstmt_player_owner = db_conn.prepareStatement(sql_remove_player_owner);
                     for(Integer cid : remove_cid_list){
                         pstmt_cupboards.setInt(1, cid);
-                        pstmt_player_owner.setInt(1, cid);
                         pstmt_cupboards.addBatch();
-                        pstmt_player_owner.addBatch();
                     }
                     pstmt_cupboards.executeBatch();
-                    pstmt_player_owner.executeBatch();
                     pstmt_cupboards.close();
-                    pstmt_player_owner.close();   
                     
-                    //sql = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID NOT IN (SELECT CID FROM CUPBOARDS);";
-                    //stmt.execute(sql);
+                    sql = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID NOT IN (SELECT CID FROM CUPBOARDS);";
+                    stmt.execute(sql);
                     stmt.close();
-                    db_conn.commit();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -351,7 +347,7 @@ public class CupboardsData {
                     pstmt_player.close();
                     
                     stmt.close();
-                    db_conn.commit();
+                    
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -400,10 +396,10 @@ public class CupboardsData {
                     }
                     rs.close();
                     stmt.close();
-                    db_conn.close();
                 } catch ( SQLException e ) {
                     plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+                    e.printStackTrace();
                     plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage(ChatColor.DARK_RED + "系統嚴重錯誤, 請聯繫管理員");
                 }
@@ -439,7 +435,7 @@ public class CupboardsData {
                     + "GROUP BY CID");
             stmt.execute(sql);
             stmt.close();
-            db_conn.commit();
+            
             changelog(String.format("%s give his cupbaords to %s at %s", 
                     Bukkit.getOfflinePlayer(UUID.fromString(giver_uuid)).getName(), 
                     Bukkit.getOfflinePlayer(UUID.fromString(receiver_uuid)).getName(),
@@ -447,7 +443,7 @@ public class CupboardsData {
         } catch (SQLException e) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
-            if(Config.DEBUG.getBoolean())e.printStackTrace();
+            e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
         check_access_cache.clear();
@@ -513,6 +509,7 @@ public class CupboardsData {
             } catch ( SQLException e ) {
                 plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+                e.printStackTrace();
                 plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
                 flag_access = false;

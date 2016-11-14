@@ -59,10 +59,10 @@ public class EvilPointData {
             pstmt.setInt(2,0);
             pstmt.execute();
             pstmt.close();
-            db_conn.commit();
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
     }
@@ -79,10 +79,10 @@ public class EvilPointData {
             pstmt.setString(2, UUID);
             pstmt.execute();
             pstmt.close();
-            db_conn.commit();
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         } 
         cache.put(UUID, point);
@@ -101,10 +101,10 @@ public class EvilPointData {
             pstmt.setString(2, UUID);
             pstmt.execute();
             pstmt.close();
-            db_conn.commit();
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         } 
         cache.put(UUID, point);
@@ -128,10 +128,10 @@ public class EvilPointData {
             }
             stmt.close();
             rs.close();
-            db_conn.commit();
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         } 
         cache.put(UUID, point);
