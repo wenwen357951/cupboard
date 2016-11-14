@@ -136,18 +136,23 @@ public class CupboardsData {
             stmt = db_conn.createStatement();
             String sql = String.format("INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) "
                     + "SELECT \"" + receiver_uuid + "\",CID  AS CT FROM PLAYER_OWN_CUPBOARDS  T1 "
-                    + "WHERE (UUID=\"" + giver_uuid + "\" OR UUID=\"" + receiver_uuid + "\") "
-                    + "AND CID IN (SELECT CID FROM CUPBOARDS "
+                    + "WHERE CID IN (SELECT CID FROM CUPBOARDS "
                     + String.format("WHERE X <= %d AND X >= %d "
                             + "AND Z <= %d AND Z >= %d "
                             + "AND WORLD = \"%s\") "
                             , x + radius, x - radius
                             , z + radius, z - radius
                             , world)
-                    + "GROUP BY CID having COUNT(CID)=1");
+                    + "AND CID IN (SELECT CID FROM `PLAYER_OWN_CUPBOARDS` WHERE `UUID`=\"" + giver_uuid + "\") "
+                    + "AND CID NOT IN (SELECT CID FROM `PLAYER_OWN_CUPBOARDS` WHERE `UUID`=\"" + receiver_uuid + "\") "
+                    + "GROUP BY CID");
             stmt.execute(sql);
             stmt.close();
             db_conn.commit();
+            changelog(String.format("%s give his cupbaords to %s at %s", 
+                    Bukkit.getOfflinePlayer(UUID.fromString(giver_uuid)).getName(), 
+                    Bukkit.getOfflinePlayer(UUID.fromString(receiver_uuid)).getName(),
+                    Util.LocToString(l)));
         } catch (SQLException e) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
@@ -277,19 +282,18 @@ public class CupboardsData {
                     
                     //Delete
                     String sql_remove_cupboards = "DELETE FROM CUPBOARDS WHERE CID = ?";
-                    String sql_remove_player_owner = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID = ?";
                     PreparedStatement pstmt_cupboards = db_conn.prepareStatement(sql_remove_cupboards);
-                    PreparedStatement pstmt_player_owner = db_conn.prepareStatement(sql_remove_player_owner);
                     for(Integer cid : remove_cid_list){
                         pstmt_cupboards.setInt(1, cid);
-                        pstmt_player_owner.setInt(1, cid);
                         pstmt_cupboards.addBatch();
-                        pstmt_player_owner.addBatch();
                     }
                     pstmt_cupboards.executeBatch();
-                    pstmt_player_owner.executeBatch();
-                    pstmt_cupboards.close();
-                    pstmt_player_owner.close();              
+                    pstmt_cupboards.close();  
+                    
+                    sql = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID NOT IN (SELECT CID FROM CUPBOARDS);";
+                    stmt.execute(sql);
+                    stmt.close();
+                    db_conn.commit();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -305,8 +309,21 @@ public class CupboardsData {
                 List<String> remove_uuid_list = new ArrayList<String>();
                 try {
                     Statement stmt = db_conn.createStatement();
-                    //Clear non-exist player data
-                    String sql = "SELECT UUID FROM PLAYER_OWN_CUPBOARDS GROUP BY UUID;";
+                    
+                    //delete duplicate
+                    String sql = "CREATE TEMPORARY TABLE PLAYER_OWN_CUPBOARDS_TEMP (UUID, CID);";
+                    stmt.execute(sql);
+                    sql = "INSERT INTO PLAYER_OWN_CUPBOARDS_TEMP(UUID, CID) SELECT UUID, CID FROM PLAYER_OWN_CUPBOARDS GROUP BY UUID, CID;";
+                    stmt.execute(sql);
+                    sql = "DELETE FROM PLAYER_OWN_CUPBOARDS;";
+                    stmt.execute(sql);
+                    sql = "INSERT INTO PLAYER_OWN_CUPBOARDS(UUID, CID) SELECT UUID, CID FROM PLAYER_OWN_CUPBOARDS_TEMP;";
+                    stmt.execute(sql);
+                    sql = "DROP TABLE PLAYER_OWN_CUPBOARDS_TEMP;";
+                    stmt.execute(sql);
+                    
+                    //find non-exist player data
+                    sql = "SELECT UUID FROM PLAYER_OWN_CUPBOARDS GROUP BY UUID;";
                     ResultSet rs = stmt.executeQuery(sql);
                     while(rs.next()){
                         File player_file = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(),
@@ -315,7 +332,8 @@ public class CupboardsData {
                             remove_uuid_list.add(rs.getString(1));
                         }
                     }
-                    
+
+                    //delete non-exist player data
                     String sql_remove_player = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE UUID = ?";
                     PreparedStatement pstmt_player = db_conn.prepareStatement(sql_remove_player);
                     for(String uuid : remove_uuid_list){
