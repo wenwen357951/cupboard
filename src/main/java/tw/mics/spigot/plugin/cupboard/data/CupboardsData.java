@@ -34,15 +34,12 @@ import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class CupboardsData {
     Connection db_conn;
-    
 	final private int PROTECT_DIST = Config.CUPBOARD_PROTECT_DIST.getInt();
 	final private int CUPBOARD_DIST = Config.CUPBOARD_BETWEEN_DIST.getInt();
-    
 	final int maxEntries = 10000;
-	
 	private Map<String, Boolean> check_access_cache;
-	
 	private Cupboard plugin;
+	
 	public CupboardsData(Cupboard p, Connection conn){
 		this.plugin = p;
 		db_conn = conn;
@@ -56,6 +53,7 @@ public class CupboardsData {
         };
     }
 
+    //================================= Check limit ====================================
 	public boolean putCupboard(Block b, OfflinePlayer p){
 	    if(p != null && !checkAccess(b, p, CUPBOARD_DIST)) return false;
         try {
@@ -97,7 +95,6 @@ public class CupboardsData {
 	
     public boolean removeCupboard(Block b, OfflinePlayer p){
         boolean flag = false;
-        
         try {
             Statement stmt = db_conn.createStatement();
             String sql = String.format("SELECT CUPBOARDS.CID FROM CUPBOARDS WHERE LOC = \"%s\"", Util.LocToString(b.getLocation()));
@@ -124,42 +121,6 @@ public class CupboardsData {
         this.changelog(String.format("%s remove Cupboard at %s.", p.getName(), Util.LocToString(b.getLocation())));
         check_access_cache.clear();
         return flag;
-    }
-    
-    public void giveAcceee(String giver_uuid, String receiver_uuid, Location l){
-        Statement stmt;
-        int x = l.getBlockX();
-        int z = l.getBlockZ();
-        int radius = 200;
-        String world = l.getWorld().getName();
-        try {
-            stmt = db_conn.createStatement();
-            String sql = String.format("INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) "
-                    + "SELECT \"" + receiver_uuid + "\",CID  AS CT FROM PLAYER_OWN_CUPBOARDS  T1 "
-                    + "WHERE CID IN (SELECT CID FROM CUPBOARDS "
-                    + String.format("WHERE X <= %d AND X >= %d "
-                            + "AND Z <= %d AND Z >= %d "
-                            + "AND WORLD = \"%s\") "
-                            , x + radius, x - radius
-                            , z + radius, z - radius
-                            , world)
-                    + "AND CID IN (SELECT CID FROM `PLAYER_OWN_CUPBOARDS` WHERE `UUID`=\"" + giver_uuid + "\") "
-                    + "AND CID NOT IN (SELECT CID FROM `PLAYER_OWN_CUPBOARDS` WHERE `UUID`=\"" + receiver_uuid + "\") "
-                    + "GROUP BY CID");
-            stmt.execute(sql);
-            stmt.close();
-            db_conn.commit();
-            changelog(String.format("%s give his cupbaords to %s at %s", 
-                    Bukkit.getOfflinePlayer(UUID.fromString(giver_uuid)).getName(), 
-                    Bukkit.getOfflinePlayer(UUID.fromString(receiver_uuid)).getName(),
-                    Util.LocToString(l)));
-        } catch (SQLException e) {
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
-            if(Config.DEBUG.getBoolean())e.printStackTrace();
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        }
-        check_access_cache.clear();
     }
     
 	public Boolean toggleBoardAccess(OfflinePlayer p, Block b){
@@ -207,10 +168,9 @@ public class CupboardsData {
                     this.changelog(String.format("%s grant access at %s.", p.getName(), Util.LocToString(b.getLocation())));
                 }
             }
-
-            db_conn.commit();
             stmt.close();
             rs.close();
+            db_conn.commit();
         } catch ( SQLException e ) {
             plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
@@ -220,6 +180,7 @@ public class CupboardsData {
 	    check_access_cache.clear();
         return return_flag;
 	}
+
 	public boolean checkExplosionAble(Location l, float radius){
         return checkAccess(l, PROTECT_DIST + ((int)Math.ceil(radius)) + 2); // 加2才不會炸到
 	}
@@ -247,6 +208,44 @@ public class CupboardsData {
     public boolean checkIsLimitByUUIDString(Location l, String uuid){
         return !checkAccess(l, uuid);
     }
+    
+    public boolean checkDirectAccess(Block block, Player player){
+        return checkDirectAccess(block.getLocation(), player.getUniqueId().toString());
+    }
+    
+    public boolean checkDirectAccess(Location location, String uuid){
+        boolean flag_access = true;
+        try {
+            Statement stmt = db_conn.createStatement();
+            String sql = "SELECT CUPBOARDS.CID FROM CUPBOARDS "
+                    + String.format(
+                            "WHERE X = %d "
+                          + "AND Y = %d "
+                          + "AND Z = %d "
+                          + "AND WORLD = \"%s\" "
+                          , location.getBlockX()
+                          , location.getBlockY()
+                          , location.getBlockZ()
+                          , location.getWorld().getName());
+            sql += String.format("AND CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
+            ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                flag_access = false;
+            }
+            rs.close();
+            stmt.close();
+        } catch ( SQLException e ) {
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
+            flag_access = false;
+        }
+        return flag_access;
+    }
+    
+    //================================= Async Ess tools ====================================
+    //Async
     @SuppressWarnings("deprecation")
     public void cleanNotExistCupboard(Chunk chunk){
         Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
@@ -301,6 +300,7 @@ public class CupboardsData {
         });
     }
 
+    //Async
     @SuppressWarnings("deprecation")
     public void cleanNotExistUser() {
         Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
@@ -355,6 +355,99 @@ public class CupboardsData {
         });
     }
 
+    //Async
+    @SuppressWarnings("deprecation")
+    public void findNearest(Player p){
+        Location l = p.getLocation().clone();
+        String uuid = p.getUniqueId().toString();
+        int x = l.getBlockX();
+        int y = l.getBlockY();
+        int z = l.getBlockZ();
+        int radius = 20;
+        String world = l.getWorld().getName();
+        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
+            @Override
+            public void run() {
+                double distance = radius*2;
+                String nearest_loc = null;
+                try {
+                    Statement stmt = db_conn.createStatement();
+                    String sql = "SELECT CUPBOARDS.LOC FROM CUPBOARDS "
+                            + String.format(
+                                    "WHERE X <= %d AND X >= %d "
+                                  + "AND Y <= %d AND Y >= %d "
+                                  + "AND Z <= %d AND Z >= %d "
+                                  + "AND WORLD = \"%s\" "
+                                  , x + radius, x - radius
+                                  , y + radius, y - radius
+                                  , z + radius, z - radius
+                                  , world);
+                    sql += String.format("AND CID IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
+                    ResultSet rs = stmt.executeQuery(sql);
+                    while(rs.next()){
+                        String this_loc_str = rs.getString(1);
+                        double this_distance = l.distance(Util.StringToLoc(this_loc_str));
+                        if(this_distance < distance){
+                            nearest_loc = this_loc_str;
+                            distance = this_distance;
+                        }
+                    }
+                    rs.close();
+                    stmt.close();
+                    db_conn.close();
+                } catch ( SQLException e ) {
+                    plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+                    plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage(ChatColor.DARK_RED + "系統嚴重錯誤, 請聯繫管理員");
+                }
+                if(nearest_loc == null){
+                    p.sendMessage(ChatColor.RED + "附近沒有已授權金磚");
+                } else {
+                    p.sendMessage(ChatColor.GOLD + "最近的已授權金磚在 " + nearest_loc);
+                }
+            }
+        });
+    }
+    
+    //Async
+    public void giveAcceee(String giver_uuid, String receiver_uuid, Location l){
+        Statement stmt;
+        int x = l.getBlockX();
+        int z = l.getBlockZ();
+        int radius = 200;
+        String world = l.getWorld().getName();
+        try {
+            stmt = db_conn.createStatement();
+            String sql = String.format("INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) "
+                    + "SELECT \"" + receiver_uuid + "\",CID  AS CT FROM PLAYER_OWN_CUPBOARDS  T1 "
+                    + "WHERE CID IN (SELECT CID FROM CUPBOARDS "
+                    + String.format("WHERE X <= %d AND X >= %d "
+                            + "AND Z <= %d AND Z >= %d "
+                            + "AND WORLD = \"%s\") "
+                            , x + radius, x - radius
+                            , z + radius, z - radius
+                            , world)
+                    + "AND CID IN (SELECT CID FROM `PLAYER_OWN_CUPBOARDS` WHERE `UUID`=\"" + giver_uuid + "\") "
+                    + "AND CID NOT IN (SELECT CID FROM `PLAYER_OWN_CUPBOARDS` WHERE `UUID`=\"" + receiver_uuid + "\") "
+                    + "GROUP BY CID");
+            stmt.execute(sql);
+            stmt.close();
+            db_conn.commit();
+            changelog(String.format("%s give his cupbaords to %s at %s", 
+                    Bukkit.getOfflinePlayer(UUID.fromString(giver_uuid)).getName(), 
+                    Bukkit.getOfflinePlayer(UUID.fromString(receiver_uuid)).getName(),
+                    Util.LocToString(l)));
+        } catch (SQLException e) {
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+            if(Config.DEBUG.getBoolean())e.printStackTrace();
+            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
+        check_access_cache.clear();
+    }
+    
+    //================================= Private function ====================================
     private boolean checkAccess(Block b){
         return checkAccess(b.getWorld().getName(), b.getX(), b.getY(), b.getZ(), null, PROTECT_DIST);
     }
@@ -423,94 +516,6 @@ public class CupboardsData {
         return flag_access;
     }
 
-    public boolean checkDirectAccess(Block block, Player player){
-        return checkDirectAccess(block.getLocation(), player.getUniqueId().toString());
-    }
-    
-    public boolean checkDirectAccess(Location location, String uuid){
-        boolean flag_access = true;
-        try {
-            Statement stmt = db_conn.createStatement();
-            String sql = "SELECT CUPBOARDS.CID FROM CUPBOARDS "
-                    + String.format(
-                            "WHERE X = %d "
-                          + "AND Y = %d "
-                          + "AND Z = %d "
-                          + "AND WORLD = \"%s\" "
-                          , location.getBlockX()
-                          , location.getBlockY()
-                          , location.getBlockZ()
-                          , location.getWorld().getName());
-            sql += String.format("AND CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
-            ResultSet rs = stmt.executeQuery(sql);
-            if(rs.next()){
-                flag_access = false;
-            }
-            rs.close();
-            stmt.close();
-        } catch ( SQLException e ) {
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage("系統嚴重錯誤, 請聯繫管理員");
-            flag_access = false;
-        }
-        return flag_access;
-    }
-    
-    @SuppressWarnings("deprecation")
-    public void findNearest(Player p){
-        Location l = p.getLocation().clone();
-        String uuid = p.getUniqueId().toString();
-        int x = l.getBlockX();
-        int y = l.getBlockY();
-        int z = l.getBlockZ();
-        int radius = 20;
-        String world = l.getWorld().getName();
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
-            @Override
-            public void run() {
-                double distance = radius*2;
-                String nearest_loc = null;
-                try {
-                    Statement stmt = db_conn.createStatement();
-                    String sql = "SELECT CUPBOARDS.LOC FROM CUPBOARDS "
-                            + String.format(
-                                    "WHERE X <= %d AND X >= %d "
-                                  + "AND Y <= %d AND Y >= %d "
-                                  + "AND Z <= %d AND Z >= %d "
-                                  + "AND WORLD = \"%s\" "
-                                  , x + radius, x - radius
-                                  , y + radius, y - radius
-                                  , z + radius, z - radius
-                                  , world);
-                    sql += String.format("AND CID IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
-                    ResultSet rs = stmt.executeQuery(sql);
-                    while(rs.next()){
-                        String this_loc_str = rs.getString(1);
-                        double this_distance = l.distance(Util.StringToLoc(this_loc_str));
-                        if(this_distance < distance){
-                            nearest_loc = this_loc_str;
-                            distance = this_distance;
-                        }
-                    }
-                    rs.close();
-                    stmt.close();
-                } catch ( SQLException e ) {
-                    plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
-                    plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    if(uuid != null) plugin.getServer().getPlayer(UUID.fromString(uuid)).sendMessage(ChatColor.DARK_RED + "系統嚴重錯誤, 請聯繫管理員");
-                }
-                if(nearest_loc == null){
-                    p.sendMessage(ChatColor.RED + "附近沒有已授權金磚");
-                } else {
-                    p.sendMessage(ChatColor.GOLD + "最近的已授權金磚在 " + nearest_loc);
-                }
-            }
-        });
-    }
-    
     private void changelog(String msg){
         new Thread(() -> {
             try
