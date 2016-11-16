@@ -16,7 +16,9 @@ public class SuicideListener extends MyListener {
     	Player p = e.getEntity();
     	if(p.hasMetadata("suicide")){
     		p.removeMetadata("suicide", plugin);
-    		e.setDeathMessage("");
+    	} else {
+    	    plugin.log(e.getDeathMessage());
     	}
+        e.setDeathMessage("");
     }
 }
