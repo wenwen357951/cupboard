@@ -13,7 +13,6 @@ import tw.mics.spigot.plugin.cupboard.command.GoldCommand;
 import tw.mics.spigot.plugin.cupboard.command.ReloadCommand;
 import tw.mics.spigot.plugin.cupboard.command.RspCommand;
 import tw.mics.spigot.plugin.cupboard.config.Config;
-import tw.mics.spigot.plugin.cupboard.config.Drops;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
 import tw.mics.spigot.plugin.cupboard.data.Database;
@@ -33,7 +32,6 @@ import tw.mics.spigot.plugin.cupboard.schedule.EvilPoint;
 public class Cupboard extends JavaPlugin implements Listener {
     public CupboardsData cupboards;
     public EvilPointData evilpoint;
-    public Drops drops;
     public Database database;
     private static Cupboard INSTANCE;
     private ArrayList<Object> registedObject;
@@ -49,7 +47,6 @@ public class Cupboard extends JavaPlugin implements Listener {
         this.logDebug("Loaded Locales!");
         
         //load Airdrops
-        drops = new Drops();
         
         //load cupboards
         database = new Database(this, getDataFolder());
