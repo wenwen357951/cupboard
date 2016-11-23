@@ -297,28 +297,6 @@ public class CupboardBlockProtectListener extends MyListener {
         e.setCancelled(checkPiston(e.getBlocks(), e.getBlock()));
     }
     
-    private Material[] rails = {
-            Material.RAILS,
-            Material.ACTIVATOR_RAIL,
-            Material.DETECTOR_RAIL,
-            Material.POWERED_RAIL,
-    };
-    
-    private Material[] ores = {
-            Material.COAL_ORE,
-            Material.COAL_BLOCK,
-            Material.IRON_ORE,
-            Material.IRON_BLOCK,
-            Material.GOLD_ORE,
-            Material.DIAMOND_ORE,
-            Material.DIAMOND_BLOCK,
-            Material.EMERALD_ORE,
-            Material.EMERALD_BLOCK,
-            Material.LAPIS_ORE,
-            Material.LAPIS_BLOCK,
-            Material.REDSTONE_ORE,
-            Material.GLOWING_REDSTONE_ORE,
-    };
     private boolean checkPiston(List<Block> blocks, Block piston){
         return checkPiston(blocks, piston, false, null);
     }
@@ -359,15 +337,6 @@ public class CupboardBlockProtectListener extends MyListener {
         }
         for(Block block : blocks){
             if(block.getType().equals(Material.GOLD_BLOCK)){
-                return true;
-            }
-            if(Config.WP_TNT_NO_PISTON.getBoolean() && block.getType().equals(Material.TNT)){
-                return true;
-            }
-            if(Config.WP_RAILS_NO_PISTON.getBoolean() && Arrays.asList(rails).contains(block.getType())){
-                return true;
-            }
-            if(Config.WP_ORES_NO_PISTON.getBoolean() && Arrays.asList(ores).contains(block.getType())){
                 return true;
             }
             if(check_flag){

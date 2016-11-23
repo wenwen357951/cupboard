@@ -8,10 +8,8 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import tw.mics.spigot.plugin.cupboard.command.AirdropCommand;
 import tw.mics.spigot.plugin.cupboard.command.EvilCommand;
 import tw.mics.spigot.plugin.cupboard.command.GoldCommand;
-import tw.mics.spigot.plugin.cupboard.command.KillCommand;
 import tw.mics.spigot.plugin.cupboard.command.ReloadCommand;
 import tw.mics.spigot.plugin.cupboard.command.RspCommand;
 import tw.mics.spigot.plugin.cupboard.config.Config;
@@ -20,8 +18,6 @@ import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
 import tw.mics.spigot.plugin.cupboard.data.Database;
 import tw.mics.spigot.plugin.cupboard.data.EvilPointData;
-import tw.mics.spigot.plugin.cupboard.entity.PackageEntity;
-import tw.mics.spigot.plugin.cupboard.listener.AirdropInteractListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardBlockProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardEntityProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardExplosionProtectListener;
@@ -29,14 +25,9 @@ import tw.mics.spigot.plugin.cupboard.listener.EvilPointListener;
 import tw.mics.spigot.plugin.cupboard.listener.GoldBlockListener;
 import tw.mics.spigot.plugin.cupboard.listener.MyListener;
 import tw.mics.spigot.plugin.cupboard.listener.PlayerRespawnListener;
-import tw.mics.spigot.plugin.cupboard.listener.SuicideListener;
 import tw.mics.spigot.plugin.cupboard.listener.TNTCraftListener;
 import tw.mics.spigot.plugin.cupboard.listener.TNTExplosionListener;
-import tw.mics.spigot.plugin.cupboard.listener.WorldProtectListener;
-import tw.mics.spigot.plugin.cupboard.schedule.AirDrop;
-import tw.mics.spigot.plugin.cupboard.schedule.Compass;
 import tw.mics.spigot.plugin.cupboard.schedule.EvilPoint;
-import tw.mics.spigot.plugin.cupboard.schedule.NetherTopChecker;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
@@ -69,9 +60,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         this.logDebug("Cleaning Cupboards data!");
         cupboards.cleanNotExistUser();
 
-        this.getCommand("kill").setExecutor(new KillCommand(this));
         this.getCommand("cupboardreload").setExecutor(new ReloadCommand(this));
-        this.getCommand("airdrop").setExecutor(new AirdropCommand(this));
         this.getCommand("rsp").setExecutor(new RspCommand(this));
         this.getCommand("gold").setExecutor(new GoldCommand(this));
         this.getCommand("evil").setExecutor(new EvilCommand(this));
@@ -84,28 +73,13 @@ public class Cupboard extends JavaPlugin implements Listener {
         registedObject.add(new CupboardExplosionProtectListener(this));
         registedObject.add(new CupboardBlockProtectListener(this));
         registedObject.add(new GoldBlockListener(this));
-        registedObject.add(new WorldProtectListener(this));
         registedObject.add(new PlayerRespawnListener(this));
-        registedObject.add(new SuicideListener(this));
-        registedObject.add(new AirdropInteractListener(this));
         registedObject.add(new EvilPointListener(this));
         
         //rewrite TNT Receipts Listener
         if(Config.TNT_SP_ENABLE.getBoolean()){
             registedObject.add(new TNTExplosionListener(this));
         	registedObject.add(new TNTCraftListener(this));
-        }
-        
-        if(Config.AIR_DROP_ENABLE.getBoolean()){
-            registedObject.add(new AirDrop(this));
-        }
-        
-        if(Config.COMPASS_ENABLE.getBoolean()){
-            registedObject.add(new Compass(this));
-        }
-        
-        if(Config.NETHER_TOP_CHECKER.getBoolean()){
-            registedObject.add(new NetherTopChecker(this));
         }
         
         registedObject.add(new EvilPoint(this));
@@ -164,7 +138,6 @@ public class Cupboard extends JavaPlugin implements Listener {
 	}
     @Override
     public void onDisable() {
-    	PackageEntity.removeAll(); //remove all airdrop
     	unload(); //unload everything
     }
     
