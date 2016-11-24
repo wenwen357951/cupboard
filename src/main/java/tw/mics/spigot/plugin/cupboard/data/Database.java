@@ -46,9 +46,19 @@ public class Database {
                   "(UUID TEXT NOT NULL," +
                   " CID  INTEGER NOT NULL)";
           stmt.executeUpdate(sql);
-          
+
           sql = "CREATE INDEX IF NOT EXISTS player_cid_index " +
                   "on PLAYER_OWN_CUPBOARDS (UUID)";
+          stmt.executeUpdate(sql);
+
+          sql = "CREATE INDEX IF NOT EXISTS cupboards_cid_world_x_index " +
+                  "on CUPBOARDS (CID, WORLD, X)";
+          stmt.executeUpdate(sql);
+          sql = "CREATE INDEX IF NOT EXISTS cupboards_cid_world_y_index " +
+                  "on CUPBOARDS (CID, WORLD, Y)";
+          stmt.executeUpdate(sql);
+          sql = "CREATE INDEX IF NOT EXISTS cupboards_cid_world_z_index " +
+                  "on CUPBOARDS (CID, WORLD, Z)";
           stmt.executeUpdate(sql);
           stmt.close();
           db_conn.commit();

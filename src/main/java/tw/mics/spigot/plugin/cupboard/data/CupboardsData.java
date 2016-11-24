@@ -482,23 +482,24 @@ public class CupboardsData {
     }
     
     private boolean checkAccess(String world, int x, int y, int z, String uuid,int radius){
+        long startTime = System.nanoTime();
         String cache_key = String.format("%s,%d,%d,%d,%s,%d",world,x,y,z,uuid,radius);
         Boolean flag_access = check_access_cache.get(cache_key);
         if(flag_access == null){
             flag_access = true;
             try {
                 Statement stmt = db_conn.createStatement();
-                String sql = "SELECT CUPBOARDS.CID FROM CUPBOARDS "
-                        + String.format(
-                                "WHERE X <= %d AND X >= %d "
-                              + "AND Y <= %d AND Y >= %d "
-                              + "AND Z <= %d AND Z >= %d "
-                              + "AND WORLD = \"%s\" "
-                              , x + radius, x - radius
-                              , y + radius, y - radius
-                              , z + radius, z - radius
-                              , world);
-                if(uuid != null) sql += String.format("AND CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\")", uuid);
+                String sql = "SELECT CUPBOARDS.CID FROM CUPBOARDS WHERE ";
+                if(uuid != null) sql += String.format("CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\") ", uuid);
+                sql += String.format(
+                        "AND WORLD = \"%s\" "
+                        + "AND X BETWEEN %d AND %d "
+                        + "AND Y BETWEEN %d AND %d "
+                        + "AND Z BETWEEN %d AND %d "
+                        , world
+                        , x - radius, x + radius
+                        , y - radius, y + radius
+                        , z - radius, z + radius);
                 ResultSet rs = stmt.executeQuery(sql);
                 if(rs.next()){
                     flag_access = false;
@@ -515,6 +516,10 @@ public class CupboardsData {
             }
             check_access_cache.put(cache_key, flag_access);
         }
+
+        long endTime   = System.nanoTime();
+        long totalTime = endTime - startTime;
+        plugin.logDebug("CheckAccessTime: " + totalTime + " ns");
         return flag_access;
     }
 

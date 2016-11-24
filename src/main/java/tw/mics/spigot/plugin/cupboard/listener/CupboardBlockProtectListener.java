@@ -51,7 +51,6 @@ public class CupboardBlockProtectListener extends MyListener {
         tnt.setFuseTicks(200);
     }
     
-    
     private final static Material[] doors = {
             Material.ACACIA_DOOR,
             Material.BIRCH_DOOR,
