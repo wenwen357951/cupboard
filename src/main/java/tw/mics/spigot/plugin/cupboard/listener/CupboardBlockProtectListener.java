@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -33,7 +32,6 @@ import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
-import tw.mics.spigot.plugin.cupboard.utils.SpawnLocationManager;
 
 public class CupboardBlockProtectListener extends MyListener {
 	private CupboardsData data;
@@ -120,13 +118,6 @@ public class CupboardBlockProtectListener extends MyListener {
                 if(this.plugin.isOP(p))return;
                 p.sendMessage(Locales.NO_ACCESS.getString());
                 e.setCancelled(true);
-            } else if(
-                    b.getType().equals(Material.BED_BLOCK) &&
-                    b.getWorld().getEnvironment() == Environment.NORMAL &&
-                    !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p)
-            ){
-                p.setBedSpawnLocation(b.getLocation());
-                p.sendMessage(Locales.BED_SPAWN_SET.getString());
             }
         }
     }
@@ -204,18 +195,6 @@ public class CupboardBlockProtectListener extends MyListener {
                 if(this.plugin.isOP(p)) return;
                 p.sendMessage(Locales.NO_ACCESS.getString());
                 if( b.getType() == Material.WATER || b.getType() == Material.LAVA)p.updateInventory();
-                event.setCancelled(true);
-                return;
-            }
-                
-            //禁止未授權玩家使用床，其他則記錄重生點
-            if(    
-                b.getType() == Material.BED_BLOCK &&
-                b.getWorld().getEnvironment() == Environment.NORMAL &&
-                !SpawnLocationManager.checkPlayerSpawn(b.getLocation(), p) 
-            ){
-                p.setBedSpawnLocation(b.getLocation());
-                p.sendMessage(Locales.BED_SPAWN_SET.getString());
                 event.setCancelled(true);
                 return;
             }
