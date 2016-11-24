@@ -6,10 +6,6 @@ author: Mics
 website: https://mics.tw
 
 commands:
-  cupboardreload:
-    description: Reload cupboard config
-    usage: /cupboardreload
-    permission: cupboard.admin
   gold:
     description: Manage your gold block
     usage: /gold give <player> or /gold nearest
