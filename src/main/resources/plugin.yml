@@ -6,29 +6,13 @@ author: Mics
 website: https://mics.tw
 
 commands:
-  kill:
-    description: kill yourself
-    aliases: [suicide]
-    usage: /kill
   cupboardreload:
     description: Reload cupboard config
     usage: /cupboardreload
     permission: cupboard.admin
-  airdrop:
-    description: Reload cupboard config
-    usage: /airdrop <x> <z>
-    permission: cupboard.admin
-  rsp:
-    description: Teleport player to Random Spawn
-    usage: /rsp <player>
-    permission: cupboard.admin
   gold:
     description: Manage your gold block
     usage: /gold give <player> or /gold nearest
-  evil:
-    description: Manage your gold block
-    usage: /evil give/take/set <player> <amount>
-    permission: cupboard.admin
     
 permissions:
   cupboard.admin:
