@@ -20,15 +20,6 @@ public enum Config {
     ENABLE_WORLD("cupboard.enable-world", new String[]{
             "world"
     }, "witch world is enable cupboard?"),
-	
-
-	PP_PLAYER_RANDOM_SPAWN_ENABLE("player-protect.random-spawn.enable", true, ""),
-	PP_PLAYER_RANDOM_SPAWN_THE_END_ENABLE("player-protect.random-spawn.the-end-enable", true, "enable random spawn when teleport from the end"),
-    PP_PLAYER_RANDOM_SPAWN_FIRSTJOIN("player-protect.random-spawn.first-join", false, ""),
-    PP_PLAYER_RANDOM_SPAWN_WORLD("player-protect.random-spawn.world", "world", ""),
-    PP_PLAYER_RANDOM_SPAWN_NEW_LOCATION_TIME("player-protect.random-spawn.NewRandomPointTimeSec", 180, ""),
-    PP_PLAYER_REMOVE_SPAWN_WITH_LAVA("player-protect.remove-bed-spawn-when-have-lava", true, ""),
-    PP_PLAYER_SPAWN_PROTECT("player-protect.player-spawn-protect", true, ""),
 
 	TNT_SP_ENABLE("tnt.enable", true, "let TNT can desotry obsidian, water, lava, TNT Can put in protect area and TNT hard to craft."),
     TNT_EXPLOSION_RADIUS("tnt.radius", 6, "TNT power radius"),
