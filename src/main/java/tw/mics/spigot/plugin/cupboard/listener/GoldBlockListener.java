@@ -25,6 +25,8 @@ public class GoldBlockListener extends MyListener {
 	{
 	    super(instance);
 	}
+	
+	//清除金磚
 	@EventHandler
 	public void onChunkLoad(ChunkLoadEvent event){
 	    plugin.cupboards.cleanNotExistCupboard(event.getChunk());

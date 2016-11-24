@@ -47,7 +47,7 @@ public class Database {
                   " CID  INTEGER NOT NULL)";
           stmt.executeUpdate(sql);
 
-          sql = "CREATE INDEX IF NOT EXISTS player_cid_index " +
+          sql = "CREATE INDEX IF NOT EXISTS player_own_cupboards_uuid_index " +
                   "on PLAYER_OWN_CUPBOARDS (UUID)";
           stmt.executeUpdate(sql);
 

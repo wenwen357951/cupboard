@@ -482,7 +482,7 @@ public class CupboardsData {
     }
     
     private boolean checkAccess(String world, int x, int y, int z, String uuid,int radius){
-        long startTime = System.nanoTime();
+        long startTime = System.nanoTime(); //Debug
         String cache_key = String.format("%s,%d,%d,%d,%s,%d",world,x,y,z,uuid,radius);
         Boolean flag_access = check_access_cache.get(cache_key);
         if(flag_access == null){
@@ -490,9 +490,9 @@ public class CupboardsData {
             try {
                 Statement stmt = db_conn.createStatement();
                 String sql = "SELECT CUPBOARDS.CID FROM CUPBOARDS WHERE ";
-                if(uuid != null) sql += String.format("CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\") ", uuid);
+                if(uuid != null) sql += String.format("CID NOT IN (SELECT CID FROM PLAYER_OWN_CUPBOARDS WHERE UUID=\"%s\") AND ", uuid);
                 sql += String.format(
-                        "AND WORLD = \"%s\" "
+                        "WORLD = \"%s\" "
                         + "AND X BETWEEN %d AND %d "
                         + "AND Y BETWEEN %d AND %d "
                         + "AND Z BETWEEN %d AND %d "
@@ -516,10 +516,10 @@ public class CupboardsData {
             }
             check_access_cache.put(cache_key, flag_access);
         }
-
-        long endTime   = System.nanoTime();
-        long totalTime = endTime - startTime;
-        plugin.logDebug("CheckAccessTime: " + totalTime + " ns");
+        if(Config.DEBUG.getBoolean()){
+            long totalTime = (System.nanoTime() - startTime);
+            if(totalTime > 1000000)plugin.logDebug("Check Access Time: " + totalTime/1000 + " μs");
+        }
         return flag_access;
     }
 
