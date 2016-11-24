@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
+import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
 import tw.mics.spigot.plugin.cupboard.utils.Util;
 
@@ -48,6 +49,7 @@ public class CupboardEntityProtectListener extends MyListener {
 	//保護船隻 / 礦車
 	@EventHandler
 	public void onVehicleDestroy(VehicleDamageEvent event) {
+        if(!Config.ENABLE_WORLD.getStringList().contains(event.getVehicle().getWorld().getName()))return;
         if(event.getAttacker() instanceof Player){
     	    Location bl = event.getVehicle().getLocation().getBlock().getLocation();
             Player p = (Player) event.getAttacker();
@@ -61,66 +63,71 @@ public class CupboardEntityProtectListener extends MyListener {
     
     //保護物品展示框
     @EventHandler
-    public void onPlayerHitEntity(EntityDamageByEntityEvent e){
-        if(e.getEntityType() != EntityType.ITEM_FRAME) return;
-        Player damager = Util.getDamager(e.getDamager());
+    public void onPlayerHitEntity(EntityDamageByEntityEvent event){
+        if(!Config.ENABLE_WORLD.getStringList().contains(event.getEntity().getWorld().getName()))return;
+        if(event.getEntityType() != EntityType.ITEM_FRAME) return;
+        Player damager = Util.getDamager(event.getDamager());
         if(damager != null){
-            Location bl = e.getEntity().getLocation().getBlock().getLocation();
+            Location bl = event.getEntity().getLocation().getBlock().getLocation();
             if(data.checkIsLimit(bl, damager)){
                 if(this.plugin.isOP(damager)) return;
-                e.setCancelled(true);
+                event.setCancelled(true);
             }
         }
     }
     
     //防止未授權玩家和物件互動
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEntityEvent e){
-        if(e.getRightClicked().getType().isAlive()) return; //不阻止活著的生物
-        Location bl = e.getRightClicked().getLocation().getBlock().getLocation();
-        Player p = e.getPlayer();
+    public void onPlayerInteract(PlayerInteractEntityEvent event){
+        if(!Config.ENABLE_WORLD.getStringList().contains(event.getPlayer().getWorld().getName()))return;
+        if(event.getRightClicked().getType().isAlive()) return; //不阻止活著的生物
+        Location bl = event.getRightClicked().getLocation().getBlock().getLocation();
+        Player p = event.getPlayer();
         if(data.checkIsLimit(bl, p)){
             if(this.plugin.isOP(p)) return;
-            e.setCancelled(true);
-            e.getPlayer().updateInventory();
+            event.setCancelled(true);
+            event.getPlayer().updateInventory();
         }
     }
     
     //防止未授權玩家和物件互動
     @EventHandler
-    public void onPlayerInteract(PlayerInteractAtEntityEvent e){
-        if(e.getRightClicked().getType().isAlive()) return; //不阻止活著的生物
-        Location bl = e.getRightClicked().getLocation().getBlock().getLocation();
-        Player p = e.getPlayer();
+    public void onPlayerInteract(PlayerInteractAtEntityEvent event){
+        if(!Config.ENABLE_WORLD.getStringList().contains(event.getPlayer().getWorld().getName()))return;
+        if(event.getRightClicked().getType().isAlive()) return; //不阻止活著的生物
+        Location bl = event.getRightClicked().getLocation().getBlock().getLocation();
+        Player p = event.getPlayer();
         if(data.checkIsLimit(bl, p)){
             if(this.plugin.isOP(p)) return;
-            e.setCancelled(true);
-            e.getPlayer().updateInventory();
+            event.setCancelled(true);
+            event.getPlayer().updateInventory();
         }
     }
 
 
     //防止Hanging類物品被未授權玩家放置
     @EventHandler
-    public void onHangingPlace(HangingPlaceEvent e) {
-		Location bl = e.getEntity().getLocation().getBlock().getLocation();
-		Player p = e.getPlayer();
+    public void onHangingPlace(HangingPlaceEvent event) {
+        if(!Config.ENABLE_WORLD.getStringList().contains(event.getPlayer().getWorld().getName()))return;
+		Location bl = event.getEntity().getLocation().getBlock().getLocation();
+		Player p = event.getPlayer();
 		if(data.checkIsLimit(bl, p)){
 			if(this.plugin.isOP(p)) return;
-			e.setCancelled(true);
-			e.getPlayer().updateInventory();
+			event.setCancelled(true);
+			event.getPlayer().updateInventory();
 		}
 	}
     
     //防止Hanging類物品被未授權玩家移除
     @EventHandler
-    public void onHangingBreak(HangingBreakByEntityEvent e) {
-		Location bl = e.getEntity().getLocation();
-    	if (e.getRemover() instanceof Player){
-    		Player p = (Player) e.getRemover();
+    public void onHangingBreak(HangingBreakByEntityEvent event) {
+        if(!Config.ENABLE_WORLD.getStringList().contains(event.getEntity().getWorld().getName()))return;
+		Location bl = event.getEntity().getLocation();
+    	if (event.getRemover() instanceof Player){
+    		Player p = (Player) event.getRemover();
     		if(this.plugin.cupboards.checkIsLimit(bl, p)){
     			if(this.plugin.isOP(p)) return;
-    			e.setCancelled(true);
+    			event.setCancelled(true);
     		}
     	}
 	}
@@ -128,31 +135,33 @@ public class CupboardEntityProtectListener extends MyListener {
 
     //防止船隻/礦車/盔甲架被放置
     @EventHandler
-    public void onBoatPlace(PlayerInteractEvent e){
+    public void onBoatPlace(PlayerInteractEvent event){
+        if(!Config.ENABLE_WORLD.getStringList().contains(event.getPlayer().getWorld().getName()))return;
     	if (
-			e.getAction() == Action.RIGHT_CLICK_BLOCK &&
-			e.getItem() != null &&
-			Arrays.asList(protect_vehicle).contains(e.getItem().getType())
+			event.getAction() == Action.RIGHT_CLICK_BLOCK &&
+			event.getItem() != null &&
+			Arrays.asList(protect_vehicle).contains(event.getItem().getType())
 		){
-    	Player p = e.getPlayer();
-	    	if(this.plugin.cupboards.checkIsLimit(e.getClickedBlock(), p)){
+    	Player p = event.getPlayer();
+	    	if(this.plugin.cupboards.checkIsLimit(event.getClickedBlock(), p)){
 	    		if(this.plugin.isOP(p))return;
-	    		e.setCancelled(true);
-	    		e.getPlayer().updateInventory();
+	    		event.setCancelled(true);
+	    		event.getPlayer().updateInventory();
 	    	}
     	}
     }
     
     //防止盔甲架被移除
     @EventHandler
-    public void onArmorStandDamage(EntityDamageByEntityEvent e){
-    	if (e.getEntity().getType() != EntityType.ARMOR_STAND) return;
-        Player damager = Util.getDamager(e.getDamager());
+    public void onArmorStandDamage(EntityDamageByEntityEvent event){
+        if(!Config.ENABLE_WORLD.getStringList().contains(event.getDamager().getWorld().getName()))return;
+    	if (event.getEntity().getType() != EntityType.ARMOR_STAND) return;
+        Player damager = Util.getDamager(event.getDamager());
         if(damager != null){
-            Location bl = e.getEntity().getLocation().getBlock().getLocation();
+            Location bl = event.getEntity().getLocation().getBlock().getLocation();
             if(data.checkIsLimit(bl, damager)){
                 if(this.plugin.isOP(damager)) return;
-                e.setCancelled(true);
+                event.setCancelled(true);
             }
         }
     }

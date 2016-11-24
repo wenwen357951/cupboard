@@ -3,6 +3,7 @@ package tw.mics.spigot.plugin.cupboard.listener;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -62,12 +63,14 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.WOODEN_DOOR,
             Material.IRON_DOOR_BLOCK,
     };
+    
     //防止其他玩家破壞方塊
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e){
         Player p = e.getPlayer();
         Block b = e.getBlock();
+        if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName()))return;
         if( p != null){
             if(
                     (
@@ -109,10 +112,27 @@ public class CupboardBlockProtectListener extends MyListener {
     public void onBlockPlace(BlockPlaceEvent e){
         Player p = e.getPlayer();
         Block b = e.getBlock();
+        if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName()))return;
         if( p != null){
             if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
-                e.getBlockPlaced().setType(e.getBlockReplacedState().getType());
-                setUpTNT(b.getLocation().add(0.5,0,0.5));
+                Material replace = e.getBlockReplacedState().getType();
+                Block block = e.getBlockPlaced();
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                    Material replace;
+                    Block block;
+                    
+                    public Runnable init(Block block, Material replace) {
+                        this.block = block;
+                        this.replace = replace;
+                        return this;
+                    }
+                    
+                    @Override
+                    public void run() {
+                        block.setType(replace);
+                        setUpTNT(b.getLocation().add(0.5,0,0.5));
+                    }
+                }.init(block, replace));
                 return;
             } else if(data.checkIsLimit(b, p)){
                 if(this.plugin.isOP(p))return;
@@ -126,6 +146,7 @@ public class CupboardBlockProtectListener extends MyListener {
     @EventHandler
     public void onBucketEmpty(PlayerBucketEmptyEvent e){
         Player p = e.getPlayer();
+        if(!Config.ENABLE_WORLD.getStringList().contains(p.getWorld().getName()))return;
         Block b = e.getBlockClicked().getLocation()
                 .add(e.getBlockFace().getModX(),e.getBlockFace().getModY(),e.getBlockFace().getModZ())
                 .getBlock();
@@ -139,6 +160,7 @@ public class CupboardBlockProtectListener extends MyListener {
     @EventHandler
     public void onBucketFill(PlayerBucketFillEvent e){
         Player p = e.getPlayer();
+        if(!Config.ENABLE_WORLD.getStringList().contains(p.getWorld().getName()))return;
         Block b = e.getBlockClicked();
         if( p != null){
             if(data.checkIsLimit(b, p)){
@@ -184,6 +206,7 @@ public class CupboardBlockProtectListener extends MyListener {
     public void onPlayerInteract(PlayerInteractEvent event){
         Block b = event.getClickedBlock();
         Player p = event.getPlayer();
+        if(!Config.ENABLE_WORLD.getStringList().contains(p.getWorld().getName()))return;
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
             if(!(
                     (b.getState() instanceof InventoryHolder) ||
@@ -212,6 +235,7 @@ public class CupboardBlockProtectListener extends MyListener {
     @EventHandler
     public void onEntryInteract(EntityInteractEvent event){
         Block b = event.getBlock();
+        if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName()))return;
         Entity e = event.getEntity();
         Player p = null;
         
@@ -236,6 +260,7 @@ public class CupboardBlockProtectListener extends MyListener {
     @EventHandler
     void onBlockBurnDamage(BlockBurnEvent e){
     	Block b = e.getBlock();
+        if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName()))return;
     	if(data.checkIsLimit(b)){
     		e.setCancelled(true);
     		Location l = e.getBlock().getLocation();
@@ -259,26 +284,30 @@ public class CupboardBlockProtectListener extends MyListener {
     
     @EventHandler
     void onFireSpread(BlockSpreadEvent e){
+        if(!Config.ENABLE_WORLD.getStringList().contains(e.getBlock().getWorld().getName()))return;
     	if(e.getSource().getType() != Material.FIRE) return;
     	if(data.checkIsLimit(e.getBlock())){
-    		e.getSource().setType(Material.AIR);
+    		e.setCancelled(true);
     	}
     }
     
     //防止活塞
     @EventHandler
     void onPistonExtend(BlockPistonExtendEvent e){
+        if(!Config.ENABLE_WORLD.getStringList().contains(e.getBlock().getWorld().getName()))return;
         e.setCancelled(checkPiston(e.getBlocks(), e.getBlock(), true, e.getDirection()));
     }
 
     @EventHandler
     void onPistonRetract(BlockPistonRetractEvent e){
+        if(!Config.ENABLE_WORLD.getStringList().contains(e.getBlock().getWorld().getName()))return;
         e.setCancelled(checkPiston(e.getBlocks(), e.getBlock()));
     }
     
     private boolean checkPiston(List<Block> blocks, Block piston){
         return checkPiston(blocks, piston, false, null);
     }
+    
     private boolean checkPiston(List<Block> blocks, Block piston, Boolean push, BlockFace direction){
         boolean check_flag = false;
         String uuid = null;
@@ -331,6 +360,7 @@ public class CupboardBlockProtectListener extends MyListener {
     
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPistonPlace(BlockPlaceEvent e){
+        if(!Config.ENABLE_WORLD.getStringList().contains(e.getBlock().getWorld().getName()))return;
         Player p = e.getPlayer();
         Block b = e.getBlock();
         if( p != null){
