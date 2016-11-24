@@ -12,7 +12,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
@@ -24,12 +23,6 @@ public class GoldBlockListener extends MyListener {
 	public GoldBlockListener(Cupboard instance)
 	{
 	    super(instance);
-	}
-	
-	//清除金磚
-	@EventHandler
-	public void onChunkLoad(ChunkLoadEvent event){
-	    plugin.cupboards.cleanNotExistCupboard(event.getChunk());
 	}
 	
 	//移除金磚

@@ -60,6 +60,13 @@ public class Database {
           sql = "CREATE INDEX IF NOT EXISTS cupboards_cid_world_z_index " +
                   "on CUPBOARDS (CID, WORLD, Z)";
           stmt.executeUpdate(sql);
+          
+          sql = "CREATE INDEX IF NOT EXISTS cupboards_world_x_index " +
+                  "on CUPBOARDS (WORLD, X)";
+          stmt.executeUpdate(sql);
+          sql = "CREATE INDEX IF NOT EXISTS cupboards_world_z_index " +
+                  "on CUPBOARDS (WORLD, Z)";
+          stmt.executeUpdate(sql);
           stmt.close();
           db_conn.commit();
           

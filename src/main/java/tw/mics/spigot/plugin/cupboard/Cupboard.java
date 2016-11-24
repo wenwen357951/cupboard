@@ -20,6 +20,7 @@ import tw.mics.spigot.plugin.cupboard.listener.GoldBlockListener;
 import tw.mics.spigot.plugin.cupboard.listener.MyListener;
 import tw.mics.spigot.plugin.cupboard.listener.TNTCraftListener;
 import tw.mics.spigot.plugin.cupboard.listener.TNTExplosionListener;
+import tw.mics.spigot.plugin.cupboard.schedule.GoldBlockCheckerSchedule;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
@@ -66,6 +67,7 @@ public class Cupboard extends JavaPlugin implements Listener {
             registedObject.add(new TNTExplosionListener(this));
         	registedObject.add(new TNTCraftListener(this));
         }
+        new GoldBlockCheckerSchedule(this);
 	}
 	
 	private void unregisterObject(){

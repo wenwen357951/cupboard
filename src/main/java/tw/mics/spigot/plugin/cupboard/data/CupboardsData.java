@@ -20,7 +20,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -246,59 +245,58 @@ public class CupboardsData {
         return flag_access;
     }
     
-    //================================= Async Ess tools ====================================
-    //Async
-    @SuppressWarnings("deprecation")
-    public void cleanNotExistCupboard(Chunk chunk){
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    Statement stmt = db_conn.createStatement();
-                    int min_x = chunk.getX()*16;
-                    int max_x = min_x+15;
-                    int min_z = chunk.getZ()*16;
-                    int max_z = min_z+15;
-                    String world = chunk.getWorld().getName();
-                    List<Integer> remove_cid_list = new ArrayList<Integer>();
-                    
-                    //Find
-                    String sql = "SELECT CID, LOC FROM CUPBOARDS "
-                        + String.format(
-                                "WHERE X <= %d AND X >= %d "
-                              + "AND Z <= %d AND Z >= %d "
-                              + "AND WORLD = \"%s\" "
-                              , max_x, min_x
-                              , max_z, min_z
-                              , world);
-                    ResultSet rs = stmt.executeQuery(sql);
-                    while(rs.next()){
-                        int cid = rs.getInt(1);
-                        String loc = rs.getString(2);
-                        if(Util.StringToLoc(loc).getBlock().getType() != Material.GOLD_BLOCK){
-                            remove_cid_list.add(cid);
-                            changelog(String.format("Cupboard at %s removed (reason: not gold block)", loc));
-                        }
-                    }
-                    
-                    //Delete
-                    String sql_remove_cupboards = "DELETE FROM CUPBOARDS WHERE CID = ?";
-                    PreparedStatement pstmt_cupboards = db_conn.prepareStatement(sql_remove_cupboards);
-                    for(Integer cid : remove_cid_list){
-                        pstmt_cupboards.setInt(1, cid);
-                        pstmt_cupboards.addBatch();
-                    }
-                    pstmt_cupboards.executeBatch();
-                    pstmt_cupboards.close();
-                    
-                    sql = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID NOT IN (SELECT CID FROM CUPBOARDS);";
-                    stmt.execute(sql);
-                    stmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+    //================================= Clean Not Exist Cupboard ====================================
+    public void cleanNotExistCupboard(Player p){
+        long startTime = System.nanoTime(); //Debug
+        try {
+            Statement stmt = db_conn.createStatement();
+            int check_range = 48;
+            int min_x = p.getLocation().getBlockX() - check_range;
+            int max_x = p.getLocation().getBlockX() + check_range;
+            int min_z = p.getLocation().getBlockZ() - check_range;
+            int max_z = p.getLocation().getBlockZ() + check_range;
+            String world = p.getWorld().getName();
+            List<Integer> remove_cid_list = new ArrayList<Integer>();
+            
+            //Find
+            String sql = "SELECT CID, LOC FROM CUPBOARDS "
+                + String.format(
+                        "WHERE WORLD = \"%s\" "
+                      + "AND X <= %d AND X >= %d "
+                      + "AND Z <= %d AND Z >= %d "
+                      , world
+                      , max_x, min_x
+                      , max_z, min_z);
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                int cid = rs.getInt(1);
+                String loc = rs.getString(2);
+                if(Util.StringToLoc(loc).getBlock().getType() != Material.GOLD_BLOCK){
+                    remove_cid_list.add(cid);
+                    changelog(String.format("Cupboard at %s removed (reason: not gold block)", loc));
                 }
             }
-        });
+            
+            //Delete
+            String sql_remove_cupboards = "DELETE FROM CUPBOARDS WHERE CID = ?";
+            PreparedStatement pstmt_cupboards = db_conn.prepareStatement(sql_remove_cupboards);
+            for(Integer cid : remove_cid_list){
+                pstmt_cupboards.setInt(1, cid);
+                pstmt_cupboards.addBatch();
+            }
+            pstmt_cupboards.executeBatch();
+            pstmt_cupboards.close();
+            
+            sql = "DELETE FROM PLAYER_OWN_CUPBOARDS WHERE CID NOT IN (SELECT CID FROM CUPBOARDS);";
+            stmt.execute(sql);
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if(Config.DEBUG.getBoolean()){
+            long totalTime = (System.nanoTime() - startTime);
+            if(totalTime > 1000000)plugin.logDebug("Clean Not Exist Cupboard Time: " + totalTime/1000 + " μs");
+        }
     }
 
     //Async
