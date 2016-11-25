@@ -1,6 +1,6 @@
 gold-block:
   op-bypass: '&c警告: 管理員權限已忽視保護區'
-  place-gold-block: 金磚已放置並取得授權。(潛行右鍵取得說明)
+  place-gold-block: 金磚已放置並取得授權。
   remove-gold-block: 金磚已拆除
   gold-block-too-close-to-place: 距離其他未授權金磚太近
   access-blocked-gold-block: 被擋住了，無法授權/取消授權。
