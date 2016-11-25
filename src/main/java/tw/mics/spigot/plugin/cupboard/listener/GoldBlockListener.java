@@ -92,12 +92,6 @@ public class GoldBlockListener extends MyListener {
     		return;
     	}
     	
-		if (p.isSneaking()){
-			for(String str : Locales.HELP.getStringList()){
-				p.sendMessage(str);
-			}
-			return;
-		}
 		String str;
         Boolean flag = plugin.cupboards.toggleBoardAccess(p, event.getClickedBlock());
 		if(flag == null){

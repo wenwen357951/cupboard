@@ -2,36 +2,12 @@ gold-block:
   op-bypass: '&c警告: 管理員權限已忽視保護區'
   place-gold-block: 金磚已放置並取得授權。(潛行右鍵取得說明)
   remove-gold-block: 金磚已拆除
-  gold-block-too-close-to-place: 距離其他金磚太近
+  gold-block-too-close-to-place: 距離其他未授權金磚太近
   access-blocked-gold-block: 被擋住了，無法授權/取消授權。
   gold-data-not-found: 此金磚不是由使用者放置或資料遺失，請重新放置。
   grant-access: 已授權
   revoke-access: 已取消授權
-  no-access: '&4沒有權限 &7'
-  spawn-without-access: '&c你的重生點在未授權保護區，重生點已回到世界重生點'
-world-protect:
-  do-not-block-nether-door: '&7請勿將地獄門堵死'
-world-border:
-  border-is-changed: |-
-    &e世界的邊界已經被改變  &7( 每 %.0f 分鐘就會縮小 %d 格 )
-    &b現在邊界: 現界 %d 地獄 %d 終界 %d
-  spawn-outside_border: '&c你的重生點在世界邊界外，重生點已回到世界重生點'
-teleport:
-  teleport-fail: '&4傳送失敗.'
-  teleport-now: 十秒後傳送, 請勿移動
-  teleport-not-found: 找不到適合的傳送點，請盡可能的靠近非保護區再試一次
-  not-in-no-access-area: 你不在未授權區域
-Help:
-- '&a金磚放置後產生19x19x19的方形保護區, 金磚在正中央。'
-- '&a保護區防止下列事項發生: '
-- '&71. 未授權者無法放置/移除方塊'
-- '&72. 未授權者無法使用石製壓力版/石製按鈕'
-- '&73. 怪物/動物無法觸發石製壓力版'
-- '&74. 防止苦力怕炸掉保護區'
-- '&c&l特別特別&r&c警告: 以下事項金磚並&l不&r&c防止: '
-- '&41. 未授權玩家放置 TNT (但是放置瞬間會被直接點燃)'
-- '&42. 未授權玩家使用木製按鈕 / 木製踏板 / 柵欄門 / 箱子 / 盔甲架'
-- '&43. 被TNT炸毀 / 被活塞推動'
+  no-access: '&4沒有權限'
 tnt:
   explotion-name: '&4炸藥'
   explotion-lore:
@@ -40,10 +16,6 @@ tnt:
   - '&r&6E G E   &bG 代表金磚'
   - '&r&6E E E'
   tnt-lore:
-  - '&r&6如果放置在未授權保護區內會直接點燃'
+  - '&r&6放置後自動點燃'
   - '&r&6可以破壞保護區'
   - '&r&6可以破壞水、岩漿、黑曜石'
-airdrop:
-  droped: 空投物資已經投放
-  cancel: 因為玩家少於 %d 人，空投物資已經取消。
-  will_drop: 空投物資即將在 %d 分鐘後投放在 x:%d z:%d 附近
