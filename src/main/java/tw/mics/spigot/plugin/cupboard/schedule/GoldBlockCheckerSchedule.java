@@ -12,7 +12,7 @@ public class GoldBlockCheckerSchedule {
     Runnable runnable;
     Iterator<? extends Player> iter;
 
-    int schedule_id;
+    Thread thread;
     int part;
 
     public GoldBlockCheckerSchedule(Cupboard i) {
@@ -37,10 +37,15 @@ public class GoldBlockCheckerSchedule {
                 }
                 if (delay < 1)
                     delay = 1;
-                schedule_id = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, runnable, delay);
+                try {
+                    Thread.sleep(delay * 50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                new Thread(runnable).start();
             }
         };
-        schedule_id = this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, runnable, 0);
+        new Thread(runnable).start();
         this.plugin.logDebug(this.getClass().getName() + " timer task removed");
     }
 }

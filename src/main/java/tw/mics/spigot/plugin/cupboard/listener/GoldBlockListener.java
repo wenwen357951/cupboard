@@ -60,11 +60,11 @@ public class GoldBlockListener extends MyListener {
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;                    		// off hand packet, ignore.
     	if (event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.GOLD_BLOCK) return;       	// 非黃金磚則無視
     	if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return; 						// 非右鍵方塊則無視
-        //if (event.getItem() != null && event.getItem().getType().isBlock()) return;   	// 非空手則無視
+        Player p = event.getPlayer();
+    	if (p.isSneaking()) return;                                    //蹲下放方塊無視
         List<String> enable_world = Config.ENABLE_WORLD.getStringList();
         if(!enable_world.contains(event.getClickedBlock().getWorld().getName()))return;
     	Location front_block_loc = event.getClickedBlock().getLocation().clone();
-		Player p = event.getPlayer();
     	switch(event.getBlockFace()){
     	case EAST:
     		front_block_loc.add(1,0,0);
