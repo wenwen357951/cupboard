@@ -300,9 +300,8 @@ public class CupboardsData {
     }
 
     //Async
-    @SuppressWarnings("deprecation")
     public void cleanNotExistUser() {
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
+        new Thread(new Runnable(){
             @Override
             public void run() {
                 List<String> remove_uuid_list = new ArrayList<String>();
@@ -351,22 +350,21 @@ public class CupboardsData {
 
                 plugin.log("Cleaned %d not exist player!", remove_uuid_list.size());
             }
-        });
+        }).start();
     }
 
     //Async
-    @SuppressWarnings("deprecation")
     public void findNearest(Player p){
-        Location l = p.getLocation().clone();
-        String uuid = p.getUniqueId().toString();
-        int x = l.getBlockX();
-        int y = l.getBlockY();
-        int z = l.getBlockZ();
-        int radius = 20;
-        String world = l.getWorld().getName();
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
+        new Thread(new Runnable(){
             @Override
             public void run() {
+                Location l = p.getLocation().clone();
+                String uuid = p.getUniqueId().toString();
+                int x = l.getBlockX();
+                int y = l.getBlockY();
+                int z = l.getBlockZ();
+                int radius = 20;
+                String world = l.getWorld().getName();
                 double distance = radius*2;
                 String nearest_loc = null;
                 try {
@@ -406,44 +404,49 @@ public class CupboardsData {
                     p.sendMessage(ChatColor.GOLD + "最近的已授權金磚在 " + nearest_loc);
                 }
             }
-        });
+        }).start();
     }
     
     //Async
     public void giveAcceee(String giver_uuid, String receiver_uuid, Location l){
-        Statement stmt;
-        int x = l.getBlockX();
-        int z = l.getBlockZ();
-        int radius = 200;
-        String world = l.getWorld().getName();
-        try {
-            stmt = db_conn.createStatement();
-            String sql = String.format("INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) "
-                    + "SELECT \"" + receiver_uuid + "\",CID  AS CT FROM PLAYER_OWN_CUPBOARDS  T1 "
-                    + "WHERE CID IN (SELECT CID FROM CUPBOARDS "
-                    + String.format("WHERE X <= %d AND X >= %d "
-                            + "AND Z <= %d AND Z >= %d "
-                            + "AND WORLD = \"%s\") "
-                            , x + radius, x - radius
-                            , z + radius, z - radius
-                            , world)
-                    + "AND CID IN (SELECT CID FROM `PLAYER_OWN_CUPBOARDS` WHERE `UUID`=\"" + giver_uuid + "\") "
-                    + "AND CID NOT IN (SELECT CID FROM `PLAYER_OWN_CUPBOARDS` WHERE `UUID`=\"" + receiver_uuid + "\") "
-                    + "GROUP BY CID");
-            stmt.execute(sql);
-            stmt.close();
-            
-            changelog(String.format("%s give his cupbaords to %s at %s", 
-                    Bukkit.getOfflinePlayer(UUID.fromString(giver_uuid)).getName(), 
-                    Bukkit.getOfflinePlayer(UUID.fromString(receiver_uuid)).getName(),
-                    Util.LocToString(l)));
-        } catch (SQLException e) {
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
-            e.printStackTrace();
-            plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        }
-        check_access_cache.clear();
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                Statement stmt;
+                int x = l.getBlockX();
+                int z = l.getBlockZ();
+                int radius = 200;
+                String world = l.getWorld().getName();
+                try {
+                    stmt = db_conn.createStatement();
+                    String sql = String.format("INSERT INTO PLAYER_OWN_CUPBOARDS (UUID, CID) "
+                            + "SELECT \"" + receiver_uuid + "\",CID  AS CT FROM PLAYER_OWN_CUPBOARDS  T1 "
+                            + "WHERE CID IN (SELECT CID FROM CUPBOARDS "
+                            + String.format("WHERE X <= %d AND X >= %d "
+                                    + "AND Z <= %d AND Z >= %d "
+                                    + "AND WORLD = \"%s\") "
+                                    , x + radius, x - radius
+                                    , z + radius, z - radius
+                                    , world)
+                            + "AND CID IN (SELECT CID FROM `PLAYER_OWN_CUPBOARDS` WHERE `UUID`=\"" + giver_uuid + "\") "
+                            + "AND CID NOT IN (SELECT CID FROM `PLAYER_OWN_CUPBOARDS` WHERE `UUID`=\"" + receiver_uuid + "\") "
+                            + "GROUP BY CID");
+                    stmt.execute(sql);
+                    stmt.close();
+                    
+                    changelog(String.format("%s give his cupbaords to %s at %s", 
+                            Bukkit.getOfflinePlayer(UUID.fromString(giver_uuid)).getName(), 
+                            Bukkit.getOfflinePlayer(UUID.fromString(receiver_uuid)).getName(),
+                            Util.LocToString(l)));
+                } catch (SQLException e) {
+                    plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    plugin.getLogger().log(Level.WARNING, e.getClass().getName() + ": " + e.getMessage());
+                    e.printStackTrace();
+                    plugin.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                }
+                check_access_cache.clear();
+            }
+        }).start();
     }
     
     //================================= Private function ====================================
