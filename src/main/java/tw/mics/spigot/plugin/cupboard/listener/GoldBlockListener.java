@@ -55,8 +55,9 @@ public class GoldBlockListener extends MyListener {
     }
     
     //右鍵金磚 授權/取消授權
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onRightClick(PlayerInteractEvent event){
+        if (event.isCancelled()) return;
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;                    		// off hand packet, ignore.
     	if (event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.GOLD_BLOCK) return;       	// 非黃金磚則無視
     	if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return; 						// 非右鍵方塊則無視
