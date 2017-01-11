@@ -1,7 +1,10 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -35,10 +38,13 @@ import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class CupboardBlockProtectListener extends MyListener {
 	private CupboardsData data;
+    private Map<UUID, Location> player_tnt_place_loc;
+    
 	public CupboardBlockProtectListener(Cupboard instance)
 	{
 	    super(instance);
 	    this.data = this.plugin.cupboards;
+	    player_tnt_place_loc = new HashMap<UUID, Location>();
 	}
     
     private final static Material[] doors = {
@@ -104,24 +110,23 @@ public class CupboardBlockProtectListener extends MyListener {
         if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName()))return;
         if( p != null){
             if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
-                Material replace = e.getBlockReplacedState().getType();
                 Block block = e.getBlockPlaced();
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-                    Material replace;
                     Block block;
                     
-                    public Runnable init(Block block, Material replace) {
+                    public Runnable init(Block block) {
                         this.block = block;
-                        this.replace = replace;
                         return this;
                     }
                     
                     @Override
                     public void run() {
-                        block.setType(replace);
-                        Util.setUpTNT(b.getLocation().add(0.5,0,0.5));
+                        block.setType(Material.AIR);
+                        Location loc = player_tnt_place_loc.get(e.getPlayer().getUniqueId());
+                        loc.add(0.5,0,0.5);
+                        Util.setUpTNT(loc);
                     }
-                }.init(block, replace));
+                }.init(block));
                 return;
             } else if(data.checkIsLimit(b, p)){
                 if(this.plugin.isOP(p))return;
@@ -129,6 +134,24 @@ public class CupboardBlockProtectListener extends MyListener {
                 e.setCancelled(true);
             }
         }
+    }
+    
+    //紀錄玩家放 TNT 放向
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onRightClick(PlayerInteractEvent event){
+        switch(event.getHand()){
+        case HAND:
+            if(event.getPlayer().getInventory().getItemInMainHand().getType() != Material.TNT) return;
+            break;
+        case OFF_HAND:
+            if(event.getPlayer().getInventory().getItemInOffHand().getType() != Material.TNT) return;
+            break;
+        default:
+            return;
+        }
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;                      // 非右鍵方塊則無視
+        player_tnt_place_loc.put(event.getPlayer().getUniqueId(), event.getClickedBlock().getLocation());
+    
     }
     
   //防止玩家使用水桶

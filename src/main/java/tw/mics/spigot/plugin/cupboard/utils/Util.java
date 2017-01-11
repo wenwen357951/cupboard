@@ -72,9 +72,9 @@ public class Util {
 	        int schdule_id;
 	        Location loc;
 	        TNTPrimed tnt;
-	        public void init(int id,Location l,TNTPrimed t){
+	        public void init(int id,Location loc,TNTPrimed t){
 	            schdule_id = id;
-	            loc = l;
+	            this.loc = loc.clone();
 	            tnt = t;
 	        }
 	        @Override

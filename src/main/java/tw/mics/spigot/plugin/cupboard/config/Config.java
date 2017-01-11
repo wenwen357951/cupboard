@@ -22,7 +22,7 @@ public enum Config {
     }, "witch world is enable cupboard?"),
 
 	TNT_SP_ENABLE("tnt.enable", true, "let TNT event handle by plugin."),
-    TNT_EXPLOSION_RADIUS("tnt.radius", 1, "TNT power radius (int only)"),
+    TNT_EXPLOSION_RADIUS("tnt.radius", 1, "TNT radius (int only)"),
     TNT_BREAKCHANCE("tnt.breakchance", new String[]{
             "BARRIER:0:AIR",
             "BEDROCK:0:AIR",
