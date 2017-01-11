@@ -100,6 +100,4 @@ public class TNTExplosionListener extends MyListener {
             });
         }
     }
-    
-    //TODO 水流推 TNT
 }

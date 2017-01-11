@@ -13,6 +13,7 @@ import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.Wolf;
 import org.bukkit.util.Vector;
 
+import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
 
 public class Util {
@@ -67,11 +68,36 @@ public class Util {
     }
 	
 	public static void setUpTNT(Location l){
+	    class RunnableSelfCancelAble implements Runnable{
+	        int schdule_id;
+	        Location loc;
+	        TNTPrimed tnt;
+	        public void init(int id,Location l,TNTPrimed t){
+	            schdule_id = id;
+	            loc = l;
+	            tnt = t;
+	        }
+	        @Override
+	        public void run() {
+	            if(tnt == null || tnt.isDead()){
+	                selfstop();
+	            } else {
+	                tnt.teleport(loc);
+	                tnt.setVelocity(new Vector(0, 0, 0));
+	            }
+	        }
+	        private void selfstop(){
+	            Bukkit.getScheduler().cancelTask(schdule_id);
+	        }
+	    }
         TNTPrimed tnt = l.getWorld().spawn(l, TNTPrimed.class);
         tnt.setGravity(false);
         tnt.setGlowing(true);
         tnt.setVelocity(new Vector(0, 0, 0));
         tnt.setFuseTicks(Config.TNT_FUSETICK.getInt());
+        RunnableSelfCancelAble runnable = new RunnableSelfCancelAble();
+        int schudle_id = Bukkit.getScheduler().scheduleSyncRepeatingTask(Cupboard.getInstance(), runnable, 1, 5);
+        runnable.init(schudle_id, l, tnt);
     }
 }
 

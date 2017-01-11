@@ -40,7 +40,7 @@ public enum Config {
             "ENDER_CHEST:0.25:AIR",
             "OBSIDIAN:0.5:COBBLESTONE"
     }, ""),
-    TNT_FUSETICK("tnt.fusetick", 40, "TNT Fuse tick (int only)"),
+    TNT_FUSETICK("tnt.fusetick", 100, "TNT Fuse tick (int only)"),
     
 	LOCALE("locale", "en-EN", "language file name");
 	
