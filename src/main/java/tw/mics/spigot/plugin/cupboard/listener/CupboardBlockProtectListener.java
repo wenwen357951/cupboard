@@ -11,7 +11,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
@@ -27,12 +26,12 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.util.Vector;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
+import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class CupboardBlockProtectListener extends MyListener {
 	private CupboardsData data;
@@ -41,15 +40,6 @@ public class CupboardBlockProtectListener extends MyListener {
 	    super(instance);
 	    this.data = this.plugin.cupboards;
 	}
-	
-
-    private void setUpTNT(Location l){
-        TNTPrimed tnt = l.getWorld().spawn(l, TNTPrimed.class);
-        tnt.setGravity(false);
-        tnt.setGlowing(true);
-        tnt.setVelocity(new Vector(0, 0, 0));
-        tnt.setFuseTicks(200);
-    }
     
     private final static Material[] doors = {
             Material.ACACIA_DOOR,
@@ -96,7 +86,7 @@ public class CupboardBlockProtectListener extends MyListener {
                 }
             } else if(Config.TNT_SP_ENABLE.getBoolean() && b.getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
                 b.setType(Material.AIR);
-                setUpTNT(b.getLocation().add(0.5,0,0.5));
+                Util.setUpTNT(b.getLocation().add(0.5,0,0.5));
                 e.setCancelled(true);
             }
         } else {
@@ -129,7 +119,7 @@ public class CupboardBlockProtectListener extends MyListener {
                     @Override
                     public void run() {
                         block.setType(replace);
-                        setUpTNT(b.getLocation().add(0.5,0,0.5));
+                        Util.setUpTNT(b.getLocation().add(0.5,0,0.5));
                     }
                 }.init(block, replace));
                 return;

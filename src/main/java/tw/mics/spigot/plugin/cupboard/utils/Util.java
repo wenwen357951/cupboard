@@ -8,8 +8,12 @@ import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.Wolf;
+import org.bukkit.util.Vector;
+
+import tw.mics.spigot.plugin.cupboard.config.Config;
 
 public class Util {
     public static Player getDamager(Entity e){
@@ -60,6 +64,14 @@ public class Util {
 	
 	public static String replaceColors(String message) {
         return message.replaceAll("&((?i)[0-9a-fk-or])", "§$1");
+    }
+	
+	public static void setUpTNT(Location l){
+        TNTPrimed tnt = l.getWorld().spawn(l, TNTPrimed.class);
+        tnt.setGravity(false);
+        tnt.setGlowing(true);
+        tnt.setVelocity(new Vector(0, 0, 0));
+        tnt.setFuseTicks(Config.TNT_FUSETICK.getInt());
     }
 }
 

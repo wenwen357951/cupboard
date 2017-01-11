@@ -21,15 +21,26 @@ public enum Config {
             "world"
     }, "witch world is enable cupboard?"),
 
-	TNT_SP_ENABLE("tnt.enable", true, "let TNT can desotry obsidian, water, lava, TNT Can put in protect area and TNT hard to craft."),
-    TNT_EXPLOSION_RADIUS("tnt.radius", 6, "TNT power radius"),
-    TNT_EXPLOSION_DISTANCE_LIMIT("tnt.distance-limit", 4, "TNT explosion max break block distance (set -1 to disable)"),
-	TNT_BREAK_RADIUS("tnt.break-radius", 3, "destory obsidian/water/lava check radius"),
-	TNT_OBSIDIAN_BREAK_PROBABILITY("tnt.obsidian.break-probability", 0.5, "turn obsidian block probability (after explosion)"),
-	TNT_OBSIDIAN_BREAK_TO("tnt.obsidian.break-to", "COBBLESTONE", "turn obsidian to which block"),
-	TNT_OTHERS_HIGH_BLAST_RESISTANCE_BREAK_PROBABILITY("tnt.others.break-probability", 0.25, "destory high blast resistance block probability (after explosion)"),
-	TNT_WATER_BREAK_PROBABILITY("tnt.water.break-probability", 1, "turn water block to air probability (before explosion)"),
-    TNT_LAVA_BREAK_PROBABILITY("tnt.lava.break-probability", 1, "turn lava to air probability (before explosion)"),
+	TNT_SP_ENABLE("tnt.enable", true, "let TNT event handle by plugin."),
+    TNT_EXPLOSION_RADIUS("tnt.radius", 1, "TNT power radius (int only)"),
+    TNT_BREAKCHANCE("tnt.breakchance", new String[]{
+            "BARRIER:0:AIR",
+            "BEDROCK:0:AIR",
+            "STRUCTURE_BLOCK:0:AIR",
+            "STRUCTURE_VOID:0:AIR",
+            "COMMAND:0:AIR",
+            "COMMAND_REPEATING:0:AIR",
+            "COMMAND_CHAIN:0:AIR",
+            "ENDER_PORTAL:0:AIR",
+            "ENDER_PORTAL_FRAME:0:AIR",
+            "END_GATEWAY:0:AIR",
+            "GOLD_BLOCK:0:AIR",
+            "ANVIL:0.25:AIR",
+            "ENCHANTMENT_TABLE:0.25:AIR",
+            "ENDER_CHEST:0.25:AIR",
+            "OBSIDIAN:0.5:COBBLESTONE"
+    }, ""),
+    TNT_FUSETICK("tnt.fusetick", 40, "TNT Fuse tick (int only)"),
     
 	LOCALE("locale", "en-EN", "language file name");
 	
