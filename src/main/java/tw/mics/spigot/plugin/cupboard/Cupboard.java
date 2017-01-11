@@ -13,6 +13,7 @@ import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
 import tw.mics.spigot.plugin.cupboard.data.Database;
+import tw.mics.spigot.plugin.cupboard.listener.CleanGoldBlock;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardBlockProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardEntityProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardExplosionProtectListener;
@@ -20,7 +21,6 @@ import tw.mics.spigot.plugin.cupboard.listener.GoldBlockListener;
 import tw.mics.spigot.plugin.cupboard.listener.MyListener;
 import tw.mics.spigot.plugin.cupboard.listener.TNTCraftListener;
 import tw.mics.spigot.plugin.cupboard.listener.TNTExplosionListener;
-import tw.mics.spigot.plugin.cupboard.schedule.GoldBlockCheckerSchedule;
 
 
 public class Cupboard extends JavaPlugin implements Listener {
@@ -57,6 +57,7 @@ public class Cupboard extends JavaPlugin implements Listener {
     
 	private void registerObject(){
 		//register listener
+        registedObject.add(new CleanGoldBlock(this));
         registedObject.add(new CupboardEntityProtectListener(this));
         registedObject.add(new CupboardExplosionProtectListener(this));
         registedObject.add(new CupboardBlockProtectListener(this));
@@ -67,7 +68,6 @@ public class Cupboard extends JavaPlugin implements Listener {
             registedObject.add(new TNTExplosionListener(this));
         	registedObject.add(new TNTCraftListener(this));
         }
-        new GoldBlockCheckerSchedule(this);
 	}
 	
 	private void unregisterObject(){

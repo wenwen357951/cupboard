@@ -20,8 +20,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -246,16 +246,15 @@ public class CupboardsData {
     }
     
     //================================= Clean Not Exist Cupboard ====================================
-    public void cleanNotExistCupboard(Player p){
+    public void cleanNotExistCupboard(ChunkSnapshot chunkSnapshot){
         long startTime = System.nanoTime(); //Debug
         try {
             Statement stmt = db_conn.createStatement();
-            int check_range = 48;
-            int min_x = p.getLocation().getBlockX() - check_range;
-            int max_x = p.getLocation().getBlockX() + check_range;
-            int min_z = p.getLocation().getBlockZ() - check_range;
-            int max_z = p.getLocation().getBlockZ() + check_range;
-            String world = p.getWorld().getName();
+            int min_x = chunkSnapshot.getX()*16;
+            int max_x = min_x + 15;
+            int min_z = chunkSnapshot.getZ()*16;
+            int max_z = min_z + 15;
+            String world = chunkSnapshot.getWorldName();
             List<Integer> remove_cid_list = new ArrayList<Integer>();
             
             //Find
@@ -271,10 +270,8 @@ public class CupboardsData {
             while(rs.next()){
                 int cid = rs.getInt(1);
                 String loc = rs.getString(2);
-                if(Util.StringToLoc(loc).getBlock().getType() != Material.GOLD_BLOCK){
-                    remove_cid_list.add(cid);
-                    changelog(String.format("Cupboard at %s removed (reason: not gold block)", loc));
-                }
+                remove_cid_list.add(cid);
+                changelog(String.format("Cupboard at %s removed (reason: new chunk shouldn't have gold block)", loc));
             }
             
             //Delete
