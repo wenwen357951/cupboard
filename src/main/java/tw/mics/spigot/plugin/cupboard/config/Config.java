@@ -38,8 +38,10 @@ public enum Config {
             "ANVIL:0.25:AIR",
             "ENCHANTMENT_TABLE:0.25:AIR",
             "ENDER_CHEST:0.25:AIR",
+            "CHEST:0.5:DROP",
+            "TRAPPED_CHEST:0.5:DROP",
             "OBSIDIAN:0.5:COBBLESTONE"
-    }, ""),
+    }, "set block destory chance Material:chance:turn_to_Material (turn_to_Material set to \"DROP\" will destory like normal TNT)"),
     TNT_FUSETICK("tnt.fusetick", 100, "TNT Fuse tick (int only)"),
     
 	LOCALE("locale", "en-EN", "language file name");

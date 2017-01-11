@@ -40,8 +40,12 @@ public class TNTExplosionListener extends MyListener {
 		other_chance_destory_block_list = new HashMap<Material, ChanceTureTo>();
 	    for(String str : Config.TNT_BREAKCHANCE.getStringList()){
 	        String[] strs = str.split(":");
+	        Material m = null;
+	        if(!strs[2].equals("DROP")){
+	            m = Material.valueOf(strs[2]);
+	        }
             other_chance_destory_block_list.put(Material.valueOf(strs[0]), 
-                    new ChanceTureTo( Double.valueOf(strs[1]), Material.valueOf(strs[2])));
+                    new ChanceTureTo( Double.valueOf(strs[1]), m));
 	    }
 	}
 
@@ -63,10 +67,14 @@ public class TNTExplosionListener extends MyListener {
             	    ChanceTureTo ctt = other_chance_destory_block_list.get(b.getType());
             	    if(ctt != null){
             	        if(ctt.chance > new Random().nextFloat()){
-            	            b.setType(ctt.turn_to);
+            	            if(ctt.turn_to == null){
+                                event.blockList().add(b);
+            	            } else {
+            	                b.setType(ctt.turn_to);
+            	            }
             	        }
             	    } else {
-            	        b.breakNaturally();
+            	        event.blockList().add(b);
             	    }
                 }
             }
