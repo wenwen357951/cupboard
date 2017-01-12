@@ -1,10 +1,7 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TNTPrimed;
@@ -33,6 +30,7 @@ public class CupboardExplosionProtectListener extends MyListener {
         disable_explosion_id = new LinkedList<Integer>();
     }
     
+    
     @EventHandler
     public void onExplosion(ExplosionPrimeEvent e){
         Entity entity = e.getEntity();
@@ -51,16 +49,14 @@ public class CupboardExplosionProtectListener extends MyListener {
     //TNT or Creeper爆炸
     @EventHandler(priority = EventPriority.LOWEST)
     public void onExplode(EntityExplodeEvent event){
-    	if(disable_explosion_id.contains(event.getEntity().getEntityId())){
-    	    event.blockList().clear();
-    	} else {
-    	    Iterator<Block> itr = event.blockList().iterator();
-            while(itr.hasNext()){
-                if(itr.next().getType() == Material.GOLD_BLOCK){
-                    itr.remove();
-                }
-            }
-    	}
+        if((
+                Config.ANTI_OTHERS_EXPLOSION.getBoolean() && 
+                event.getEntityType() == EntityType.MINECART_TNT
+            ) || (
+                disable_explosion_id.contains(event.getEntity().getEntityId())
+            )){
+            event.blockList().clear();
+        }
     }
 
     //防止Armor stand被炸毀
