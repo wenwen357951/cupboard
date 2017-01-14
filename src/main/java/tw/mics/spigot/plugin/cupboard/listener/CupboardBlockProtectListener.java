@@ -43,8 +43,8 @@ public class CupboardBlockProtectListener extends MyListener {
 	public CupboardBlockProtectListener(Cupboard instance)
 	{
 	    super(instance);
+        player_tnt_place_loc = new HashMap<UUID, Location>();
 	    this.data = this.plugin.cupboards;
-	    player_tnt_place_loc = new HashMap<UUID, Location>();
 	}
     
     private final static Material[] doors = {
@@ -139,6 +139,7 @@ public class CupboardBlockProtectListener extends MyListener {
     //紀錄玩家放 TNT 放向
     @EventHandler(priority = EventPriority.MONITOR)
     public void onRightClick(PlayerInteractEvent event){
+        if(event.getHand() == null) return;
         switch(event.getHand()){
         case HAND:
             if(event.getPlayer().getInventory().getItemInMainHand().getType() != Material.TNT) return;
