@@ -23,6 +23,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -266,6 +267,16 @@ public class CupboardBlockProtectListener extends MyListener {
             }
         } else {
             if(data.checkIsLimit(b)) event.setCancelled(true);
+        }
+    }
+    
+    // 防止怪物破壞方塊
+    @EventHandler
+    void onEntityBreakBlock(EntityChangeBlockEvent e){
+        Block b = e.getBlock();
+        if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName()))return;
+        if(data.checkIsLimit(b)){
+            e.setCancelled(true);
         }
     }
     
