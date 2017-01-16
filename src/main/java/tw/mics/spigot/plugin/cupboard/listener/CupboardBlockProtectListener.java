@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -275,6 +276,7 @@ public class CupboardBlockProtectListener extends MyListener {
     void onEntityBreakBlock(EntityChangeBlockEvent e){
         Block b = e.getBlock();
         if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName()))return;
+        if(e.getEntityType() == EntityType.VILLAGER)return; //村民  bypass
         if(data.checkIsLimit(b)){
             e.setCancelled(true);
         }
