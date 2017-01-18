@@ -272,11 +272,16 @@ public class CupboardBlockProtectListener extends MyListener {
     }
     
     // 防止怪物破壞方塊
+    final static EntityType[] cant_destory_block_entity = {
+            EntityType.WITHER,
+            EntityType.ENDERMAN
+    };
     @EventHandler
     void onEntityBreakBlock(EntityChangeBlockEvent e){
         Block b = e.getBlock();
         if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName()))return;
-        if(e.getEntityType() == EntityType.VILLAGER)return; //村民  bypass
+        if(!Arrays.asList(cant_destory_block_entity).contains(e.getEntityType()))return; //不是凋零或 Enderman 就  bypass
+        
         if(data.checkIsLimit(b)){
             e.setCancelled(true);
         }
