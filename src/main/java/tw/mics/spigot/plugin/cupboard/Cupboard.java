@@ -90,8 +90,11 @@ public class Cupboard extends JavaPlugin implements Listener {
     
     public boolean isOP(Player p, boolean notice){
         if(!Config.OP_BYPASS.getBoolean())return false;
-        if(p.isOp() && p.getGameMode() != GameMode.SURVIVAL){
-            if(notice)p.sendMessage(Locales.OP_BYPASS.getString());
+        if(
+                p.hasPermission("cupboard.bypass") && 
+                p.getGameMode() != GameMode.SURVIVAL
+        ){
+            if(notice) p.sendMessage(Locales.OP_BYPASS.getString());
             return true;
         }
         return false;
