@@ -41,11 +41,13 @@ import tw.mics.spigot.plugin.cupboard.utils.Util;
 public class CupboardBlockProtectListener extends MyListener {
 	private CupboardsData data;
     private Map<UUID, Location> player_tnt_place_loc;
+    private Map<UUID, BlockFace> player_tnt_place_face;
     
 	public CupboardBlockProtectListener(Cupboard instance)
 	{
 	    super(instance);
         player_tnt_place_loc = new HashMap<UUID, Location>();
+        player_tnt_place_face = new HashMap<UUID, BlockFace>();
 	    this.data = this.plugin.cupboards;
 	}
     
@@ -127,6 +129,34 @@ public class CupboardBlockProtectListener extends MyListener {
                         Location loc = player_tnt_place_loc.get(e.getPlayer().getUniqueId());
                         loc.add(0.5,0,0.5);
                         Util.setUpTNT(loc);
+                        if(loc.getBlockY() < Config.TNT_EXPLOSION_BOUNS_Y.getInt()){
+                            for(int i=0; i < Config.TNT_EXPLOSION_BOUNS_COUNT.getInt(); i++){
+                                switch(player_tnt_place_face.get(e.getPlayer().getUniqueId())){
+                                case UP:
+                                    loc.add(0, -1, 0);
+                                    break;
+                                case DOWN:
+                                    loc.add(0, 1, 0);
+                                    break;
+                                case WEST:
+                                    loc.add(1, 0, 0);
+                                    break;
+                                case EAST:
+                                    loc.add(-1, 0, 0);
+                                    break;
+                                case NORTH:
+                                    loc.add(0, 0, 1);
+                                    break;
+                                case SOUTH:
+                                    loc.add(0, 0, -1);
+                                    break;
+                                default:
+                                    break;
+                                
+                                }
+                                Util.setUpTNT(loc);
+                            }
+                        }
                     }
                 }.init(block));
                 return;
@@ -154,6 +184,7 @@ public class CupboardBlockProtectListener extends MyListener {
         }
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;                      // 非右鍵方塊則無視
         player_tnt_place_loc.put(event.getPlayer().getUniqueId(), event.getClickedBlock().getLocation());
+        player_tnt_place_face.put(event.getPlayer().getUniqueId(), event.getBlockFace());
     
     }
     
