@@ -46,7 +46,7 @@ public enum Locales {
             "&r&6萬惡的核心.",
             "&r&6沒有它就不能幹壞事",
     }), 
-    TNT_NOT_ENOUGH("tnt.tnt-not-enough", "&4TNT not enough"),
+    TNT_NOT_ENOUGH("tnt.tnt-not-enough", "&4on hand TNT not enough (it cost 2)"),
     TNT_EVILESSENCE_NOT_ENOUGH("tnt.evilessence-not-enough", "&4Evil Essence not enough");
 	
 	private final Object value;

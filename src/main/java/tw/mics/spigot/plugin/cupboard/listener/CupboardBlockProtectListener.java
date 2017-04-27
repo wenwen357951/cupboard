@@ -110,12 +110,7 @@ public class CupboardBlockProtectListener extends MyListener {
             if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
                 //確定邪惡精華足夠
                 if(Config.EVILESSENCE_ENABLE.getBoolean()){
-                    if(p.getInventory().contains(Material.COMMAND_MINECART, Config.EVILESSENCE_TNT_COST.getInt())){
-                        Inventory inv = p.getInventory();
-                        for(int i=0; i<Config.EVILESSENCE_TNT_COST.getInt(); i++){
-                            inv.setItem(inv.first(Material.COMMAND_MINECART), null);
-                        }
-                    } else {
+                    if(!p.getInventory().contains(Material.COMMAND_MINECART, Config.EVILESSENCE_TNT_COST.getInt())){
                         p.sendMessage(Locales.TNT_EVILESSENCE_NOT_ENOUGH.getString());
                         e.setCancelled(true);
                         return;
@@ -124,10 +119,15 @@ public class CupboardBlockProtectListener extends MyListener {
                 //確定 TNT 數量足夠
                 if(e.getBlock().getLocation().getBlockY() > Config.TNT_EXPLOSION_BOUNS_Y.getInt()){
                     ItemStack tnt;
-                    if(p.getInventory().getItemInMainHand().getType() == Material.TNT){
+                    if(e.getHand() == null) return;
+                    switch(e.getHand()){
+                    default:
+                    case HAND:
                         tnt = p.getInventory().getItemInMainHand();
-                    } else {
+                        break;
+                    case OFF_HAND:
                         tnt = p.getInventory().getItemInOffHand();
+                        break;
                     }
                     if(tnt.getAmount() >= Config.TNT_EXPLOSION_BOUNS_COST.getInt() ){
                         tnt.setAmount(tnt.getAmount() - Config.TNT_EXPLOSION_BOUNS_COST.getInt());
@@ -137,6 +137,12 @@ public class CupboardBlockProtectListener extends MyListener {
                         return;
                     }
                 }
+                
+                Inventory inv = p.getInventory();
+                for(int i=0; i<Config.EVILESSENCE_TNT_COST.getInt(); i++){
+                    inv.setItem(inv.first(Material.COMMAND_MINECART), null);
+                }
+                
                 return;
             } else if(data.checkIsLimit(b, p)){
                 if(this.plugin.isOP(p))return;
