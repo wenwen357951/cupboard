@@ -1,12 +1,8 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,6 +26,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
@@ -40,14 +37,10 @@ import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class CupboardBlockProtectListener extends MyListener {
 	private CupboardsData data;
-    private Map<UUID, Location> player_tnt_place_loc;
-    private Map<UUID, BlockFace> player_tnt_place_face;
     
 	public CupboardBlockProtectListener(Cupboard instance)
 	{
 	    super(instance);
-        player_tnt_place_loc = new HashMap<UUID, Location>();
-        player_tnt_place_face = new HashMap<UUID, BlockFace>();
 	    this.data = this.plugin.cupboards;
 	}
     
@@ -114,51 +107,20 @@ public class CupboardBlockProtectListener extends MyListener {
         if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName()))return;
         if( p != null){
             if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
-                Block block = e.getBlockPlaced();
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-                    Block block;
-                    
-                    public Runnable init(Block block) {
-                        this.block = block;
-                        return this;
+                if(e.getBlock().getLocation().getBlockY() > Config.TNT_EXPLOSION_BOUNS_Y.getInt()){
+                    ItemStack tnt;
+                    if(p.getInventory().getItemInMainHand().getType() == Material.TNT){
+                        tnt = p.getInventory().getItemInMainHand();
+                    } else {
+                        tnt = p.getInventory().getItemInOffHand();
                     }
-                    
-                    @Override
-                    public void run() {
-                        block.setType(Material.AIR);
-                        Location loc = player_tnt_place_loc.get(e.getPlayer().getUniqueId());
-                        loc.add(0.5,0,0.5);
-                        Util.setUpTNT(loc);
-                        if(loc.getBlockY() < Config.TNT_EXPLOSION_BOUNS_Y.getInt()){
-                            for(int i=0; i < Config.TNT_EXPLOSION_BOUNS_COUNT.getInt(); i++){
-                                switch(player_tnt_place_face.get(e.getPlayer().getUniqueId())){
-                                case UP:
-                                    loc.add(0, -1, 0);
-                                    break;
-                                case DOWN:
-                                    loc.add(0, 1, 0);
-                                    break;
-                                case WEST:
-                                    loc.add(1, 0, 0);
-                                    break;
-                                case EAST:
-                                    loc.add(-1, 0, 0);
-                                    break;
-                                case NORTH:
-                                    loc.add(0, 0, 1);
-                                    break;
-                                case SOUTH:
-                                    loc.add(0, 0, -1);
-                                    break;
-                                default:
-                                    break;
-                                
-                                }
-                                Util.setUpTNT(loc);
-                            }
-                        }
+                    if(tnt.getAmount() >= Config.TNT_EXPLOSION_BOUNS_COST.getInt() ){
+                        tnt.setAmount(tnt.getAmount() - Config.TNT_EXPLOSION_BOUNS_COST.getInt());
+                    } else {
+                        p.sendMessage(Locales.TNT_NOT_ENOUGH.getString());
+                        e.setCancelled(true);
                     }
-                }.init(block));
+                }
                 return;
             } else if(data.checkIsLimit(b, p)){
                 if(this.plugin.isOP(p))return;
@@ -168,24 +130,18 @@ public class CupboardBlockProtectListener extends MyListener {
         }
     }
     
-    //紀錄玩家放 TNT 放向
+    //TNT放置
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onRightClick(PlayerInteractEvent event){
-        if(event.getHand() == null) return;
-        switch(event.getHand()){
-        case HAND:
-            if(event.getPlayer().getInventory().getItemInMainHand().getType() != Material.TNT) return;
-            break;
-        case OFF_HAND:
-            if(event.getPlayer().getInventory().getItemInOffHand().getType() != Material.TNT) return;
-            break;
-        default:
-            return;
+    public void onTNTPlace(BlockPlaceEvent e){
+        Player p = e.getPlayer();
+        if(e.isCancelled()) return;
+        if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
+            Block block = e.getBlockPlaced();
+            block.setType(Material.AIR);
+            Location loc = block.getLocation();
+            loc.add(0.5,0,0.5);
+            Util.setUpTNT(loc);
         }
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;                      // 非右鍵方塊則無視
-        player_tnt_place_loc.put(event.getPlayer().getUniqueId(), event.getClickedBlock().getLocation());
-        player_tnt_place_face.put(event.getPlayer().getUniqueId(), event.getBlockFace());
-    
     }
     
   //防止玩家使用水桶

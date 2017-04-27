@@ -37,7 +37,8 @@ public enum Locales {
 			"&r&6Put in portect area, will Auto Ignite.",
 			"&r&6Can destory protect area.",
 			"&r&6Can destory water, lava and obsidian.",
-	});
+	}), 
+	TNT_NOT_ENOUGH("tnt.tnt-not-enough", "&4TNT 數量不足");
 	
 	private final Object value;
 	private final String path;

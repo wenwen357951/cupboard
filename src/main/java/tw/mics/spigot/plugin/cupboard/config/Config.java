@@ -23,8 +23,8 @@ public enum Config {
 
 	TNT_SP_ENABLE("tnt.enable", true, "let TNT event handle by plugin."),
     TNT_EXPLOSION_RADIUS("tnt.radius", 1, "TNT radius (int only)"),
-    TNT_EXPLOSION_BOUNS_Y("tnt.bouns-y", 55, "TNT bouns Y (below this, radius will set to bouns-radius, set 0 to disable"),
-    TNT_EXPLOSION_BOUNS_COUNT("tnt.bouns-count", 1, "TNT bouns"),
+    TNT_EXPLOSION_BOUNS_Y("tnt.bouns-y", 55, "TNT bouns Y (higher than this, tnt cost tnt.bouns-cost amount, set 0 to disable"),
+    TNT_EXPLOSION_BOUNS_COST("tnt.bouns-cost", 2, "TNT bouns"),
     TNT_BREAKCHANCE("tnt.breakchance", new String[]{
             "BARRIER:0:AIR",
             "BEDROCK:0:AIR",
