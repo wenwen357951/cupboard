@@ -25,6 +25,7 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -107,6 +108,20 @@ public class CupboardBlockProtectListener extends MyListener {
         if(!Config.ENABLE_WORLD.getStringList().contains(b.getWorld().getName()))return;
         if( p != null){
             if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
+                //確定邪惡精華足夠
+                if(Config.EVILESSENCE_ENABLE.getBoolean()){
+                    if(p.getInventory().contains(Material.COMMAND_MINECART, Config.EVILESSENCE_TNT_COST.getInt())){
+                        Inventory inv = p.getInventory();
+                        for(int i=0; i<Config.EVILESSENCE_TNT_COST.getInt(); i++){
+                            inv.setItem(inv.first(Material.COMMAND_MINECART), null);
+                        }
+                    } else {
+                        p.sendMessage(Locales.TNT_EVILESSENCE_NOT_ENOUGH.getString());
+                        e.setCancelled(true);
+                        return;
+                    }
+                }
+                //確定 TNT 數量足夠
                 if(e.getBlock().getLocation().getBlockY() > Config.TNT_EXPLOSION_BOUNS_Y.getInt()){
                     ItemStack tnt;
                     if(p.getInventory().getItemInMainHand().getType() == Material.TNT){
@@ -119,6 +134,7 @@ public class CupboardBlockProtectListener extends MyListener {
                     } else {
                         p.sendMessage(Locales.TNT_NOT_ENOUGH.getString());
                         e.setCancelled(true);
+                        return;
                     }
                 }
                 return;

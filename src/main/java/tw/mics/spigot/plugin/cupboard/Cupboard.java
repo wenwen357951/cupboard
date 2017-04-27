@@ -17,6 +17,7 @@ import tw.mics.spigot.plugin.cupboard.listener.CleanGoldBlock;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardBlockProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardEntityProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardExplosionProtectListener;
+import tw.mics.spigot.plugin.cupboard.listener.EvilEssenceListener;
 import tw.mics.spigot.plugin.cupboard.listener.GoldBlockListener;
 import tw.mics.spigot.plugin.cupboard.listener.MyListener;
 import tw.mics.spigot.plugin.cupboard.listener.TNTCraftListener;
@@ -67,6 +68,9 @@ public class Cupboard extends JavaPlugin implements Listener {
         if(Config.TNT_SP_ENABLE.getBoolean()){
             registedObject.add(new TNTExplosionListener(this));
         	registedObject.add(new TNTCraftListener(this));
+        	if(Config.EVILESSENCE_ENABLE.getBoolean()){
+                registedObject.add(new EvilEssenceListener(this));
+        	}
         }
 	}
 	

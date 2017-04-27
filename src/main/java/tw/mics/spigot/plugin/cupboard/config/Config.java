@@ -45,6 +45,11 @@ public enum Config {
             "OBSIDIAN:0.5:COBBLESTONE"
     }, "set block destory chance Material:chance:turn_to_Material (turn_to_Material set to \"DROP\" will destory like normal TNT)"),
     TNT_FUSETICK("tnt.fusetick", 100, "TNT Fuse tick (int only)"),
+    EVILESSENCE_ENABLE("evilessence.enable", true, ""),
+    EVILESSENCE_TNT_COST("evilessence.tnt-place-cost", 1, ""),
+    EVILESSENCE_DROPAMOUNT("tnt.evilessence.dropamount", new String[]{
+            "MOB_SPAWNER:3:5"
+    }, ""),
     
 	LOCALE("locale", "en-EN", "language file name");
 	

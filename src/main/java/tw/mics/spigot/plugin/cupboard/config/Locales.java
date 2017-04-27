@@ -32,13 +32,22 @@ public enum Locales {
 	    	"&r&6E G E   &bG is Block of Gold",
 	    	"&r&6E E E"
 	}),
-	
-	TNT_TNT_LORE("tnt.tnt-lore", new String[] {
-			"&r&6Put in portect area, will Auto Ignite.",
-			"&r&6Can destory protect area.",
-			"&r&6Can destory water, lava and obsidian.",
-	}), 
-	TNT_NOT_ENOUGH("tnt.tnt-not-enough", "&4TNT 數量不足");
+    
+    TNT_TNT_LORE("tnt.tnt-lore", new String[] {
+            "&r&6Put in portect area, will Auto Ignite.",
+            "&r&6Can destory protect area.",
+            "&r&6Can destory water, lava and obsidian.",
+    }), 
+    
+    TNT_EVILESSENCE_NAME("tnt.evilessence-name", "&5Evil Essence" ), 
+    
+    TNT_EVILESSENCE_LORE("tnt.evilessence-lore", new String[] {
+            "&r&6邪惡的精華所在.",
+            "&r&6萬惡的核心.",
+            "&r&6沒有它就不能幹壞事",
+    }), 
+    TNT_NOT_ENOUGH("tnt.tnt-not-enough", "&4TNT not enough"),
+    TNT_EVILESSENCE_NOT_ENOUGH("tnt.evilessence-not-enough", "&4Evil Essence not enough");
 	
 	private final Object value;
 	private final String path;
