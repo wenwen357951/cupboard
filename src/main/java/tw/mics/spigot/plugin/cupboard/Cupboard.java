@@ -14,6 +14,7 @@ import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
 import tw.mics.spigot.plugin.cupboard.data.Database;
 import tw.mics.spigot.plugin.cupboard.listener.CleanGoldBlock;
+import tw.mics.spigot.plugin.cupboard.listener.CompassListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardBlockProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardEntityProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardExplosionProtectListener;
@@ -68,9 +69,14 @@ public class Cupboard extends JavaPlugin implements Listener {
         if(Config.TNT_SP_ENABLE.getBoolean()){
             registedObject.add(new TNTExplosionListener(this));
         	registedObject.add(new TNTCraftListener(this));
-        	if(Config.EVILESSENCE_ENABLE.getBoolean()){
-                registedObject.add(new EvilEssenceListener(this));
-        	}
+        }
+        
+        if(Config.EVILESSENCE_ENABLE.getBoolean()){
+            registedObject.add(new EvilEssenceListener(this));
+        }
+        
+        if(Config.COMPASS_ENABLE.getBoolean()){
+            registedObject.add(new CompassListener(this));
         }
 	}
 	

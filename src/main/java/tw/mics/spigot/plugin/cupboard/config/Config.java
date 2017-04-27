@@ -47,9 +47,14 @@ public enum Config {
     TNT_FUSETICK("tnt.fusetick", 100, "TNT Fuse tick (int only)"),
     EVILESSENCE_ENABLE("evilessence.enable", true, ""),
     EVILESSENCE_TNT_COST("evilessence.tnt-place-cost", 1, ""),
-    EVILESSENCE_DROPAMOUNT("tnt.evilessence.dropamount", new String[]{
+    EVILESSENCE_COMPASS_COST("evilessence.compass-use-cost", 1, ""),
+    EVILESSENCE_DROPAMOUNT("evilessence.dropamount", new String[]{
             "MOB_SPAWNER:3:5"
     }, ""),
+
+    COMPASS_ENABLE("compass.enable", true, ""),
+    COMPASS_DEVIATION("compass.deviation", 200, ""),
+    COMPASS_TARGET_Y("compass.target-y", 55, "target must below this"),
     
 	LOCALE("locale", "en-EN", "language file name");
 	

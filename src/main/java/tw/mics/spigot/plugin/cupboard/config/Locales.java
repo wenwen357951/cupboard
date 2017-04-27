@@ -42,12 +42,13 @@ public enum Locales {
     TNT_EVILESSENCE_NAME("tnt.evilessence-name", "&5Evil Essence" ), 
     
     TNT_EVILESSENCE_LORE("tnt.evilessence-lore", new String[] {
-            "&r&6邪惡的精華所在.",
-            "&r&6萬惡的核心.",
-            "&r&6沒有它就不能幹壞事",
+            "&r&6Evil essence.",
     }), 
     TNT_NOT_ENOUGH("tnt.tnt-not-enough", "&4on hand TNT not enough (it cost 2)"),
-    TNT_EVILESSENCE_NOT_ENOUGH("tnt.evilessence-not-enough", "&4Evil Essence not enough");
+    TNT_EVILESSENCE_NOT_ENOUGH("tnt.evilessence-not-enough", "&4Evil Essence not enough"), 
+    COMPASS_NOT_FOUND_PLAYER("compass.can-not-found-player-or-world-wrong", "&4Can't found player or world type is wrong."), 
+    COMPASS_SUCCESSFUL("compass.your-compass-sucessful", "&aYour compass now point someone."), 
+    COMPASS_BE_POINTED("compass.you-are-pointed-by-someone", "&4You are pointed by someone, be careful");
 	
 	private final Object value;
 	private final String path;

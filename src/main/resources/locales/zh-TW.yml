@@ -19,3 +19,14 @@ tnt:
   - '&r&6放置後自動點燃'
   - '&r&6可以破壞保護區'
   - '&r&6可以破壞水、岩漿、黑曜石'
+  evilessence-name: '&5邪惡精華'
+  evilessence-lore:
+  - '&r&6邪惡精華.'
+  - '&r&6有了他, 你才可以放置 TNT.'
+  - '&r&6有了他, 你才可以使用指南針.'
+  tnt-not-enough: '&4手上的 TNT 不足 (需要 2 個)'
+  evilessence-not-enough: '&4邪惡精華不足'
+compass:
+  can-not-found-player-or-world-wrong: '&4無法找到玩家, 或你所在的世界無法使用.'
+  your-compass-sucessful: '&a你的指南針受到了邪惡精華的影響, 現在已經指向了某位玩家.'
+  you-are-pointed-by-someone: '&4你感受到了一股邪惡力量, 你的位置已經被其他玩家得知了!'
