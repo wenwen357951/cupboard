@@ -14,6 +14,8 @@ public enum Config {
 	DEBUG("debug", false, "is plugin show debug message?"),
 	CUPBOARD_PROTECT_DIST("cupboard.protect_dist", 9, "this is cupboard protect area size (ex 9 is 9+9+1 -> 19*19*19)"),
     CUPBOARD_BETWEEN_DIST("cupboard.between_dist", 18, "this is how many block between cupboard can put another cupboard"),
+    CUPBOARD_PREVENT_TELEPORT_ENABLE("cupboard.prevent-teleport.enable", true, "prevent protect area teleport in (ender peral and chorus fruit)"),
+    CUPBOARD_PREVENT_TELEPORT_IGNORE_Y("cupboard.prevent-teleport.ignore-y", 55, "Y lower than this number, teleport still working"),
 	ANTI_TNT_EXPLOSION("cupboard.anti-tnt-explosion", false, "is cupboard protect explosion from TNT?"),
 	ANTI_OTHERS_EXPLOSION("cupboard.anti-creeper-explosion", true, "is cupboard protect explosion from CREEPER?"),
     OP_BYPASS("cupboard.is-op-creative-bypass", true, "is OP user can bypass block protect when in creative mode?"),

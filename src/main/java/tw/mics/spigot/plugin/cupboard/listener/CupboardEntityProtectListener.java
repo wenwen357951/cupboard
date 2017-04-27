@@ -50,7 +50,9 @@ public class CupboardEntityProtectListener extends MyListener {
     //防止歌來果/中介珍珠傳送
     @EventHandler
     public void playerTeleportEvent(PlayerTeleportEvent event) {
+        if(!Config.CUPBOARD_PREVENT_TELEPORT_ENABLE.getBoolean())return;
         if(!Config.ENABLE_WORLD.getStringList().contains(event.getTo().getWorld().getName()))return;
+        if(Config.CUPBOARD_PREVENT_TELEPORT_IGNORE_Y.getInt() > event.getTo().getBlockY())return;
         if(
             (
                 event.getCause() ==  PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT ||
