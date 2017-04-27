@@ -85,7 +85,7 @@ public class TNTExplosionListener extends MyListener {
     @EventHandler
     public void onTNTPrime(ExplosionPrimeEvent e){
         if(!(e.getEntity() instanceof TNTPrimed)) return;
-        e.setRadius(0);
+        e.setRadius(Config.TNT_EXPLOSION_RADIUS.getInt()+1);
     }
     
     //發射器禁用
