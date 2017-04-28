@@ -109,8 +109,14 @@ public class CupboardBlockProtectListener extends MyListener {
         if( p != null){
             if(Config.TNT_SP_ENABLE.getBoolean() && e.getBlockPlaced().getType().equals(Material.TNT) && p.getGameMode() == GameMode.SURVIVAL){
                 //確定邪惡精華足夠
+                Integer evilessence_cost = null;
                 if(Config.EVILESSENCE_ENABLE.getBoolean()){
-                    if(!p.getInventory().contains(Material.COMMAND_MINECART, Config.EVILESSENCE_TNT_COST.getInt())){
+                    if(e.getBlock().getLocation().getBlockY() > Config.EVILESSENCE_TNT_COST_BOUNS_Y.getInt()){
+                        evilessence_cost = Config.EVILESSENCE_TNT_COST_BOUNS_AMOUNT.getInt();
+                    } else {
+                        evilessence_cost = Config.EVILESSENCE_TNT_COST.getInt();
+                    }
+                    if(!p.getInventory().contains(Material.COMMAND_MINECART, evilessence_cost)){
                         p.sendMessage(Locales.TNT_EVILESSENCE_NOT_ENOUGH.getString());
                         e.setCancelled(true);
                         return;
@@ -139,8 +145,10 @@ public class CupboardBlockProtectListener extends MyListener {
                 }
                 
                 Inventory inv = p.getInventory();
-                for(int i=0; i<Config.EVILESSENCE_TNT_COST.getInt(); i++){
-                    inv.setItem(inv.first(Material.COMMAND_MINECART), null);
+                if(evilessence_cost != null){
+                    for(int i=0; i<evilessence_cost; i++){
+                        inv.setItem(inv.first(Material.COMMAND_MINECART), null);
+                    }
                 }
                 
                 return;

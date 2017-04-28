@@ -47,6 +47,8 @@ public enum Config {
     TNT_FUSETICK("tnt.fusetick", 100, "TNT Fuse tick (int only)"),
     EVILESSENCE_ENABLE("evilessence.enable", true, ""),
     EVILESSENCE_TNT_COST("evilessence.tnt-place-cost", 1, ""),
+    EVILESSENCE_TNT_COST_BOUNS_Y("evilessence.tnt-place-cost-bouns-y", 55, ""),
+    EVILESSENCE_TNT_COST_BOUNS_AMOUNT("evilessence.tnt-place-cost-bouns-amount", 2, ""),
     EVILESSENCE_COMPASS_COST("evilessence.compass-use-cost", 1, ""),
     EVILESSENCE_DROPAMOUNT("evilessence.dropamount", new String[]{
             "MOB_SPAWNER:3:5"
