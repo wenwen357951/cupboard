@@ -117,7 +117,9 @@ public enum Config {
                 }
                 continue;
             }
-        	header += c.getPath() + ": " + c.getDescription() + System.lineSeparator();
+            if(!c.getDescription().isEmpty()){
+                header += c.getPath() + ": " + c.getDescription() + System.lineSeparator();
+            }
             if (!cfg.contains(c.getPath())) {
             	save_flag = true;
                 c.set(c.getDefaultValue(), false);
