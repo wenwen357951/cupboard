@@ -7,6 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -44,6 +45,13 @@ public class CupboardExplosionProtectListener extends MyListener {
         while(disable_explosion_id.size() > 50){
             disable_explosion_id.pollLast();
         }
+    }
+    
+    //防止插件爆炸
+    @EventHandler
+    public void onExplode(BlockExplodeEvent event){
+        if(!Config.ANTI_OTHERS_EXPLOSION.getBoolean()) return;
+        event.blockList().clear();
     }
 	
     //TNT or Creeper爆炸
