@@ -37,6 +37,7 @@ public class CupboardExplosionProtectListener extends MyListener {
     @EventHandler
     public void onExplosion(ExplosionPrimeEvent e){
         Entity entity = e.getEntity();
+        if(!Config.ENABLE_WORLD.getStringList().contains(entity.getWorld().getName()))return;
         if(entity instanceof TNTPrimed && !Config.ANTI_TNT_EXPLOSION.getBoolean()) return;
         if(!(entity instanceof TNTPrimed) && !Config.ANTI_OTHERS_EXPLOSION.getBoolean()) return;
         if(!data.checkExplosionAble(e.getEntity().getLocation(), e.getRadius())){
@@ -52,6 +53,7 @@ public class CupboardExplosionProtectListener extends MyListener {
     //防止插件爆炸
     @EventHandler
     public void onExplode(BlockExplodeEvent event){
+        if(!Config.ENABLE_WORLD.getStringList().contains(event.getBlock().getWorld().getName()))return;
         if(!Config.ANTI_OTHERS_EXPLOSION.getBoolean()) return;
         float distance_longest = 0;
         Iterator<Block> itr = event.blockList().iterator();
@@ -70,6 +72,7 @@ public class CupboardExplosionProtectListener extends MyListener {
     //TNT or Creeper爆炸
     @EventHandler(priority = EventPriority.LOWEST)
     public void onExplode(EntityExplodeEvent event){
+        if(!Config.ENABLE_WORLD.getStringList().contains(event.getEntity().getWorld().getName()))return;
         if((
                 Config.ANTI_OTHERS_EXPLOSION.getBoolean() && 
                 event.getEntityType() == EntityType.MINECART_TNT
@@ -83,6 +86,7 @@ public class CupboardExplosionProtectListener extends MyListener {
     //防止Armor stand被炸毀
     @EventHandler(priority = EventPriority.LOWEST)
     public void onArmorStandExplosion(EntityDamageByEntityEvent e){
+        if(!Config.ENABLE_WORLD.getStringList().contains(e.getEntity().getWorld().getName()))return;
     	if(
     		e.getEntity().getType() == EntityType.ARMOR_STAND &&
     		e.getCause() == DamageCause.ENTITY_EXPLOSION
@@ -96,6 +100,7 @@ public class CupboardExplosionProtectListener extends MyListener {
     //防止Hanging類物品 被Creeper炸掉 / 被TNT炸掉
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent e) {
+        if(!Config.ENABLE_WORLD.getStringList().contains(e.getEntity().getWorld().getName()))return;
         //TODO fix TNT can destory (低重要度)
 		if(e.getCause() == RemoveCause.ENTITY){ //by Entity
 		    if(disable_explosion_id.contains(e.getRemover().getEntityId())){
