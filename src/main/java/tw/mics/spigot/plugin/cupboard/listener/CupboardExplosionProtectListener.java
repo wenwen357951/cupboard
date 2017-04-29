@@ -1,7 +1,9 @@
 package tw.mics.spigot.plugin.cupboard.listener;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TNTPrimed;
@@ -51,7 +53,18 @@ public class CupboardExplosionProtectListener extends MyListener {
     @EventHandler
     public void onExplode(BlockExplodeEvent event){
         if(!Config.ANTI_OTHERS_EXPLOSION.getBoolean()) return;
-        event.blockList().clear();
+        float distance_longest = 0;
+        Iterator<Block> itr = event.blockList().iterator();
+        while(itr.hasNext()){
+            Block b = itr.next();
+            float dis_now = (float) b.getLocation().distance(event.getBlock().getLocation());
+            if(dis_now > distance_longest){
+                distance_longest = dis_now;
+            }
+        }
+        if(!data.checkExplosionAble(event.getBlock().getLocation(), distance_longest)){
+            event.blockList().clear();
+        }
     }
 	
     //TNT or Creeper爆炸
