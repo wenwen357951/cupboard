@@ -75,5 +75,13 @@
                <version>${mc-version}-${bukkit-ver}</version>
                <scope>provided</scope>
         </dependency>
+		
+		<dependency>
+            <groupId>sample</groupId>
+            <artifactId>com.sample</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../EvilPoint/target/EvilPoint.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>

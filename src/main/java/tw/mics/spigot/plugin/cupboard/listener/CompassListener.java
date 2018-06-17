@@ -17,6 +17,8 @@ import org.bukkit.inventory.Inventory;
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
+import tw.mics.spigot.plugin.evilpoint.data.EvilPointData;
+import tw.mics.spigot.plugin.evilpoint.EvilPoint;
 
 public class CompassListener extends MyListener {
     
@@ -77,6 +79,9 @@ public class CompassListener extends MyListener {
                     0, 
                     Config.COMPASS_DEVIATION.getInt() * Math.cos(Math.PI * 2 * random)
             );
+            EvilPointData evilpointdata = EvilPoint.getInstance().evilpointdata;
+            Player player = event.getPlayer();
+            evilpointdata.plusEvil(player, 30);
             p.sendMessage(Locales.COMPASS_SUCCESSFUL.getString());
             target_p.sendMessage(Locales.COMPASS_BE_POINTED.getString());
             p.setCompassTarget(loc);
