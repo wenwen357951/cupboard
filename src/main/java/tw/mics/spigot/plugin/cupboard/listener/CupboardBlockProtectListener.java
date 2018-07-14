@@ -174,7 +174,7 @@ public class CupboardBlockProtectListener extends MyListener {
         }
     }
     
-  //防止玩家使用水桶
+   //防止玩家使用水桶
     @EventHandler
     public void onBucketEmpty(PlayerBucketEmptyEvent e){
         Player p = e.getPlayer();
@@ -234,7 +234,7 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.CAKE_BLOCK,
     };
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent event){
         Block b = event.getClickedBlock();
         Player p = event.getPlayer();
