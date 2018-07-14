@@ -30,7 +30,8 @@ public class Cupboard extends JavaPlugin implements Listener {
     public Database database;
     private static Cupboard INSTANCE;
     private ArrayList<Object> registedObject;
-	
+    
+    //我是沒用的註解
 	@Override
 	public void onEnable() {
 		INSTANCE = this;
