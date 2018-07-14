@@ -59,7 +59,7 @@ public class CupboardBlockProtectListener extends MyListener {
     
     //防止其他玩家破壞方塊
     @SuppressWarnings("deprecation")
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onBlockBreak(BlockBreakEvent e){
         Player p = e.getPlayer();
         Block b = e.getBlock();
@@ -101,7 +101,7 @@ public class CupboardBlockProtectListener extends MyListener {
     }
     
     //防止其他玩家放置方塊
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onBlockPlace(BlockPlaceEvent e){
         Player p = e.getPlayer();
         Block b = e.getBlock();
