@@ -3,6 +3,7 @@ package tw.mics.spigot.plugin.cupboard.listener;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -245,8 +246,7 @@ public class CupboardBlockProtectListener extends MyListener {
                     (b.getState() instanceof InventoryHolder) ||
                     (Arrays.asList(limitInteractBlocks).contains(b.getType()))
             )) return;
-            ItemStack hand_item = event.getHand() == EquipmentSlot.OFF_HAND ? p.getInventory().getItemInMainHand(): p.getInventory().getItemInOffHand();
-            if (p.isSneaking() && hand_item.getType() == Material.TNT) return; //TNT 蹲下右鍵則無視
+            if (p.isSneaking() && p.getInventory().getItemInMainHand().getType() == Material.TNT) return; //TNT 蹲下右鍵則無視
 
             //禁止玩家與限制區域互動
             if(data.checkIsLimit(b, p)){
