@@ -25,6 +25,7 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -244,6 +245,8 @@ public class CupboardBlockProtectListener extends MyListener {
                     (b.getState() instanceof InventoryHolder) ||
                     (Arrays.asList(limitInteractBlocks).contains(b.getType()))
             )) return;
+            ItemStack hand_item = event.getHand() == EquipmentSlot.OFF_HAND ? p.getInventory().getItemInMainHand(): p.getInventory().getItemInOffHand();
+            if (p.isSneaking() && hand_item.getType() == Material.TNT) return; //TNT 蹲下右鍵則無視
 
             //禁止玩家與限制區域互動
             if(data.checkIsLimit(b, p)){
