@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
@@ -164,6 +165,23 @@ public class CupboardEntityProtectListener extends MyListener {
                 if(this.plugin.isOP(damager)) return;
                 event.setCancelled(true);
             }
+        }
+    }
+
+    //防止歌來果/中介珍珠傳送
+    @EventHandler
+    public void playerTeleportEvent(PlayerTeleportEvent event) {
+        if(!Config.CUPBOARD_PREVENT_TELEPORT_ENABLE.getBoolean())return;
+        if(!Config.ENABLE_WORLD.getStringList().contains(event.getTo().getWorld().getName()))return;
+        if(Config.CUPBOARD_PREVENT_TELEPORT_IGNORE_Y.getInt() > event.getTo().getBlockY())return;
+        if(
+            (
+                event.getCause() ==  PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT ||
+                event.getCause() ==  PlayerTeleportEvent.TeleportCause.ENDER_PEARL
+            ) &&
+            data.checkIsLimit(event.getTo().getBlock().getLocation(), event.getPlayer())
+        ){
+            event.setCancelled(true);
         }
     }
 
