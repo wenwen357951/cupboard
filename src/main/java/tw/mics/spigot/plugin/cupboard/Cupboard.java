@@ -14,7 +14,7 @@ import tw.mics.spigot.plugin.cupboard.config.Locales;
 import tw.mics.spigot.plugin.cupboard.data.CupboardsData;
 import tw.mics.spigot.plugin.cupboard.data.Database;
 import tw.mics.spigot.plugin.cupboard.listener.CleanGoldBlock;
-import tw.mics.spigot.plugin.cupboard.listener.CompassListener;
+//import tw.mics.spigot.plugin.cupboard.listener.CompassListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardBlockProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardEntityProtectListener;
 import tw.mics.spigot.plugin.cupboard.listener.CupboardExplosionProtectListener;
@@ -65,7 +65,8 @@ public class Cupboard extends JavaPlugin implements Listener {
         registedObject.add(new CupboardExplosionProtectListener(this));
         registedObject.add(new CupboardBlockProtectListener(this));
         registedObject.add(new GoldBlockListener(this));
-        
+        registedObject.add(new TNTCraftListener(this));
+
         //rewrite TNT Receipts Listener
         if(Config.TNT_SP_ENABLE.getBoolean()){
             registedObject.add(new TNTExplosionListener(this));
@@ -76,9 +77,9 @@ public class Cupboard extends JavaPlugin implements Listener {
             registedObject.add(new EvilEssenceListener(this));
         }
         
-        if(Config.COMPASS_ENABLE.getBoolean()){
+        /*if(Config.COMPASS_ENABLE.getBoolean()){
             registedObject.add(new CompassListener(this));
-        }
+        }*/
 	}
 	
 	private void unregisterObject(){
@@ -92,7 +93,7 @@ public class Cupboard extends JavaPlugin implements Listener {
         
         //force unregister again
         HandlerList.unregisterAll();
-        this.getServer().getScheduler().cancelAllTasks();
+        // this.getServer().getScheduler().cancelAllTasks(); // 這個 method 不見了.. 先註解掉
 	}
     
     public boolean isOP(Player p){

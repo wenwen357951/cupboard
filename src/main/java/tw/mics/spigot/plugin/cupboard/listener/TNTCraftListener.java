@@ -39,7 +39,7 @@ public class TNTCraftListener extends MyListener {
 				))
 			inv.setResult(null);
 		}
-		if(inv.getResult() != null && inv.getResult().getType() == Material.SULPHUR){
+		if(inv.getResult() != null && inv.getResult().getType() == Material.GUNPOWDER){
 			if((
 					inv.getItem(1).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE) ||
 					inv.getItem(3).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE) ||
@@ -65,7 +65,7 @@ public class TNTCraftListener extends MyListener {
     	}
     	
     	//setup explosion
-    	ItemStack item = new ItemStack(Material.SULPHUR);
+    	ItemStack item = new ItemStack(Material.GUNPOWDER);
     	ItemMeta meta = item.getItemMeta();
     	meta.setDisplayName(Locales.TNT_EXPLOTION_NAME.getString());
     	meta.setLore(Locales.TNT_EXPLOTION_LORE.getStringList());
@@ -76,7 +76,7 @@ public class TNTCraftListener extends MyListener {
     	ShapedRecipe shapedRecipe = new ShapedRecipe(item);
     	shapedRecipe.shape("GSG", "SGS", "GSG");
     	shapedRecipe.setIngredient('S', Material.SAND);
-    	shapedRecipe.setIngredient('G', Material.SULPHUR);
+    	shapedRecipe.setIngredient('G', Material.GUNPOWDER);
     	Bukkit.addRecipe(shapedRecipe);
     	
     	//setup TNT
@@ -88,7 +88,7 @@ public class TNTCraftListener extends MyListener {
     	//setup TNT recipes
     	shapedRecipe = new ShapedRecipe(item);
     	shapedRecipe.shape("EEE", "EGE", "EEE");
-    	shapedRecipe.setIngredient('E', Material.SULPHUR);
+    	shapedRecipe.setIngredient('E', Material.GUNPOWDER);
     	shapedRecipe.setIngredient('G', Material.GOLD_BLOCK);
     	Bukkit.addRecipe(shapedRecipe);
     }

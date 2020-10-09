@@ -1,4 +1,4 @@
-package tw.mics.spigot.plugin.cupboard.listener;
+/*package tw.mics.spigot.plugin.cupboard.listener;
 
 import java.util.Iterator;
 import java.util.List;
@@ -17,8 +17,8 @@ import org.bukkit.inventory.Inventory;
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
 import tw.mics.spigot.plugin.cupboard.config.Locales;
-import tw.mics.spigot.plugin.evilpoint.data.EvilPointData;
-import tw.mics.spigot.plugin.evilpoint.EvilPoint;
+//import tw.mics.spigot.plugin.evilpoint.data.EvilPointData;
+//import tw.mics.spigot.plugin.evilpoint.EvilPoint;
 
 public class CompassListener extends MyListener {
     
@@ -47,7 +47,7 @@ public class CompassListener extends MyListener {
             }
             //確定邪惡精華足夠
             if(Config.EVILESSENCE_ENABLE.getBoolean()){
-                if(!p.getInventory().contains(Material.COMMAND_MINECART, Config.EVILESSENCE_COMPASS_COST.getInt())){
+                if(!p.getInventory().contains(Material.LEGACY_COMMAND_MINECART, Config.EVILESSENCE_COMPASS_COST.getInt())){
                     p.sendMessage(Locales.TNT_EVILESSENCE_NOT_ENOUGH.getString());
                     return;
                 }
@@ -88,8 +88,8 @@ public class CompassListener extends MyListener {
             
             Inventory inv = p.getInventory();
             for(int i=0; i<Config.EVILESSENCE_COMPASS_COST.getInt(); i++){
-                inv.setItem(inv.first(Material.COMMAND_MINECART), null);
+                inv.setItem(inv.first(Material.LEGACY_COMMAND_MINECART), null);
             }
         }
     }
-}
+}*/

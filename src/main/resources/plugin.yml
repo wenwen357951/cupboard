@@ -5,6 +5,7 @@ description: ${project.description}
 author: Mics
 authors: [Mics, Domo]
 website: https://mics.tw
+api-version: 1.16
 
 commands:
   gold:

@@ -24,19 +24,19 @@ import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public class CupboardEntityProtectListener extends MyListener {
 	final static private Material[] protect_vehicle = {
-	    Material.ARMOR_STAND,
-        Material.BOAT,
-        Material.BOAT_ACACIA,
-        Material.BOAT_BIRCH,
-        Material.BOAT_DARK_OAK,
-        Material.BOAT_JUNGLE,
-        Material.BOAT_SPRUCE,
-        Material.MINECART ,
-        Material.COMMAND_MINECART,
-        Material.EXPLOSIVE_MINECART,
-        Material.HOPPER_MINECART,
-        Material.POWERED_MINECART,
-        Material.STORAGE_MINECART,
+            Material.ARMOR_STAND,
+            Material.OAK_BOAT,
+            Material.SPRUCE_BOAT,
+            Material.BIRCH_BOAT,
+            Material.JUNGLE_BOAT,
+            Material.ACACIA_BOAT,
+            Material.DARK_OAK_BOAT,
+            Material.MINECART ,
+            Material.COMMAND_BLOCK_MINECART,
+            Material.TNT_MINECART,
+            Material.HOPPER_MINECART,
+            Material.FURNACE_MINECART,
+            Material.CHEST_MINECART,
 	};
 	private CupboardsData data;
 

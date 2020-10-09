@@ -53,12 +53,26 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.DARK_OAK_DOOR,
             Material.JUNGLE_DOOR,
             Material.SPRUCE_DOOR,
-            Material.TRAP_DOOR,
-            Material.WOOD_DOOR,
-            Material.WOODEN_DOOR,
-            Material.IRON_DOOR_BLOCK,
+            Material.OAK_DOOR,
+            Material.SPRUCE_DOOR,
+            Material.BIRCH_DOOR,
+            Material.JUNGLE_DOOR,
+            Material.ACACIA_DOOR,
+            Material.DARK_OAK_DOOR,
+            Material.IRON_DOOR,
     };
-    
+
+    private final static Material[] sign = {
+            Material.OAK_SIGN,
+            Material.SPRUCE_SIGN,
+            Material.BIRCH_SIGN,
+            Material.JUNGLE_SIGN,
+            Material.ACACIA_SIGN,
+            Material.DARK_OAK_SIGN,
+            Material.CRIMSON_SIGN,
+            Material.WARPED_SIGN,
+    };
+
     //防止其他玩家破壞方塊
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGH)
@@ -86,7 +100,7 @@ public class CupboardBlockProtectListener extends MyListener {
                 }
                 
                 //SIGN
-                if(b.getType() == Material.SIGN){
+                if(Arrays.asList(sign).contains(b.getType())){
                     Location resend_location = b.getLocation();
                     p.sendBlockChange(resend_location, resend_location.getBlock().getType(), resend_location.getBlock().getData());
                 }
@@ -118,7 +132,7 @@ public class CupboardBlockProtectListener extends MyListener {
                     } else {
                         evilessence_cost = Config.EVILESSENCE_TNT_COST.getInt();
                     }
-                    if(!p.getInventory().contains(Material.COMMAND_MINECART, evilessence_cost)){
+                    if(!p.getInventory().contains(Material.COMMAND_BLOCK_MINECART, evilessence_cost)){
                         p.sendMessage(Locales.TNT_EVILESSENCE_NOT_ENOUGH.getString());
                         e.setCancelled(true);
                         return;
@@ -149,7 +163,7 @@ public class CupboardBlockProtectListener extends MyListener {
                 Inventory inv = p.getInventory();
                 if(evilessence_cost != null){
                     for(int i=0; i<evilessence_cost; i++){
-                        inv.setItem(inv.first(Material.COMMAND_MINECART), null);
+                        inv.setItem(inv.first(Material.COMMAND_BLOCK_MINECART), null);
                     }
                 }
                 
@@ -210,30 +224,63 @@ public class CupboardBlockProtectListener extends MyListener {
             Material.DARK_OAK_DOOR,
             Material.JUNGLE_DOOR,
             Material.SPRUCE_DOOR,
-            Material.TRAP_DOOR,
-            Material.WOOD_DOOR,
-            Material.WOODEN_DOOR,
-            Material.FENCE_GATE,
+            Material.OAK_DOOR,
+            Material.SPRUCE_DOOR,
+            Material.BIRCH_DOOR,
+            Material.JUNGLE_DOOR,
+            Material.ACACIA_DOOR,
+            Material.DARK_OAK_DOOR,
+            Material.IRON_DOOR,
+
+            Material.OAK_FENCE_GATE,
+            Material.DARK_OAK_FENCE_GATE,
+            Material.CRIMSON_FENCE_GATE,
+            Material.WARPED_FENCE_GATE,
             Material.ACACIA_FENCE_GATE,
             Material.BIRCH_FENCE_GATE,
             Material.DARK_OAK_FENCE_GATE,
             Material.JUNGLE_FENCE_GATE,
             Material.SPRUCE_FENCE_GATE,
+
             Material.LEVER,
             Material.STONE_BUTTON,
-            Material.WOOD_BUTTON,
-            Material.REDSTONE_COMPARATOR_OFF,
-            Material.REDSTONE_COMPARATOR_ON,
-            Material.DIODE_BLOCK_OFF,
-            Material.DIODE_BLOCK_ON,
+
+            Material.STONE_BUTTON,
+            Material.OAK_BUTTON,
+            Material.SPRUCE_BUTTON,
+            Material.BIRCH_BUTTON,
+            Material.JUNGLE_BUTTON,
+            Material.ACACIA_BUTTON,
+            Material.DARK_OAK_BUTTON,
+            Material.CRIMSON_BUTTON,
+            Material.WARPED_BUTTON,
+
+            Material.LEGACY_REDSTONE_COMPARATOR_OFF,
+            Material.LEGACY_REDSTONE_COMPARATOR_ON,
+            Material.LEGACY_DIODE_BLOCK_OFF,
+            Material.LEGACY_DIODE_BLOCK_ON,
             Material.DAYLIGHT_DETECTOR,
-            Material.DAYLIGHT_DETECTOR_INVERTED,
-            Material.DIODE_BLOCK_ON,
+            Material.LEGACY_DAYLIGHT_DETECTOR_INVERTED,
             Material.REDSTONE,
-            Material.BED_BLOCK,
+            Material.WHITE_BED,
+            Material.ORANGE_BED,
+            Material.MAGENTA_BED,
+            Material.LIGHT_BLUE_BED,
+            Material.YELLOW_BED,
+            Material.LIME_BED,
+            Material.PINK_BED,
+            Material.GRAY_BED,
+            Material.LIGHT_GRAY_BED,
+            Material.CYAN_BED,
+            Material.PURPLE_BED,
+            Material.BLUE_BED,
+            Material.BROWN_BED,
+            Material.GREEN_BED,
+            Material.RED_BED,
+            Material.BLACK_BED,
             Material.ENDER_CHEST,
             Material.ANVIL,
-            Material.CAKE_BLOCK,
+            Material.CAKE,
     };
     
     @EventHandler(priority = EventPriority.HIGH)
@@ -416,7 +463,7 @@ public class CupboardBlockProtectListener extends MyListener {
         Block b = e.getBlock();
         if( p != null){
             if(!e.isCancelled()){
-                if(b.getType().equals(Material.PISTON_BASE) || b.getType().equals(Material.PISTON_STICKY_BASE)){
+                if(b.getType().equals(Material.PISTON) || b.getType().equals(Material.STICKY_PISTON)){
                     b.setMetadata("owner_uuid", new FixedMetadataValue(plugin, p.getUniqueId().toString()));
                 }
             }
