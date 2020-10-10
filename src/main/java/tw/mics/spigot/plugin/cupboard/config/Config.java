@@ -32,15 +32,15 @@ public enum Config {
             "BEDROCK:0:AIR",
             "STRUCTURE_BLOCK:0:AIR",
             "STRUCTURE_VOID:0:AIR",
-            "COMMAND:0:AIR",
-            "COMMAND_REPEATING:0:AIR",
-            "COMMAND_CHAIN:0:AIR",
-            "ENDER_PORTAL:0:AIR",
-            "ENDER_PORTAL_FRAME:0:AIR",
+            "COMMAND_BLOCK:0:AIR",
+            "CHAIN_COMMAND_BLOCK:0:AIR",
+            "REPEATING_COMMAND_BLOCK:0:AIR",
+            "END_PORTAL:0:AIR",
+            "END_PORTAL_FRAME:0:AIR",
             "END_GATEWAY:0:AIR",
             "GOLD_BLOCK:0:AIR",
             "ANVIL:0.25:AIR",
-            "ENCHANTMENT_TABLE:0.25:AIR",
+            "ENCHANTING_TABLE:0.25:AIR",
             "ENDER_CHEST:0.25:AIR",
             "OBSIDIAN:0.5:COBBLESTONE"
     }, "set block destory chance Material:chance:turn_to_Material (turn_to_Material set to \"DROP\" will destory like normal TNT)"),
@@ -51,7 +51,7 @@ public enum Config {
     EVILESSENCE_TNT_COST_BOUNS_AMOUNT("evilessence.tnt-place-cost-bouns-amount", 2, ""),
     EVILESSENCE_COMPASS_COST("evilessence.compass-use-cost", 1, ""),
     EVILESSENCE_DROPAMOUNT("evilessence.dropamount", new String[]{
-            "MOB_SPAWNER:3:5"
+            "SPAWNER:3:5"
     }, ""),
 
     COMPASS_ENABLE("compass.enable", true, ""),
