@@ -1,6 +1,7 @@
 #maven
 /target/
 /bin/
+.idea/
 
 #eclipse
 /.classpath
@@ -8,5 +9,4 @@
 /.project
 /.settings
 /.vscode
-
-#.idea
+<<<<<<< HEAD
