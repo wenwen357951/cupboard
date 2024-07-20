@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -14,7 +15,7 @@ import tw.mics.spigot.plugin.cupboard.utils.Util;
 
 public enum Locales {
 
-	OP_BYPASS("gold-block.op-bypass", "&cWARNING: YOU ARE BYPASS PROTECT AREA."),
+	OP_BYPASS("gold-block.op-bypass", "<red>WARNING: YOU ARE BYPASS PROTECT AREA."),
 	GOLD_PLACE("gold-block.place-gold-block", "Block of Gold is placed and got access."),
 	GOLD_REMOVE("gold-block.remove-gold-block", "Block of Gold is removed."),
 	GOLD_TOO_CLOSE("gold-block.gold-block-too-close-to-place", "Block of Gold is too close to place."),
@@ -22,33 +23,33 @@ public enum Locales {
 	GOLD_DATA_NOT_FOUND("gold-block.gold-data-not-found", "This Block of Gold is not place by player or data missing."),
 	GOLD_GRANT_ACCESS("gold-block.grant-access", "Grant access."),
 	GOLD_REVOKE_ACCESS("gold-block.revoke-access", "Revoke access."),
-	NO_ACCESS("gold-block.no-access", "&4No access."),
+	NO_ACCESS("gold-block.no-access", "<dark_red>No access."),
 	
 	//TNT
-	TNT_EXPLOTION_NAME("tnt.explotion-name", "&4Explosion"),
+	TNT_EXPLOTION_NAME("tnt.explotion-name", "<dark_red>Explosion"),
 	TNT_EXPLOTION_LORE("tnt.explotion-lore", new String[] {
-			"&r&aPlease follow this to craft TNT",
-	    	"&r&6E E E   &bE is &4Explosion",
-	    	"&r&6E G E   &bG is Block of Gold",
-	    	"&r&6E E E"
+			"<green>Please follow this to craft TNT",
+	    	"<gold>E E E   <aqua>E is <dark_red>Explosion",
+	    	"<gold>E G E   <aqua>G is Block of Gold",
+	    	"<gold>E E E"
 	}),
     
     TNT_TNT_LORE("tnt.tnt-lore", new String[] {
-            "&r&6Put in portect area, will Auto Ignite.",
-            "&r&6Can destory protect area.",
-            "&r&6Can destory water, lava and obsidian.",
+            "<gold>Put in portect area, will Auto Ignite.",
+            "<gold>Can destory protect area.",
+            "<gold>Can destory water, lava and obsidian.",
     }), 
     
     TNT_EVILESSENCE_NAME("tnt.evilessence-name", "&5Evil Essence" ), 
     
     TNT_EVILESSENCE_LORE("tnt.evilessence-lore", new String[] {
-            "&r&6Evil essence.",
+            "<gold>Evil essence.",
     }), 
-    TNT_NOT_ENOUGH("tnt.tnt-not-enough", "&4on hand TNT not enough (it cost 2)"),
-    TNT_EVILESSENCE_NOT_ENOUGH("tnt.evilessence-not-enough", "&4Evil Essence not enough"), 
-    COMPASS_NOT_FOUND_PLAYER("compass.can-not-found-player-or-world-wrong", "&4Can't found player or world type is wrong."), 
-    COMPASS_SUCCESSFUL("compass.your-compass-sucessful", "&aYour compass now point someone."), 
-    COMPASS_BE_POINTED("compass.you-are-pointed-by-someone", "&4You are pointed by someone, be careful");
+    TNT_NOT_ENOUGH("tnt.tnt-not-enough", "<dark_red>on hand TNT not enough (it cost 2)"),
+    TNT_EVILESSENCE_NOT_ENOUGH("tnt.evilessence-not-enough", "<dark_red>Evil Essence not enough"),
+    COMPASS_NOT_FOUND_PLAYER("compass.can-not-found-player-or-world-wrong", "<dark_red>Can't found player or world type is wrong."),
+    COMPASS_SUCCESSFUL("compass.your-compass-sucessful", "<aqua>Your compass now point someone."),
+    COMPASS_BE_POINTED("compass.you-are-pointed-by-someone", "<dark_red>You are pointed by someone, be careful");
 	
 	private final Object value;
 	private final String path;
@@ -82,7 +83,7 @@ public enum Locales {
 	}
 	
 	public void send(CommandSender s) {
-	    s.sendMessage(getString());
+	    s.sendMessage(MiniMessage.miniMessage().deserialize(getString()));
 	}
 	
 	public void send(CommandSender s, Map<String, String> map) {
@@ -90,7 +91,7 @@ public enum Locales {
 	    for (String string : map.keySet()) {
 	        msg = msg.replaceAll(string, map.get(string));
 	    }
-	    s.sendMessage(msg);
+	    s.sendMessage(MiniMessage.miniMessage().deserialize(msg));
 	}
 	
 	public static void load() {

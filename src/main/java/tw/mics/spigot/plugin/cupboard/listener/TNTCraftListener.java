@@ -26,39 +26,41 @@ public class TNTCraftListener extends MyListener {
         overwriteTNTRecipes();
     }
 
-    @EventHandler
-    public void onCrafting(PrepareItemCraftEvent event) {
-        CraftingInventory craftingInv = event.getInventory();
-        if (craftingInv.getResult() == null) {
-            return;
-        }
-
-        boolean noResult = false;
-        if (craftingInv.getResult().getType() == Material.TNT) {
-            // Check Slot 1 2 3 4 5 6 7 8 9
-            for (int i = 1; i <= 9; i++) {
-                ItemStack item = craftingInv.getItem(i);
-                if (item == null || item.getItemMeta().hasEnchant(Enchantment.POWER)) {
-                    noResult = true;
-                }
-            }
-
-        }
-
-        if (craftingInv.getResult().getType() == Material.GUNPOWDER) {
-            // Check Slots 1 3 5 7 9
-            for (int i = 1; i <= 9; i += 2) {
-                ItemStack item = craftingInv.getItem(i);
-                if (item == null || item.getItemMeta().hasEnchant(Enchantment.POWER)) {
-                    noResult = true;
-                }
-            }
-        }
-
-        if (noResult) {
-            craftingInv.setResult(null);
-        }
-    }
+//    @EventHandler
+//    public void onCrafting(PrepareItemCraftEvent event) {
+//        CraftingInventory craftingInv = event.getInventory();
+//        if (craftingInv.getResult() == null) {
+//            return;
+//        }
+//
+//        boolean noResult = false;
+//        if (craftingInv.getResult().getType() == Material.TNT) {
+//            // Check Slot 1 2 3 4 6 7 8 9
+//            for (int i = 1; i <= 9; i++) {
+//                if (i == 5) {
+//                    continue;
+//                }
+//                ItemStack item = craftingInv.getItem(i);
+//                if (item == null || !item.getItemMeta().hasEnchant(Enchantment.POWER)) {
+//                    noResult = true;
+//                }
+//            }
+//        }
+//
+//        if (craftingInv.getResult().getType() == Material.GUNPOWDER) {
+//            // Check Slots 1 3 5 7 9
+//            for (int i = 1; i <= 9; i += 2) {
+//                ItemStack item = craftingInv.getItem(i);
+//                if (item == null || item.getItemMeta().hasEnchants()) {
+//                    noResult = true;
+//                }
+//            }
+//        }
+//
+//        if (noResult) {
+//            craftingInv.setResult(null);
+//        }
+//    }
 
 
     private void overwriteTNTRecipes() {
@@ -73,45 +75,45 @@ public class TNTCraftListener extends MyListener {
             }
         }
 
-        // setup explosion
-        ItemStack item = new ItemStack(Material.GUNPOWDER);
-        ItemMeta meta = item.getItemMeta();
-        meta.displayName(MiniMessage.miniMessage().deserialize(Locales.TNT_EXPLOTION_NAME.getString()));
-        meta.lore(Locales.TNT_EXPLOTION_LORE.getStringList().stream()
+        // setup explosion powder
+        ItemStack explosionPowderItem = new ItemStack(Material.GUNPOWDER);
+        ItemMeta explosionPowderMeta = explosionPowderItem.getItemMeta();
+        explosionPowderMeta.displayName(MiniMessage.miniMessage().deserialize(Locales.TNT_EXPLOTION_NAME.getString()));
+        explosionPowderMeta.lore(Locales.TNT_EXPLOTION_LORE.getStringList().stream()
                 .map(msg -> MiniMessage.miniMessage().deserialize(msg))
                 .collect(Collectors.toList())
         );
-        meta.addEnchant(Enchantment.POWER, 1, true);
-        item.setItemMeta(meta);
+        explosionPowderMeta.addEnchant(Enchantment.POWER, 1, true);
+        explosionPowderItem.setItemMeta(explosionPowderMeta);
 
         // setup explosion recipes
         ShapedRecipe explosionPowderShapedRecipe = new ShapedRecipe(
 				new NamespacedKey(this.plugin, "ExplosionPowder"),
-				item
+				explosionPowderItem
 		);
 		explosionPowderShapedRecipe.shape("GSG", "SGS", "GSG");
 		explosionPowderShapedRecipe.setIngredient('S', Material.SAND);
 		explosionPowderShapedRecipe.setIngredient('G', Material.GUNPOWDER);
-        Bukkit.addRecipe(explosionPowderShapedRecipe);
+        this.plugin.getServer().addRecipe(explosionPowderShapedRecipe);
 
         // setup TNT
-        item = new ItemStack(Material.TNT);
-        meta = item.getItemMeta();
-		meta.lore(Locales.TNT_TNT_LORE.getStringList().stream()
+        ItemStack customTntItem = new ItemStack(Material.TNT);
+        ItemMeta customTntMeta = customTntItem.getItemMeta();
+        customTntMeta.lore(Locales.TNT_TNT_LORE.getStringList().stream()
 				.map(msg -> MiniMessage.miniMessage().deserialize(msg))
 				.collect(Collectors.toList())
 		);
-        item.setItemMeta(meta);
+        customTntItem.setItemMeta(customTntMeta);
 
         // setup TNT recipes
-		ShapedRecipe tntShapedRecipe = new ShapedRecipe(
-				new NamespacedKey(this.plugin, "TNT"),
-				item
+        ShapedRecipe tntShapedRecipe = new ShapedRecipe(
+				new NamespacedKey(this.plugin, "CustomTNT"),
+				customTntItem
 		);
-		tntShapedRecipe.shape("EEE", "EGE", "EEE");
-		tntShapedRecipe.setIngredient('E', Material.GUNPOWDER);
-		tntShapedRecipe.setIngredient('G', Material.GOLD_BLOCK);
-        Bukkit.addRecipe(tntShapedRecipe);
+        tntShapedRecipe.shape("EEE", "EGE", "EEE");
+        tntShapedRecipe.setIngredient('E', explosionPowderItem);
+        tntShapedRecipe.setIngredient('G', Material.GOLD_BLOCK);
+        this.plugin.getServer().addRecipe(tntShapedRecipe);
     }
 
 }

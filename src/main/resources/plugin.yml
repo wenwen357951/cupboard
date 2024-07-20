@@ -2,7 +2,6 @@ name: CupBoard-fork
 main: tw.mics.spigot.plugin.cupboard.Cupboard
 version: ${project.version}
 description: ${project.description}
-author: Mics
 authors: [Mics, Domo, wenwen357951(WenWen_xD)]
 website: https://mics.tw
 api-version: 1.21

@@ -2,6 +2,7 @@ package tw.mics.spigot.plugin.cupboard.utils;
 
 import java.util.StringTokenizer;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -41,7 +42,7 @@ public class Util {
     }
     
 	public static void msgToPlayer(Player p, String str){
-		p.sendMessage(str);
+		p.sendMessage(MiniMessage.miniMessage().deserialize(str));
 	}
 	
 	public static String LocToString(Location l){
@@ -64,7 +65,7 @@ public class Util {
 	}
 	
 	public static String replaceColors(String message) {
-        return message.replaceAll("&((?i)[0-9a-fk-or])", "§$1");
+        return message.replaceAll("&((?i)[0-9a-fk-or])", "&$1");
     }
 	
 	public static void setUpTNT(Location l){

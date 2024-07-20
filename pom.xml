@@ -6,7 +6,7 @@
     <groupId>tw.mics.spigot.plugin.cupboard</groupId>
     <artifactId>Cupboard</artifactId>
     <packaging>jar</packaging>
-    <version>4.1.2-fork-1.0.0</version>
+    <version>4.1.2-fork-1.0.1</version>
     <name>Cupboard - Fork</name>
     <url>https://github.com/wenwen357951/cupboard</url>
     <description>Let a PvP server as like as Rust fun, but still keep Minecraft original play style.</description>
@@ -72,6 +72,11 @@
             <artifactId>paper-api</artifactId>
             <version>1.21-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <version>4.17.0</version>
         </dependency>
     </dependencies>
 </project>

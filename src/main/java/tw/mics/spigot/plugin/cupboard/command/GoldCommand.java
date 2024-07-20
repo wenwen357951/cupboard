@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -28,7 +29,7 @@ public class GoldCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("§4this command must run on player");
+            sender.sendMessage(MiniMessage.miniMessage().deserialize("<dark_red>this command must run on player"));
             return true;
         }
         List<String> enable_world = Config.ENABLE_WORLD.getStringList();

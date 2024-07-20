@@ -4,15 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="807be843-3f16-4a43-899d-92951ae37d8b" name="默认的" comment="">
+    <list default="true" id="807be843-3f16-4a43-899d-92951ae37d8b" name="默认的" comment="feat: Update Plugin to 1.21 version">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/Cupboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/Cupboard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/CupboardAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/CupboardAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/command/GoldCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/command/GoldCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/listener/CupboardExplosionProtectListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/listener/CupboardExplosionProtectListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/listener/EvilEssenceListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/listener/EvilEssenceListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/config/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/config/Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/config/Locales.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/config/Locales.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/listener/CupboardBlockProtectListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/listener/CupboardBlockProtectListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/listener/GoldBlockListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/listener/GoldBlockListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/listener/TNTCraftListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/listener/TNTCraftListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/utils/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tw/mics/spigot/plugin/cupboard/utils/Util.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/locales/zh-TW.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/locales/zh-TW.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -83,11 +87,35 @@
       <option name="presentableId" value="Default" />
       <updated>1602248678345</updated>
       <workItem from="1721482381376" duration="228000" />
-      <workItem from="1721482616690" duration="2278000" />
+      <workItem from="1721482616690" duration="8750000" />
     </task>
+    <task id="LOCAL-00001" summary="feat: Update Plugin to 1.21 version">
+      <option name="closed" value="true" />
+      <created>1721485008973</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1721485008973</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: Update Plugin to 1.21 version" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Update Plugin to 1.21 version" />
   </component>
 </project>

@@ -2,6 +2,7 @@ package tw.mics.spigot.plugin.cupboard;
 
 import java.util.ArrayList;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -105,7 +106,7 @@ public class Cupboard extends JavaPlugin implements Listener {
                 p.hasPermission("cupboard.bypass") &&
                         p.getGameMode() != GameMode.SURVIVAL
         ) {
-            if (notice) p.sendMessage(Locales.OP_BYPASS.getString());
+            if (notice) p.sendMessage(MiniMessage.miniMessage().deserialize(Locales.OP_BYPASS.getString()));
             return true;
         }
         return false;

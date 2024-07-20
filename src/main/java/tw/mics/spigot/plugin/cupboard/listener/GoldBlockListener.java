@@ -3,6 +3,7 @@ package tw.mics.spigot.plugin.cupboard.listener;
 
 import java.util.List;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -89,7 +90,7 @@ public class GoldBlockListener extends MyListener {
 			break;
     	}
     	if(front_block_loc.getBlock().getType().isSolid()){
-    		p.sendMessage(Locales.GOLD_ACCESS_BLOCKED.getString());
+    		p.sendMessage(MiniMessage.miniMessage().deserialize(Locales.GOLD_ACCESS_BLOCKED.getString()));
     		return;
     	}
     	
