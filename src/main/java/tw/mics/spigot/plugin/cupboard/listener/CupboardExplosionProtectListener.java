@@ -32,8 +32,8 @@ public class CupboardExplosionProtectListener extends MyListener {
         this.data = this.plugin.cupboards;
         disable_explosion_id = new LinkedList<Integer>();
     }
-    
-    
+
+
     @EventHandler
     public void onExplosion(ExplosionPrimeEvent e){
         Entity entity = e.getEntity();
@@ -43,13 +43,13 @@ public class CupboardExplosionProtectListener extends MyListener {
         if(!data.checkExplosionAble(e.getEntity().getLocation(), e.getRadius())){
             disable_explosion_id.push(e.getEntity().getEntityId());
         }
-        
+
         //保存50個爆炸id 應該不會有50個爆炸同時發生吧....
         while(disable_explosion_id.size() > 50){
             disable_explosion_id.pollLast();
         }
     }
-    
+
     //防止插件爆炸
     @EventHandler
     public void onExplode(BlockExplodeEvent event){
@@ -68,14 +68,14 @@ public class CupboardExplosionProtectListener extends MyListener {
             event.blockList().clear();
         }
     }
-	
+
     //TNT or Creeper爆炸
     @EventHandler(priority = EventPriority.LOWEST)
     public void onExplode(EntityExplodeEvent event){
         if(!Config.ENABLE_WORLD.getStringList().contains(event.getEntity().getWorld().getName()))return;
         if((
-                Config.ANTI_OTHERS_EXPLOSION.getBoolean() && 
-                event.getEntityType() == EntityType.MINECART_TNT
+                Config.ANTI_OTHERS_EXPLOSION.getBoolean() &&
+                event.getEntityType() == EntityType.TNT_MINECART
             ) || (
                 disable_explosion_id.contains(event.getEntity().getEntityId())
             )){
@@ -90,13 +90,13 @@ public class CupboardExplosionProtectListener extends MyListener {
     	if(
     		e.getEntity().getType() == EntityType.ARMOR_STAND &&
     		e.getCause() == DamageCause.ENTITY_EXPLOSION
-		){        
+		){
     	    if(disable_explosion_id.contains(e.getDamager().getEntityId())){
                 e.setCancelled(true);
             }
     	}
     }
-    
+
     //防止Hanging類物品 被Creeper炸掉 / 被TNT炸掉
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent e) {

@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.md_5.bungee.api.ChatColor;
+import org.jetbrains.annotations.NotNull;
 import tw.mics.spigot.plugin.cupboard.Cupboard;
 import tw.mics.spigot.plugin.cupboard.config.Config;
 
@@ -20,12 +21,12 @@ public class GoldCommand implements CommandExecutor {
 	HashMap<String, String> confirm_list;
 	public GoldCommand(Cupboard i){
 		this.plugin = i;
-		confirm_list = new HashMap<String, String>();
+		confirm_list = new HashMap<>();
 	}
 
     @SuppressWarnings("deprecation")
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage("§4this command must run on player");
             return true;
@@ -44,7 +45,7 @@ public class GoldCommand implements CommandExecutor {
                 return true;
             }
 
-            Boolean have_confirm = confirm_list.containsKey(sender_uuid);
+            boolean have_confirm = confirm_list.containsKey(sender_uuid);
             
             //-----------confirm-----------
             if(args[0].equals("confirm") && args.length == 1){

@@ -6,9 +6,9 @@
     <groupId>tw.mics.spigot.plugin.cupboard</groupId>
     <artifactId>Cupboard</artifactId>
     <packaging>jar</packaging>
-    <version>4.1.2</version>
-    <name>Cupboard</name>
-    <url>http://mics.tw</url>
+    <version>4.1.2-fork-1.0.0</version>
+    <name>Cupboard - Fork</name>
+    <url>https://github.com/wenwen357951/cupboard</url>
     <description>Let a PvP server as like as Rust fun, but still keep Minecraft original play style.</description>
 
     <!-- Properties -->
@@ -17,8 +17,6 @@
         <project.mainclass>tw.mics.spigot.plugin.cupboard.Cupboard</project.mainclass>
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
-        <mc-version>1.16.3</mc-version>
-        <bukkit-ver>R0.1-SNAPSHOT</bukkit-ver>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/java/</srcDir>
     </properties>
@@ -31,49 +29,49 @@
         <sourceDirectory>${srcDir}</sourceDirectory>
         <resources>
             <resource>
-        		<filtering>true</filtering>
+                <filtering>true</filtering>
                 <directory>${basedir}/src/main/resources/</directory>
                 <includes>
-                	<include>plugin.yml</include>
-                	<include>locales/*</include>
-              	</includes>
+                    <include>plugin.yml</include>
+                    <include>locales/*</include>
+                </includes>
             </resource>
         </resources>
         <plugins>
-	        <plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-compiler-plugin</artifactId>
-			    <version>3.3</version>
-			    <configuration>
-			        <source>1.8</source>
-			        <target>1.8</target>
-			    </configuration>
-			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <!-- Repositories -->
     <repositories>
         <repository>
-          <id>central</id>
-          <name>Maven repository</name>
-          <url>http://repo1.maven.org/maven2</url>
+            <id>central</id>
+            <name>Maven repository</name>
+            <url>https://repo1.maven.org/maven2</url>
         </repository>
-        
+
         <!-- Spigot -->
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <id>papermc-repo</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
     </repositories>
 
     <dependencies>
         <!--Spigot API-->
         <dependency>
-               <groupId>org.spigotmc</groupId>
-               <artifactId>spigot-api</artifactId>
-               <version>${mc-version}-${bukkit-ver}</version>
-               <scope>provided</scope>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.21-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
